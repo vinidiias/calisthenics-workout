@@ -1,6 +1,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { atom, useAtom } from 'jotai'
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import SwitchThemeButton from '../../components/ui/SwitchTheme'
+import { useState } from 'react'
+
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -14,10 +17,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const currentIndex = atom(0)
-
 export default function Navbar() {
-    const [current, setCurrent] = useAtom(currentIndex)
+    const [current, setCurrent] = useState(0)
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -34,11 +35,7 @@ export default function Navbar() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <img
-                alt="Your Company"
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                className="h-8 w-auto"
-              />
+              <FitnessCenterIcon sx={{fontSize: '2em'}} className='text-[#463c9e]' />
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
@@ -60,6 +57,7 @@ export default function Navbar() {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            <SwitchThemeButton />
             <button
               type="button"
               className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
