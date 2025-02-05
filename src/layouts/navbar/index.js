@@ -3,7 +3,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SwitchThemeButton from '../../components/ui/SwitchTheme'
 import { useState } from 'react'
-
+import MenuIcon from '@mui/icons-material/Menu';
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -22,7 +22,7 @@ export default function Navbar() {
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1700px] px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button*/}
