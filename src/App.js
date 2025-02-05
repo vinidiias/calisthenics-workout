@@ -4,6 +4,7 @@ import Navbar from './layouts/navbar';
 import Example from './layouts/navbar';
 import Login from './pages/login';
 import { atom } from 'jotai';
+import Footer from './layouts/footer';
 
 export const useTheme = atom('bg-[#D0D1D5]')
 
@@ -15,6 +16,7 @@ function App() {
     >
       <Navbar />
       <Login />
+      <Footer />
     </Box>
   );
 }
