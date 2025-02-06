@@ -7,6 +7,7 @@ import { atom } from 'jotai';
 import Footer from './layouts/footer';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Menu from './pages/menu';
+import Register from './pages/register';
 
 export const useTheme = atom('bg-gray-50')
 
@@ -18,7 +19,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/menu" element={<Menu />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/workouts" element={<Menu isParticipe={true} title="Workouts" />} />
+          <Route path="/workouts/my-workouts" element={<Menu isParticipe={false} title="My Workouts" />} />
         </Routes>
         <Footer />
       </BrowserRouter>

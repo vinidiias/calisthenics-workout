@@ -4,12 +4,12 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SwitchThemeButton from '../../components/ui/SwitchTheme'
 import { useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu';
+import { useCurrentIndex } from '../../hooks/useCurrentIndex';
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
-  { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
+  { name: 'Workouts', href: '/workouts', current: true },
+  { name: 'My Workouts', href: '/workouts/my-workouts', current: false },
+  { name: 'Create Workout', href: '#', current: false },
 ]
 
 
@@ -18,7 +18,7 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-    const [current, setCurrent] = useState(0)
+    const [current, setCurrent] = useState(useCurrentIndex)
 
   return (
     <Disclosure as="nav" className="bg-gray-800">

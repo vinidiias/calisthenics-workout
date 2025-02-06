@@ -10,20 +10,25 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import GoogleIcon from '@mui/icons-material/Google';
+import GoogleIcon from "@mui/icons-material/Google";
 import { useForm } from "react-hook-form";
 import { useAtom } from "jotai";
 import { useTheme } from "../../App";
-import LockIcon from '@mui/icons-material/Lock';
+import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom";
 const Login = () => {
   const { register, handleSubmit } = useForm();
-  const [theme] = useAtom(useTheme)
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [theme] = useAtom(useTheme);
 
   const submit = (data) => {
-    navigate('/menu')
-  }
+    navigate("/workouts");
+  };
+
+  const fields = [
+    { name: "email", label: "Email", type: "email" },
+    { name: "password", label: "Password", type: "password" },
+  ];
 
   return (
     <Box
@@ -32,30 +37,27 @@ const Login = () => {
     >
       <LockIcon sx={{ fontSize: "2em" }} className="text-[#463c9e]" />
       <Typography align="center" fontSize={"2em"}>
-        Sign in
+        Sign In
       </Typography>
       <form
         className="flex flex-col gap-3 w-full max-w-100"
         onSubmit={handleSubmit(submit)}
       >
-        <TextField
-          className="bg-white"
-          type="email"
-          id="email"
-          label="Email"
-          variant="outlined"
-          {...register("email")}
-        />
-        <TextField
-          className="bg-white"
-          type="password"
-          id="password"
-          label="Password"
-          variant="outlined"
-          {...register("password")}
-        />
+        {fields.map((field, index) => (
+          <TextField
+            className="bg-white"
+            type={field.type}
+            id={field.name}
+            label={field.label}
+            variant="outlined"
+            {...register(field.name)}
+          />
+        ))}
+
         <FormControlLabel
-          control={<Checkbox {...register("email")} defaultValue={false} />}
+          control={
+            <Checkbox {...register("remember_me")} defaultValue={false} />
+          }
           label="Remember me"
           color="primary"
           sx={{
@@ -72,7 +74,7 @@ const Login = () => {
           <Link href="#" variant="body2">
             Forget the password?
           </Link>
-          <Link href="#" variant="body2">
+          <Link href="/register" variant="body2">
             Don't have account?
             <br />
             Sign Up!
@@ -86,7 +88,7 @@ const Login = () => {
           <Button type="submit">Sign in</Button>
           <Button size="sm">
             <GoogleIcon fontSize="small" className="mr-2" />
-            Sign with Google
+            Sign in with Google
           </Button>
         </ButtonGroup>
       </form>
