@@ -15,14 +15,20 @@ import { useForm } from "react-hook-form";
 import { useAtom } from "jotai";
 import { useTheme } from "../../App";
 import LockIcon from '@mui/icons-material/Lock';
+import { useNavigate } from "react-router-dom";
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const [theme] = useAtom(useTheme)
+  const navigate = useNavigate()
+
+  const submit = (data) => {
+    navigate('/menu')
+  }
 
   return (
     <Box
       width="100%"
-      className={`flex flex-col flex-1 justify-center items-center gap-5`}
+      className={`flex flex-col flex-1 justify-center items-center gap-5 ${theme}`}
     >
       <LockIcon sx={{ fontSize: "2em" }} className="text-[#463c9e]" />
       <Typography align="center" fontSize={"2em"}>
@@ -30,10 +36,10 @@ const Login = () => {
       </Typography>
       <form
         className="flex flex-col gap-3 w-full max-w-100"
-        onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}
+        onSubmit={handleSubmit(submit)}
       >
         <TextField
-          classes={"bg-black"}
+          className="bg-white"
           type="email"
           id="email"
           label="Email"
@@ -41,6 +47,7 @@ const Login = () => {
           {...register("email")}
         />
         <TextField
+          className="bg-white"
           type="password"
           id="password"
           label="Password"

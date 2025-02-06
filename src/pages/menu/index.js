@@ -29,7 +29,7 @@ const wourkoutItem = [
         <Button
           loadingPosition="end"
           endIcon={<AddIcon />}
-          variant="outlined"
+          variant="contained"
           sx={{ marginRight: 5 }}
         >
           Participe
@@ -70,7 +70,7 @@ const wourkoutItem = [
         <Button
           loadingPosition="end"
           endIcon={<AddIcon />}
-          variant="outlined"
+          variant="contained"
           sx={{ marginRight: 5 }}
         >
           Participe
@@ -94,11 +94,8 @@ const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
+  
     marginLeft: 0,
-    border: '1px solid currentColor',
     width: '100%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(1),
@@ -134,15 +131,13 @@ const Search = styled('div')(({ theme }) => ({
   }));
 
 const Menu = () => {
-
-    console.log(wourkoutItem)
     return (
-      <Box sx={{ flexGrow: 1, padding: 5 }}>
+      <Box sx={{ flexGrow: 1, padding: 5 }} className="bg-gray-50">
         <Box className="flex justify-between items-center mb-10">
-          <Typography variant="h4" component="div">
+          <Typography variant="overline" className="text-gray-600" sx={{ fontSize: '1.5em', fontWeight: 600 }}>
             Workouts
           </Typography>
-          <Search>
+          <Search sx={{backgroundColor: 'white', border: '2px solid #d6d6d6'}}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -151,19 +146,26 @@ const Menu = () => {
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
-          <FormControl  sx={{  minWidth: 100 }}>
-            <InputLabel id="demo-simple-select-label">Locality</InputLabel>
+         <Box className="flex items-center">
+          <Typography variant="inherit" color="gray">
+            Locality
+          </Typography>
+         <FormControl sx={{ m: 1, minWidth: 100 }}>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Age"
-              autoWidth
+              size="small"
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              defaultValue=""
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirasdasdasty</MenuItem>
+              <MenuItem value="">
+                <em>All</em>
+              </MenuItem>
+              <MenuItem value="vila-a">Vila A</MenuItem>
+              <MenuItem value="vila-c">Vila C</MenuItem>
+              <MenuItem value="cidade-nova">Cidade Nova</MenuItem>
             </Select>
           </FormControl>
+         </Box>
         </Box>
         <Grid2 container spacing={10}>
           {wourkoutItem.map((workout, index) => (

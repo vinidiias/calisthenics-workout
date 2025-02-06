@@ -8,7 +8,7 @@ import Footer from './layouts/footer';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Menu from './pages/menu';
 
-export const useTheme = atom('bg-[#D0D1D5]')
+export const useTheme = atom('bg-gray-50')
 
 function App() {
 
