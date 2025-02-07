@@ -5,11 +5,11 @@ import SwitchThemeButton from '../../components/ui/SwitchTheme'
 import { useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useCurrentIndex } from '../../hooks/useCurrentIndex';
+import { Link } from 'react-router-dom';
 
 const navigation = [
   { name: 'Workouts', href: '/workouts', current: true },
   { name: 'My Workouts', href: '/workouts/my-workouts', current: false },
-  { name: 'Create Workout', href: '#', current: false },
 ]
 
 
@@ -35,7 +35,9 @@ export default function Navbar() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <FitnessCenterIcon sx={{fontSize: '2em'}} className='text-[#463c9e]' />
+              <a href='/workouts'>
+                <FitnessCenterIcon sx={{fontSize: '2em'}} className='text-[#463c9e]' />
+              </a>
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">

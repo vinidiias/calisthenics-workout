@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import tailwind from '../src/output.css'
+import tailwind from './output.css'
 import Navbar from './layouts/navbar';
 import Example from './layouts/navbar';
 import Login from './pages/login';

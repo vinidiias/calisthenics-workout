@@ -50,7 +50,7 @@ const Login = () => {
             id={field.name}
             label={field.label}
             variant="outlined"
-            {...register(field.name)}
+            {...register(field.name, { required: true })}
           />
         ))}
 
