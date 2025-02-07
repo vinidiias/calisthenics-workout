@@ -16,18 +16,37 @@ import { useAtom } from "jotai";
 import { useTheme } from "../../App";
 import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom";
+import api from "../../services";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
+
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [theme] = useAtom(useTheme);
+  const { setUser } = useContext(UserContext)
 
-  const submit = (data) => {
+  const submit = async (data) => {
+    console.log(data)
+    try {
+      await api.post('/user/auth', data)
+      .then((resp) => {
+        setUser(prevStat => ({
+          ...prevStat,
+          ...resp.data,
+        }))
+        alert('Logged in successfully')
+        navigate('/wourkout')
+      })
+    } catch(err) {
+      console.error(err)
+    }
     navigate("/workouts");
   };
 
   const fields = [
     { name: "email", label: "Email", type: "email" },
-    { name: "password", label: "Password", type: "password" },
+    { name: "password", label: "Password", type: "password", autocomplete: 'password'},
   ];
 
   return (
@@ -45,11 +64,13 @@ const Login = () => {
       >
         {fields.map((field, index) => (
           <TextField
+            key={index}
             className="bg-white"
             type={field.type}
             id={field.name}
             label={field.label}
             variant="outlined"
+            autoComplete={field.autocomplete ?? ""}
             {...register(field.name, { required: true })}
           />
         ))}

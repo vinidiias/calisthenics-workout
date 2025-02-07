@@ -126,7 +126,7 @@ const Menu = ({ isParticipe, title }) => {
         </Box>
         <Grid2 container spacing={10}>
           {wourkoutItem.map((workout, index) => (
-            <Grid2>
+            <Grid2 key={index}>
               <CardComponent
                 img={workout.img}
                 alt={workout.alt}

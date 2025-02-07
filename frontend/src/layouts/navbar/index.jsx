@@ -18,7 +18,7 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-    const [current, setCurrent] = useState(useCurrentIndex)
+  const current = useCurrentIndex()
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -46,7 +46,6 @@ export default function Navbar() {
                     key={item.name}
                     href={item.href}
                     aria-current={index === current ? 'page' : undefined}
-                    onClick={() => setCurrent(index)}
                     className={classNames(
                       index === current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                       'rounded-md px-3 py-2 text-sm font-medium',

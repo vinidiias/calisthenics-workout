@@ -80,11 +80,10 @@ export default function TransitionsModal({ openModal, onClose }) {
                     )
                   case 'select':
                     return (
-                      <FormControl sx={{ display: "block" }}>
+                      <FormControl sx={{ display: "block" }} key={index}>
                         <InputLabel id="location">Location</InputLabel>
                         <Select
                           fullWidth
-                          key={index}
                           label={field.label}
                           name={field.name}
                           {...register(field.name, { required: true })}

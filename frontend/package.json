@@ -10,6 +10,7 @@
     "@mui/icons-material": "^6.4.2",
     "@mui/material": "^6.4.2",
     "@tailwindcss/cli": "^4.0.1",
+    "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "jotai": "^2.11.2",
     "react": "^19.0.0",

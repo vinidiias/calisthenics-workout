@@ -5,6 +5,7 @@ const paths = [
     { path: '/workouts/my-workouts' },
 ]
 
+
 export const useCurrentIndex = () => {
     const location = useLocation();
     
