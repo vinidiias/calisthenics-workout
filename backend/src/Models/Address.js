@@ -1,15 +1,11 @@
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema({
-    rua: {
+    street: {
         type: String,
         required: true
     },
-    number: {
-        type: String,
-        required: true
-    },
-    complement: {
+    neighborhood: {
         type: String,
         required: true
     },

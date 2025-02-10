@@ -1,4 +1,4 @@
-/*! tailwindcss v4.0.2 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.0.4 | MIT License | https://tailwindcss.com */
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
@@ -710,9 +710,6 @@
   }
   .w-48 {
     width: calc(var(--spacing) * 48);
-  }
-  .w-100 {
-    width: calc(var(--spacing) * 100);
   }
   .w-full {
     width: 100%;

@@ -1,7 +1,30 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const cors = require('cors')
+const multer = require('multer')
+const path = require('path')
+const { v4 } = require('uuid')
+const { S3Client } = require('@aws-sdk/client-s3');
+const multerS3 = require('multer-s3')
 require('dotenv').config()
+
+const s3 = new S3Client({
+    region: 'us-east-2',
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+});
+
+const upload = multer({
+    storage: multerS3({
+        s3,
+        bucket: 'myphotos-outdoor-gym',
+        key(req, file, callback) {
+            callback(null,  v4() + path.extname(file.originalname))
+        }
+    })
+})
 
 const app = express();
 
@@ -15,7 +38,7 @@ mongoose.connect(dbUri)
 })
 .catch((err) => console.error(err))
 
-const allowedOrigins = ['http://localhost:3000', 'https://clinica-unioeste-pi.vercel.app'];
+const allowedOrigins = ['http://localhost:3000', ''];
 app.use(cors({
     origin: function (origin, callback) {
         if (allowedOrigins.includes(origin) || !origin) {
@@ -29,7 +52,12 @@ app.use(cors({
     credentials: true,
 }));
 
-app.use(express.json())
+app.use(express.json());
+
+app.post('/file', upload.single('imagem'), (req, res) => {
+   console.log(req.file)
+});
+
 
 app.use(router)
 
