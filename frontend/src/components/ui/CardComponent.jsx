@@ -9,9 +9,16 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 
-const CardComponent = ({ img, alt, title, description, textBtn }) => {
+const CardComponent = ({
+  img,
+  alt,
+  title,
+  description,
+  textBtn,
+  participants,
+}) => {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>
@@ -25,28 +32,38 @@ const CardComponent = ({ img, alt, title, description, textBtn }) => {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions className={`${!textBtn ? 'flex justify-center': ''}`}>
+      <CardActions
+        className={`${
+          !textBtn || (participants && participants.length === 0)
+            ? "flex justify-center"
+            : ""
+        }`}
+      >
         {textBtn && (
           <Button
             loadingPosition="end"
             endIcon={<AddIcon />}
             variant="contained"
-            sx={{ marginRight: 5 }}
+            sx={{
+              marginRight: `${
+                participants && participants.length !== 0 ? "5px" : "0px"
+              }`,
+            }}
           >
             {textBtn}
           </Button>
         )}
-        <AvatarGroup
-          max={4}
-          spacing="medium"
-          sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30 } }}
-        >
-          <Avatar alt="Remy Sharp" src="" />
-          <Avatar alt="Travis Howard" src="" />
-          <Avatar alt="Cindy Baker" src="" />
-          <Avatar alt="Agnes Walker" src="" />
-          <Avatar alt="Trevor Henderson" src="" />
-        </AvatarGroup>
+        {participants && participants.length !== 0 && (
+          <AvatarGroup
+            max={4}
+            spacing="medium"
+            sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30 } }}
+          >
+            {participants.map((avatar, index) => (
+              <Avatar key={index} alt="Remy Sharp" src="" />
+            ))}
+          </AvatarGroup>
+        )}
       </CardActions>
     </Card>
   );

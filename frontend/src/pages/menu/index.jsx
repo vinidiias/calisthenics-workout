@@ -14,6 +14,8 @@ import InputBase from "@mui/material/InputBase";
 import CardComponent from "../../components/ui/CardComponent";
 import AddIcon from "@mui/icons-material/Add";
 import TransitionsModal from "../../components/ui/CreateForm";
+import api from "../../services";
+import { useQuery } from "@tanstack/react-query";
 
 const wourkoutItem = [
   {
@@ -80,8 +82,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const fetchWorkout = async() => {
+  const { data } = await api.get('/workout')
+  return data
+}
+
 const Menu = ({ isParticipe, title }) => {
   const [open, setOpen] = useState(false);
+  const { data, error, isLoading } = useQuery({ queryKey: ['workouts'], queryFn: fetchWorkout })
+
+  console.log(data)
 
   return (
     <Box sx={{ flexGrow: 1, padding: 5 }} className="bg-gray-50">
@@ -135,13 +145,14 @@ const Menu = ({ isParticipe, title }) => {
         </Box>
       </Box>
       <Grid2 container spacing={10}>
-        {wourkoutItem.map((workout, index) => (
+        {data?.map((workout, index) => (
           <Grid2 key={index}>
             <CardComponent
-              img={workout.img}
-              alt={workout.alt}
+              img={workout.outdoorGym.photo}
+              alt='img'
               title={workout.title}
               description={workout.description}
+              participants={workout.participants}
               textBtn={isParticipe ? "Participate" : ""}
             />
           </Grid2>

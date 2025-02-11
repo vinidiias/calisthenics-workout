@@ -24,7 +24,6 @@ const style = {
 };
 
 const fields = [
-  { name: "Image", type: "file" },
   { name: "title", label: "Title", type: "text" },
   { name: "description", label: "Description", type: "text" },
   {
@@ -39,15 +38,14 @@ const fields = [
   },
 ];
 
-const fetchAddresses = async() => {
-  const { data } = await api.get('/address')
+const fetchOutdoorGym = async() => {
+  const { data } = await api.get('/outdoorGym')
   return data
 }
 
 export default function TransitionsModal({ openModal, onClose }) {
 
-  const { data, error, isLoading } = useQuery({ queryKey: ['addresses'], queryFn: fetchAddresses });
-console.log(data)
+  const { data, error, isLoading } = useQuery({ queryKey: ['outdoor_gyms'], queryFn: fetchOutdoorGym });
   const { register, handleSubmit } = useForm()
 
   const submit = (data) => {
@@ -133,9 +131,9 @@ console.log(data)
                               {data.map((option, indexOption) => (
                                 <MenuItem
                                   key={indexOption}
-                                  value={option.neighborhood}
+                                  value={option._id}
                                 >
-                                  {option.neighborhood}
+                                  {`${option.name} | ${option.address.neighborhood}`}
                                 </MenuItem>
                               ))}
                             </Select>
