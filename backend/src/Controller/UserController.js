@@ -59,5 +59,17 @@ module.exports = {
         } catch(err) {
             res.status(500).json({ error: err.message })
         }
+    },
+    async getUsers(req, res) {
+        try {
+            const users = await User.find().select('-password')
+            if(users.lenght === 0) {
+                return res.status(402).send('No user found')
+            }
+            
+            return res.status(200).send(users)
+        } catch(err) {
+            return res.status(500).send({ error: err.message })
+        }
     }
 }
