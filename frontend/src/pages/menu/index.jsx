@@ -85,9 +85,7 @@ const Menu = ({ isParticipe, title }) => {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 5 }} className="bg-gray-50">
-      {open && (
-        <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
-      )}
+      <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
       <Box className="flex justify-center gap-4 mb-4">
         <Search sx={{ backgroundColor: "white", border: "1px solid #d6d6d6" }}>
           <SearchIconWrapper>

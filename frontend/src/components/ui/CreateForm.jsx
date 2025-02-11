@@ -5,7 +5,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -54,6 +54,7 @@ console.log(data)
     console.log(data)
   }
 
+
   if(isLoading) return <div>Loading...</div>
   if(error) {
     const message = axios.isAxiosError(error) && error.response ? `Error ${error.response.status} ${error.response.statusText}` : error.message
@@ -62,85 +63,102 @@ console.log(data)
 
   return (
     <div>
-      {data && (
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={openModal}
-          onClose={onClose}
-          closeAfterTransition
-          slots={{ backdrop: Backdrop }}
-          slotProps={{
-            backdrop: {
-              timeout: 500,
-            },
-          }}
-        >
-          <Fade in={openModal}>
-            <Box sx={style}>
-              <Typography variant="h5" component="h2" sx={{ marginBottom: 2 }}>
-                Create Workout
-              </Typography>
-              <form
-                onSubmit={handleSubmit(submit)}
-                className="flex flex-col gap-4"
-              >
-                {fields.map((field, index) => {
-                  switch (field.type) {
-                    case "text":
-                      return (
-                        <TextField
-                          fullWidth
-                          key={index}
-                          label={field.label}
-                          name={field.name}
-                          id={field.name}
-                          type={field.type}
-                          {...register(field.name, { required: true })}
-                        />
-                      );
-                    case "file":
-                      return (
-                        <TextField
-                          fullWidth
-                          key={index}
-                          hiddenLabel
-                          name={field.name}
-                          id={field.name}
-                          type={field.type}
-                          {...register(field.name, { required: true })}
-                        />
-                      );
-                    case "select":
-                      return (
-                        <FormControl sx={{ display: "block" }} key={index}>
-                          <InputLabel id="location">Location</InputLabel>
-                          <Select
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openModal}
+        onClose={onClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openModal}>
+          <Box sx={style}>
+            {isLoading ? (
+              <CircularProgress />
+            ) : (
+              <>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  sx={{ marginBottom: 2 }}
+                >
+                  Create Workout
+                </Typography>
+                <form
+                  onSubmit={handleSubmit(submit)}
+                  className="flex flex-col gap-4"
+                >
+                  {fields.map((field, index) => {
+                    switch (field.type) {
+                      case "text":
+                        return (
+                          <TextField
                             fullWidth
+                            key={index}
                             label={field.label}
                             name={field.name}
+                            id={field.name}
+                            type={field.type}
                             {...register(field.name, { required: true })}
-                          >
-                            {data.map((option, indexOption) => (
-                              <MenuItem key={indexOption} value={option.neighborhood}>
-                                {option.neighborhood}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      );
-                    default:
-                      return null;
-                  }
-                })}
-                <Button color="primary" type="submit" variant="contained">
-                  Create Workout
-                </Button>
-              </form>
-            </Box>
-          </Fade>
-        </Modal>
-      )}
+                          />
+                        );
+                      case "file":
+                        return (
+                          <TextField
+                            fullWidth
+                            key={index}
+                            hiddenLabel
+                            name={field.name}
+                            id={field.name}
+                            type={field.type}
+                            {...register(field.name, { required: true })}
+                          />
+                        );
+                      case "select":
+                        return (
+                          <FormControl sx={{ display: "block" }} key={index}>
+                            <InputLabel id="location">Location</InputLabel>
+                            <Select
+                              fullWidth
+                              label={field.label}
+                              name={field.name}
+                              defaultValue=''
+                              {...register(field.name, { required: true })}
+                            >
+                              {data.map((option, indexOption) => (
+                                <MenuItem
+                                  key={indexOption}
+                                  value={option.neighborhood}
+                                >
+                                  {option.neighborhood}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
+                  <Button
+                    loading={isLoading}
+                    color="primary"
+                    type="submit"
+                    variant="contained"
+                  >
+                    Create Workout
+                  </Button>
+                </form>
+              </>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
     </div>
   );
 }

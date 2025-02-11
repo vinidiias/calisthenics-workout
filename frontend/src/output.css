@@ -643,14 +643,8 @@
   .ml-3 {
     margin-left: calc(var(--spacing) * 3);
   }
-  .\!block {
-    display: block !important;
-  }
   .\!hidden {
     display: none !important;
-  }
-  .\!table {
-    display: table !important;
   }
   .block {
     display: block;
@@ -908,22 +902,11 @@
   .lowercase {
     text-transform: lowercase;
   }
-  .lowercase\! {
-    text-transform: lowercase !important;
-  }
   .uppercase {
     text-transform: uppercase;
   }
   .italic {
     font-style: italic;
-  }
-  .ordinal {
-    --tw-ordinal: ordinal;
-    font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-  }
-  .tabular-nums {
-    --tw-numeric-spacing: tabular-nums;
-    font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
   }
   .overline {
     text-decoration-line: overline;
@@ -1254,26 +1237,6 @@ body, html, #root {
   initial-value: solid;
 }
 @property --tw-font-weight {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-ordinal {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-slashed-zero {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-numeric-figure {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-numeric-spacing {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-numeric-fraction {
   syntax: "*";
   inherits: false;
 }
