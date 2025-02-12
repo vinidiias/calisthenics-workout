@@ -6,6 +6,7 @@ module.exports = {
         const { title, description, outdoorGym } = req.body
         const { auth } = req.headers
 
+        console.log(title , description, outdoorGym, auth)
         try {
             const outdoorGymExists = await OutdoorGym.findById(outdoorGym)
             if(!outdoorGymExists) {

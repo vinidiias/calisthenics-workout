@@ -27,15 +27,11 @@ const Login = () => {
   const { setUser } = useContext(UserContext)
 
   const submit = async (data) => {
-    console.log(data)
     try {
       await api.post('/user/auth', data)
       .then((resp) => {
-        setUser(prevStat => ({
-          ...prevStat,
-          ...resp.data,
-        }))
-        alert('Logged in successfully')
+        setUser(...resp.data);
+        alert("Logged in successfully");
         navigate('/wourkout')
       })
     } catch(err) {

@@ -91,8 +91,6 @@ const Menu = ({ isParticipe, title }) => {
   const [open, setOpen] = useState(false);
   const { data, error, isLoading } = useQuery({ queryKey: ['workouts'], queryFn: fetchWorkout })
 
-  console.log(data)
-
   return (
     <Box sx={{ flexGrow: 1, padding: 5 }} className="bg-gray-50">
       <TransitionsModal openModal={open} onClose={() => setOpen(false)} />

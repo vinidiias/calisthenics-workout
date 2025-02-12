@@ -7,7 +7,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { UserContext } from '../../contexts/UserContext';
 import axios from 'axios';
 import api from '../../services';
 
@@ -27,36 +28,60 @@ const fields = [
   { name: "title", label: "Title", type: "text" },
   { name: "description", label: "Description", type: "text" },
   {
-    name: "location",
-    label: "Location",
+    name: "outdoorGym",
+    label: "Outdoor Gym",
     type: "select",
-    option: [
-      { value: "vila_a", label: "Vila A" },
-      { value: "vila_c", label: "Vila C" },
-      { value: "cidade_nova", label: "Cidade Nova (frente a Unioeste)" },
-    ],
+    option: [{/* fetchOutdoorGym */}],
   },
 ];
 
-const fetchOutdoorGym = async() => {
+const fetchOutdoorGym = async () => {
   const { data } = await api.get('/outdoorGym')
   return data
 }
 
+const createWorkout = async ({ workout, auth }) => {
+  console.log(workout, auth)
+  const { data } = await api.post('/workout/create', workout, {
+    headers: { auth: auth}
+  })
+
+  return data
+}
+
 export default function TransitionsModal({ openModal, onClose }) {
+  const { user } = React.useContext(UserContext)
+  console.log(user)
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["outdoor_gyms"],
+    queryFn: fetchOutdoorGym,
+  });
 
-  const { data, error, isLoading } = useQuery({ queryKey: ['outdoor_gyms'], queryFn: fetchOutdoorGym });
-  const { register, handleSubmit } = useForm()
+  const { mutateAsync: createWorkoutFn } = useMutation({
+    mutationFn: createWorkout,
+  })
 
-  const submit = (data) => {
-    console.log(data)
+  const handleCreateWorkout = async (data) => {
+    try {
+      await createWorkoutFn({
+        workout: data,
+        auth: user._id
+      })
+      alert('Workout created sucessfully!')
+    } catch(err) {
+      console.error(err)
+    }
   }
 
+  const { register, handleSubmit } = useForm();
 
-  if(isLoading) return <div>Loading...</div>
-  if(error) {
-    const message = axios.isAxiosError(error) && error.response ? `Error ${error.response.status} ${error.response.statusText}` : error.message
-    return <div>{message}</div>
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    const message =
+      axios.isAxiosError(error) && error.response
+        ? `Error ${error.response.status} ${error.response.statusText}`
+        : error.message;
+    return <div>{message}</div>;
   }
 
   return (
@@ -88,7 +113,7 @@ export default function TransitionsModal({ openModal, onClose }) {
                   Create Workout
                 </Typography>
                 <form
-                  onSubmit={handleSubmit(submit)}
+                  onSubmit={handleSubmit(handleCreateWorkout)}
                   className="flex flex-col gap-4"
                 >
                   {fields.map((field, index) => {
@@ -125,14 +150,11 @@ export default function TransitionsModal({ openModal, onClose }) {
                               fullWidth
                               label={field.label}
                               name={field.name}
-                              defaultValue=''
+                              defaultValue=""
                               {...register(field.name, { required: true })}
                             >
                               {data.map((option, indexOption) => (
-                                <MenuItem
-                                  key={indexOption}
-                                  value={option._id}
-                                >
+                                <MenuItem key={indexOption} value={option._id}>
                                   {`${option.name} | ${option.address.neighborhood}`}
                                 </MenuItem>
                               ))}
