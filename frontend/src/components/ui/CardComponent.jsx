@@ -10,15 +10,30 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
 const CardComponent = ({
+  index,
   img,
   alt,
   title,
   description,
   textBtn,
   participants,
+  mutateAsync
 }) => {
+  const { user } = useContext(UserContext)
+
+  const handleSubscription = async() => {
+    try {
+      await mutateAsync({ auth: user._id, workoutId: index })
+      alert('Subscribed sucessfully!')
+    } catch(err) { 
+      console.error(err)
+    }
+  }
+
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>
@@ -41,6 +56,7 @@ const CardComponent = ({
       >
         {textBtn && (
           <Button
+            onClick={handleSubscription}
             loadingPosition="end"
             endIcon={<AddIcon />}
             variant="contained"
@@ -60,7 +76,7 @@ const CardComponent = ({
             sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30 } }}
           >
             {participants.map((avatar, index) => (
-              <Avatar key={index} alt="Remy Sharp" src="" />
+              <Avatar key={index} alt="profile photo" src={avatar?.photo} />
             ))}
           </AvatarGroup>
         )}

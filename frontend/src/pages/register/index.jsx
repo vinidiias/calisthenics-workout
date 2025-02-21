@@ -4,41 +4,68 @@ import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../App";
 import LockIcon from "@mui/icons-material/Lock";
-import api from '../../services'
+import api from "../../services";
 import { useContext } from "react";
-import { UserContext } from '../../contexts/UserContext'
+import { UserContext } from "../../contexts/UserContext";
+import { useMutation } from "@tanstack/react-query";
+
+const createImage = async (dataUser) => {
+  const formData = new FormData();
+  formData.append("photo", dataUser.photo[0]);
+
+  const { data } = await api.post("/file", formData);
+
+  return { ...dataUser, photo: data };
+};
+
+const createUser = async (dataUser) => {
+  const { data } = await api.post("/user", dataUser);
+
+  return data;
+};
 
 const Register = () => {
+  const { user, setUser } = useContext(UserContext);
   const { register, handleSubmit } = useForm();
-  const { user, setUser } = useContext(UserContext)
   const navigate = useNavigate();
   const [theme] = useAtom(useTheme);
 
-  const submit = async (data) => {
-    console.log(data)
-    try {
-      if(data.password !== data.confirmPassword) {
-        return alert("Passwords do not match");
-      }
+  const { mutateAsync: createImageFn } = useMutation({
+    mutationFn: createImage,
+    onSuccess: (data) => {
+      createUserFn(data);
+    },
+  });
 
-      await api.post('/user', data)
-      .then((resp) => {
-        console.log(resp)
-        setUser(resp.data)
-        alert('User created sucessfully')
-      })
-      .catch(err => console.error(err))
-    } catch(err) {
-      console.error(err)
-    }
-    navigate("/");
+  const { mutateAsync: createUserFn } = useMutation({
+    mutationFn: createUser,
+    onSuccess: (data) => {
+      setUser(data);
+      alert("User created sucessfully");
+      navigate("/");
+    },
+  });
+
+  const submit = async (data) => {
+    createImageFn(data);
   };
 
   const fields = [
+    { name: "photo", type: "file" },
     { name: "name", label: "Name", type: "text" },
     { name: "email", label: "Email", type: "email" },
-    { name: "password", label: "Password", type: "password", autocomplete: 'new-password' },
-    { name: "confirmPassword", label: "Confirm Password", type: "password", autocomplete: 'new-password' },
+    {
+      name: "password",
+      label: "Password",
+      type: "password",
+      autocomplete: "new-password",
+    },
+    {
+      name: "confirmPassword",
+      label: "Confirm Password",
+      type: "password",
+      autocomplete: "new-password",
+    },
   ];
 
   return (

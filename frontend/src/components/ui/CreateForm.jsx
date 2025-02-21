@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '../../contexts/UserContext';
 import axios from 'axios';
 import api from '../../services';
@@ -41,7 +41,6 @@ const fetchOutdoorGym = async () => {
 }
 
 const createWorkout = async ({ workout, auth }) => {
-  console.log(workout, auth)
   const { data } = await api.post('/workout/create', workout, {
     headers: { auth: auth}
   })
@@ -51,7 +50,9 @@ const createWorkout = async ({ workout, auth }) => {
 
 export default function TransitionsModal({ openModal, onClose }) {
   const { user } = React.useContext(UserContext)
-  console.log(user)
+
+  const queryClient = useQueryClient()
+
   const { data, error, isLoading } = useQuery({
     queryKey: ["outdoor_gyms"],
     queryFn: fetchOutdoorGym,
@@ -59,7 +60,16 @@ export default function TransitionsModal({ openModal, onClose }) {
 
   const { mutateAsync: createWorkoutFn } = useMutation({
     mutationFn: createWorkout,
-  })
+    onSuccess(newData) {
+      // Obtém os dados mais recentes do cache antes de atualizar
+      queryClient.setQueryData(['workouts'], (oldData) => {
+        return oldData ? [...oldData, newData] : [newData];
+      });
+  
+      // Opcional: refaz a requisição para garantir que os dados no servidor estão sincronizados
+      queryClient.invalidateQueries(['workouts']);
+    }
+  });
 
   const handleCreateWorkout = async (data) => {
     try {

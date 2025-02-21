@@ -2,16 +2,16 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SwitchThemeButton from '../../components/ui/SwitchTheme'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useCurrentIndex } from '../../hooks/useCurrentIndex';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../../contexts/UserContext';
 
 const navigation = [
   { name: 'Workouts', href: '/workouts', current: true },
   { name: 'My Workouts', href: '/workouts/my-workouts', current: false },
 ]
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -19,6 +19,7 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const current = useCurrentIndex()
+  const { user } = useContext(UserContext)
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -76,7 +77,7 @@ export default function Navbar() {
                   <span className="sr-only">Open user menu</span>
                   <img
                     alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={user.photo}
                     className="size-8 rounded-full"
                   />
                 </MenuButton>

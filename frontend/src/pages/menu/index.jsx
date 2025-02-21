@@ -7,7 +7,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
@@ -15,31 +15,8 @@ import CardComponent from "../../components/ui/CardComponent";
 import AddIcon from "@mui/icons-material/Add";
 import TransitionsModal from "../../components/ui/CreateForm";
 import api from "../../services";
-import { useQuery } from "@tanstack/react-query";
-
-const wourkoutItem = [
-  {
-    img: "https://tubefittings.eu/blog/wp-content/uploads/2023/07/Tubefittings_blog_tubefittings_Calisthenics_Parks_-Street_Workout2.jpg",
-    alt: "calisthenics place",
-    title: "Praça Vila A",
-    description: "Back-day and Chest-day",
-    textBtn: "Participe",
-  },
-  {
-    img: "https://tubefittings.eu/blog/wp-content/uploads/2023/07/Tubefittings_blog_tubefittings_Calisthenics_Parks_-Street_Workout2.jpg",
-    alt: "calisthenics place",
-    title: "Praça Vila A",
-    description: "Back-day and Chest-day",
-    textBtn: "Participe",
-  },
-  {
-    img: "https://tubefittings.eu/blog/wp-content/uploads/2023/07/Tubefittings_blog_tubefittings_Calisthenics_Parks_-Street_Workout2.jpg",
-    alt: "calisthenics place",
-    title: "Praça Vila A",
-    description: "Back-day and Chest-day",
-    textBtn: "Participe",
-  },
-];
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { UserContext } from "../../contexts/UserContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -82,15 +59,43 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const fetchWorkout = async() => {
-  const { data } = await api.get('/workout')
+const fetchWorkoutNotSubscribed = async({ auth }) => {
+  const { data } = await api.get('/workout/not-subscribed', {
+    headers: { auth: auth }
+  })
+  return data
+}
+
+const fetchWorkoutSubscribed = async({ auth }) => {
+  const { data } = await api.get('/workout/subscribed', {
+    headers: { auth: auth }
+  })
+  return data
+}
+
+const subscribeToWorkout = async({ auth, workoutId }) => {
+  const { data } = await api.post(
+    `/workout/subscribe`,
+    { id: workoutId },
+    { headers: { auth: auth } }
+  );
+
   return data
 }
 
 const Menu = ({ isParticipe, title }) => {
+  const { user } = useContext(UserContext)
   const [open, setOpen] = useState(false);
-  const { data, error, isLoading } = useQuery({ queryKey: ['workouts'], queryFn: fetchWorkout })
 
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["workouts"],
+    queryFn: () => isParticipe ? fetchWorkoutNotSubscribed({ auth: user._id }) : fetchWorkoutSubscribed({ auth: user._id })
+  });
+  const { mutateAsync: subscribeToWorkoutFn, } = useMutation({
+    mutationFn: subscribeToWorkout,
+    onSuccess: (data) => {
+    }
+  })
   return (
     <Box sx={{ flexGrow: 1, padding: 5 }} className="bg-gray-50">
       <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
@@ -122,6 +127,7 @@ const Menu = ({ isParticipe, title }) => {
         >
           {title}
         </Typography>
+       
         <Box className="flex items-center">
           <Typography className="text-gray-600">Locality</Typography>
           <FormControl sx={{ m: 1, minWidth: 100 }}>
@@ -143,15 +149,17 @@ const Menu = ({ isParticipe, title }) => {
         </Box>
       </Box>
       <Grid2 container spacing={10}>
-        {data?.map((workout, index) => (
+        {data && data.map((workout, index) => (
           <Grid2 key={index}>
             <CardComponent
+              index={workout._id}
+              mutateAsync={subscribeToWorkoutFn}
               img={workout.outdoorGym.photo}
               alt='img'
               title={workout.title}
               description={workout.description}
               participants={workout.participants}
-              textBtn={isParticipe ? "Participate" : ""}
+              textBtn={isParticipe ? "Subscribe" : workout.creator._id === user._id  ? "Edit" : "Unsubscribe"}
             />
           </Grid2>
         ))}

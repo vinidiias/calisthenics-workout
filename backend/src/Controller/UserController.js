@@ -13,14 +13,14 @@ async function hashedPassword(password) {
 
 module.exports = {
     async create(req, res) {
-        const { name, email, password, confirmPassword} = req.body
+        const { photo, name, email, password, confirmPassword} = req.body
         
         try {
             if(password !== confirmPassword) {
                 return res.status(400).send({ message: 'Passwords do not match' })
             }
             
-            const userAlredyExist = await User.findOne( { email })
+            const userAlredyExist = await User.findOne({ email })
             if(userAlredyExist) {
                 return res.status(400).send({ message: 'User already exist' })
             }
@@ -28,11 +28,12 @@ module.exports = {
             const cryptedPassword = await hashedPassword(password)
 
             const userCreated = await User.create({
+                photo,
                 name,
                 email,
                 password: cryptedPassword
             })
-
+            
             return res.status(201).send(userCreated)
         } catch(err) {
             return res.status(500).send({ error: err.message })
@@ -54,8 +55,6 @@ module.exports = {
 
             const userWithoutPassword = await User.findOne({ email }).select('-password')
             userWithoutPassword.isLogged = true
-
-            console.log(userWithoutPassword)
 
             return res.status(200).json(userWithoutPassword)
         } catch(err) {

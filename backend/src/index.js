@@ -54,7 +54,8 @@ app.use(cors({
 
 app.use(express.json());
 
-app.post('/file', upload.single('imagem'), (req, res) => {
+app.post('/file', upload.single('photo'), (req, res) => {
+    console.log(req.file)
    return res.status(201).send(req.file.location)
 });
 

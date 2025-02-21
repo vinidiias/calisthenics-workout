@@ -22,6 +22,10 @@ routes.get('/outdoorGym', OutdoorGymController.getAll)
 
 //Workout
 routes.post('/workout/create', WorkoutController.create)
+routes.post('/workout/subscribe', WorkoutController.subscribeToWorkout)
+routes.get('/workout/not-subscribed', WorkoutController.getAllWorkoutNotSubscribed)
 routes.get('/workout', WorkoutController.getAll)
+routes.get('/workout/subscribed', WorkoutController.getAllWorkoutSubscribed)
+routes.delete('/workout/delete', WorkoutController.deleteAll)
 
 module.exports = routes

@@ -30,7 +30,8 @@ const Login = () => {
     try {
       await api.post('/user/auth', data)
       .then((resp) => {
-        setUser(...resp.data);
+        console.log(resp.data)
+        setUser({...resp.data});
         alert("Logged in successfully");
         navigate('/wourkout')
       })
