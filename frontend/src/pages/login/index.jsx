@@ -31,7 +31,7 @@ const Login = () => {
       await api.post('/user/auth', data)
       .then((resp) => {
         console.log(resp.data)
-        setUser({...resp.data});
+        setUser({...resp.data, isLogged: true});
         alert("Logged in successfully");
         navigate('/wourkout')
       })

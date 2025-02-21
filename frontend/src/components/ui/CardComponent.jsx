@@ -12,6 +12,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
+import styles from './CardComponent.module.css'
 
 const CardComponent = ({
   index,
@@ -50,7 +51,7 @@ const CardComponent = ({
       <CardActions
         className={`${
           !textBtn || (participants && participants.length === 0)
-            ? "flex justify-center"
+            ? `${styles.justify_center}`
             : ""
         }`}
       >
