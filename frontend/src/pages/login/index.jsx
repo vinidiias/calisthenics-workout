@@ -33,17 +33,34 @@ const Login = () => {
         console.log(resp.data)
         setUser({...resp.data, isLogged: true});
         alert("Logged in successfully");
-        navigate('/wourkout')
+        navigate('/workouts')
       })
     } catch(err) {
       console.error(err)
     }
-    navigate("/workouts");
   };
 
   const fields = [
-    { name: "email", label: "Email", type: "email" },
-    { name: "password", label: "Password", type: "password", autocomplete: 'password'},
+    <TextField
+      key={0}
+      className="bg-white"
+      type="email"
+      id="email"
+      label="Email"
+      variant="outlined"
+      autoComplete=""
+      {...register("email", { required: true })}
+    />,
+    <TextField
+      key={1}
+      className="bg-white"
+      type="password"
+      id="password"
+      label="Password"
+      variant="outlined"
+      autoComplete="password"
+      {...register("password", { required: true })}
+    />,
   ];
 
   return (
@@ -59,19 +76,8 @@ const Login = () => {
         className="flex flex-col gap-3 w-full max-w-100"
         onSubmit={handleSubmit(submit)}
       >
-        {fields.map((field, index) => (
-          <TextField
-            key={index}
-            className="bg-white"
-            type={field.type}
-            id={field.name}
-            label={field.label}
-            variant="outlined"
-            autoComplete={field.autocomplete ?? ""}
-            {...register(field.name, { required: true })}
-          />
-        ))}
-
+        {fields[0]}
+        {fields[1]}
         <FormControlLabel
           control={
             <Checkbox {...register("remember_me")} defaultValue={false} />
@@ -89,7 +95,6 @@ const Login = () => {
           justifyContent="space-between"
           alignItems="center"
         >
-
           <Link href="#" variant="body2">
             Forget the password?
           </Link>

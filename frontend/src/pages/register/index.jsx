@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../App";
 import LockIcon from "@mui/icons-material/Lock";
 import api from "../../services";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useMutation } from "@tanstack/react-query";
 
@@ -30,6 +30,24 @@ const Register = () => {
   const navigate = useNavigate();
   const [theme] = useAtom(useTheme);
 
+  const [fields] = useState([
+    { name: "photo", type: "file" },
+    { name: "name", label: "Name", type: "text" },
+    { name: "email", label: "Email", type: "email" },
+    {
+      name: "password",
+      label: "Password",
+      type: "password",
+      autocomplete: "new-password",
+    },
+    {
+      name: "confirmPassword",
+      label: "Confirm Password",
+      type: "password",
+      autocomplete: "new-password",
+    },
+  ]);
+
   const { mutateAsync: createImageFn } = useMutation({
     mutationFn: createImage,
     onSuccess: (data) => {
@@ -49,24 +67,6 @@ const Register = () => {
   const submit = async (data) => {
     createImageFn(data);
   };
-
-  const fields = [
-    { name: "photo", type: "file" },
-    { name: "name", label: "Name", type: "text" },
-    { name: "email", label: "Email", type: "email" },
-    {
-      name: "password",
-      label: "Password",
-      type: "password",
-      autocomplete: "new-password",
-    },
-    {
-      name: "confirmPassword",
-      label: "Confirm Password",
-      type: "password",
-      autocomplete: "new-password",
-    },
-  ];
 
   return (
     <Box

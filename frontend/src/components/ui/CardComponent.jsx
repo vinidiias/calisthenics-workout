@@ -16,12 +16,8 @@ import styles from './CardComponent.module.css'
 
 const CardComponent = ({
   index,
-  img,
-  alt,
-  title,
-  description,
+  workout,
   textBtn,
-  participants,
   mutateAsync
 }) => {
   const { user } = useContext(UserContext)
@@ -38,19 +34,19 @@ const CardComponent = ({
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>
-        <CardMedia component="img" height={140} image={img} alt={alt} />
+        <CardMedia component="img" height={140} image={workout.outdoorGym.photo} alt="Outdoor Gym Photo" />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            {title}
+            {workout.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {description}
+            {workout.description}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions
         className={`${
-          !textBtn || (participants && participants.length === 0)
+          !textBtn || (workout.participants && workout.participants.length === 0)
             ? `${styles.justify_center}`
             : ""
         }`}
@@ -63,20 +59,20 @@ const CardComponent = ({
             variant="contained"
             sx={{
               marginRight: `${
-                participants && participants.length !== 0 ? "5px" : "0px"
+                workout.participants && workout.participants.length !== 0 ? "5px" : "0px"
               }`,
             }}
           >
             {textBtn}
           </Button>
         )}
-        {participants && participants.length !== 0 && (
+        {workout.participants && workout.participants.length !== 0 && (
           <AvatarGroup
             max={4}
             spacing="medium"
             sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30 } }}
           >
-            {participants.map((avatar, index) => (
+            {workout.participants.map((avatar, index) => (
               <Avatar key={index} alt="profile photo" src={avatar?.photo} />
             ))}
           </AvatarGroup>

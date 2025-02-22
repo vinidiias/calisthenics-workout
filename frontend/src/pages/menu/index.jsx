@@ -7,7 +7,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
@@ -17,6 +17,7 @@ import TransitionsModal from "../../components/ui/CreateForm";
 import api from "../../services";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { UserContext } from "../../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -86,6 +87,12 @@ const subscribeToWorkout = async({ auth, workoutId }) => {
 const Menu = ({ isParticipe, title }) => {
   const { user } = useContext(UserContext)
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('')
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(!user.isLogged) navigate('/')
+  })
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["workouts"],
@@ -96,11 +103,14 @@ const Menu = ({ isParticipe, title }) => {
     onSuccess: (data) => {
     }
   })
+
+  console.log(search)
+
   return (
     <Box sx={{ flexGrow: 1, padding: 5 }} className="bg-gray-50">
       <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
       <Box className="flex justify-center gap-4 mb-4">
-        <Search sx={{ backgroundColor: "white", border: "1px solid #d6d6d6" }}>
+        <Search sx={{ backgroundColor: "white", border: "1px solid #d6d6d6" }} onChange={(e) => setSearch(e.target.value)}placeholder="Search">
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
@@ -154,11 +164,7 @@ const Menu = ({ isParticipe, title }) => {
             <CardComponent
               index={workout._id}
               mutateAsync={subscribeToWorkoutFn}
-              img={workout.outdoorGym.photo}
-              alt='img'
-              title={workout.title}
-              description={workout.description}
-              participants={workout.participants}
+              workout={{...workout}}
               textBtn={isParticipe ? "Subscribe" : workout.creator._id === user._id  ? "Edit" : "Unsubscribe"}
             />
           </Grid2>
