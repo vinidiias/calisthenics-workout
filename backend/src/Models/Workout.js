@@ -17,7 +17,22 @@ const Schema = mongoose.Schema({
     },
     participants: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'User'
-    }]
+    }],
+    date: {
+        type: Date,
+        required: true
+    },
+    expiresAt: {
+        type: Date,
+        index: { expires: 0 }
+    }
+})
+
+Schema.pre('save', function(next) {
+    if(this.date) {
+        this.expiresAt = new Date(this.date.getTime() + 2 * 60 * 60 * 1000);
+    }
+    next();
 })
 
 module.exports = mongoose.model('Workout', Schema)

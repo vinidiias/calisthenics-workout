@@ -3,10 +3,10 @@ const OutdoorGym = require('../Models/OutdoorGym')
 
 module.exports = {
     async create(req, res) {
-        const { title, description, outdoorGym } = req.body
+        const { title, description, outdoorGym, date } = req.body
         const { auth } = req.headers
 
-        console.log(title , description, outdoorGym, auth)
+        console.log(title , description, outdoorGym, date, auth)
         try {
             const outdoorGymExists = await OutdoorGym.findById(outdoorGym)
             if(!outdoorGymExists) {
@@ -18,7 +18,8 @@ module.exports = {
                 description,
                 outdoorGym: outdoorGym,
                 creator: auth,
-                participants: []
+                participants: [],
+                date: new Date(date)
             })
 
             if(!workoutCreated) {

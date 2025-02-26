@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import DateRangeIcon from '@mui/icons-material/DateRange';
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import styles from './CardComponent.module.css'
@@ -22,9 +23,11 @@ const CardComponent = ({
   description,
   textBtn,
   participants,
+  date,
   mutateAsync
 }) => {
   const { user } = useContext(UserContext)
+  const dateFormatted = new Date(date)
 
   const handleSubscription = async() => {
     try {
@@ -43,8 +46,21 @@ const CardComponent = ({
           <Typography gutterBottom variant="h5" component="div">
             {title}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography marginBottom={1} variant="body1" color="text.secondary">
             {description}
+          </Typography>{" "}
+          <Typography
+            display="flex"
+            alignSelf="center"
+            gap={0.5}
+            variant="subtitle1"
+            color="text.secondary"
+          >
+            <DateRangeIcon />{" "}
+            <span>
+              {dateFormatted.toLocaleDateString()} às{" "}
+              {dateFormatted.toLocaleTimeString()}
+            </span>
           </Typography>
         </CardContent>
       </CardActionArea>

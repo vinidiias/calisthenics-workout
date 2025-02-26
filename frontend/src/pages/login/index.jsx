@@ -33,12 +33,11 @@ const Login = () => {
         console.log(resp.data)
         setUser({...resp.data, isLogged: true});
         alert("Logged in successfully");
-        navigate('/wourkout')
+        navigate('/workouts')
       })
     } catch(err) {
       console.error(err)
     }
-    navigate("/workouts");
   };
 
   const fields = [

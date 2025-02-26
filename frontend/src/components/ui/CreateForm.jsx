@@ -31,7 +31,11 @@ const fields = [
     name: "outdoorGym",
     label: "Outdoor Gym",
     type: "select",
-    option: [{/* fetchOutdoorGym */}],
+  },
+  {
+    name: "date",
+    label: "Date",
+    type: "datetime-local",
   },
 ];
 
@@ -141,6 +145,18 @@ export default function TransitionsModal({ openModal, onClose }) {
                           />
                         );
                       case "file":
+                        return (
+                          <TextField
+                            fullWidth
+                            key={index}
+                            hiddenLabel
+                            name={field.name}
+                            id={field.name}
+                            type={field.type}
+                            {...register(field.name, { required: true })}
+                          />
+                        );
+                        case "datetime-local":
                         return (
                           <TextField
                             fullWidth

@@ -91,11 +91,13 @@ const Menu = ({ isParticipe, title }) => {
     queryKey: ["workouts"],
     queryFn: () => isParticipe ? fetchWorkoutNotSubscribed({ auth: user._id }) : fetchWorkoutSubscribed({ auth: user._id })
   });
+
   const { mutateAsync: subscribeToWorkoutFn, } = useMutation({
     mutationFn: subscribeToWorkout,
     onSuccess: (data) => {
     }
   })
+
   return (
     <Box sx={{ flexGrow: 1, padding: 5 }} className="bg-gray-50">
       <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
@@ -159,6 +161,7 @@ const Menu = ({ isParticipe, title }) => {
               title={workout.title}
               description={workout.description}
               participants={workout.participants}
+              date={workout?.date}
               textBtn={isParticipe ? "Subscribe" : workout.creator._id === user._id  ? "Edit" : "Unsubscribe"}
             />
           </Grid2>
