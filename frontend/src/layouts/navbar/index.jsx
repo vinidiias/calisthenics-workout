@@ -19,10 +19,10 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const current = useCurrentIndex()
-  const { user } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-gray-800 w-full z-1500">
       <div className="mx-auto max-w-[1700px] px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -106,7 +106,7 @@ export default function Navbar() {
                 >
                   <MenuItem>
                     <a
-                      href="#"
+                      href={`/profile/${user._id}`}
                       className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                     >
                       Your Profile
@@ -122,8 +122,9 @@ export default function Navbar() {
                   </MenuItem>
                   <MenuItem>
                     <a
-                      href="#"
+                      href="/"
                       className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                      onClick={() => setUser({})}
                     >
                       Sign out
                     </a>
@@ -134,7 +135,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 px-2 pt-2 pb-3">
           {navigation.map((item) => (

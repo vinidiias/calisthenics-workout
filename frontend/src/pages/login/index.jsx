@@ -17,7 +17,7 @@ import { useTheme } from "../../App";
 import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom";
 import api from "../../services";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/UserContext";
 
 const Login = () => {
@@ -26,11 +26,13 @@ const Login = () => {
   const [theme] = useAtom(useTheme);
   const { setUser } = useContext(UserContext)
 
+  useEffect(() => setUser({}), [setUser]);
+
   const submit = async (data) => {
     try {
       await api.post('/user/auth', data)
       .then((resp) => {
-        console.log(resp.data)
+        console.log(resp)
         setUser({...resp.data, isLogged: true});
         alert("Logged in successfully");
         navigate('/workouts')
@@ -48,14 +50,14 @@ const Login = () => {
   return (
     <Box
       width="100%"
-      className={`flex flex-col flex-1 justify-center items-center gap-5 ${theme}`}
+      className={`flex flex-col flex-1 justify-center items-center gap-2 ${theme}`}
     >
       <LockIcon sx={{ fontSize: "2em" }} className="text-[#463c9e]" />
       <Typography align="center" fontSize={"2em"}>
         Sign In
       </Typography>
       <form
-        className="flex flex-col gap-3 w-full max-w-100"
+        className="flex flex-col gap-2 w-full max-w-100"
         onSubmit={handleSubmit(submit)}
       >
         {fields.map((field, index) => (
@@ -99,12 +101,12 @@ const Login = () => {
           </Link>
         </Box>
         <ButtonGroup
-          className="flex flex-col gap-3"
+          className="flex flex-col gap-2"
           variant="contained"
           disableElevation
         >
-          <Button type="submit">Sign in</Button>
-          <Button size="sm">
+          <Button  type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} >Sign in</Button>
+          <Button sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} >
             <GoogleIcon fontSize="small" className="mr-2" />
             Sign in with Google
           </Button>

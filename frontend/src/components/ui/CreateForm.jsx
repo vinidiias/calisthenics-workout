@@ -193,9 +193,9 @@ export default function TransitionsModal({ openModal, onClose }) {
                   })}
                   <Button
                     loading={isLoading}
-                    color="primary"
                     type="submit"
                     variant="contained"
+                    sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'var(--color-gray-700)' }}
                   >
                     Create Workout
                   </Button>
