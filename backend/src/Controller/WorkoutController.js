@@ -1,6 +1,24 @@
 const Workout = require('../Models/Workout')
 const OutdoorGym = require('../Models/OutdoorGym')
 
+async function markExpiredWorkouts() {
+    const now = new Date();
+    
+    try {
+        await Workout.updateMany(
+            { expiresAt: { $lt: now }, isExpired: false }, // Treinos expirados ainda não marcados
+            { $set: { isExpired: true } } // Marca como expirado
+        );
+
+        console.log(`[${new Date().toISOString()}] Treinos expirados atualizados!`);
+    } catch (error) {
+        console.error("Erro ao atualizar treinos expirados:", error);
+    }
+}
+
+// Roda essa função a cada 10 minutos
+setInterval(markExpiredWorkouts, 10 * 60 * 1000);
+
 module.exports = {
     async create(req, res) {
         const { title, description, outdoorGym, date } = req.body
@@ -54,6 +72,7 @@ module.exports = {
         try {
             const workoutNotSubscribed = await Workout.find({
               participants: { $nin: [auth] },
+              isExpired: false
             }).populate([
               { path: "creator", select: "-password" },
               { path: "outdoorGym" },

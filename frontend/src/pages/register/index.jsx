@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../App";
 import LockIcon from "@mui/icons-material/Lock";
 import api from "../../services";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useMutation } from "@tanstack/react-query";
 
@@ -29,6 +29,8 @@ const Register = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [theme] = useAtom(useTheme);
+
+  useEffect(() => setUser({}), [setUser]);
 
   const { mutateAsync: createImageFn } = useMutation({
     mutationFn: createImage,
@@ -71,7 +73,7 @@ const Register = () => {
   return (
     <Box
       width="100%"
-      className={`flex flex-col flex-1 justify-center items-center gap-5 ${theme}`}
+      className={`flex flex-col flex-1 justify-center items-center gap-2 ${theme}`}
     >
       <LockIcon sx={{ fontSize: "2em" }} className="text-[#463c9e]" />
       <Typography align="center" fontSize={"2em"}>
@@ -94,15 +96,15 @@ const Register = () => {
           />
         ))}
         <ButtonGroup
-          className="flex flex-col gap-1"
+          className="flex flex-col"
           variant="contained"
           disableElevation
         >
-          <Button type="submit">Sign Up</Button>
+          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} >Sign Up</Button>
           <Typography textAlign="center" variant="overline">
             Or
           </Typography>
-          <Button onClick={() => navigate("/")} type="button">
+          <Button onClick={() => navigate("/")} type="button" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }}>
             Sign In
           </Button>
         </ButtonGroup>

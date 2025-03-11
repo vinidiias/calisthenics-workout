@@ -24,7 +24,8 @@ const CardComponent = ({
   textBtn,
   participants,
   date,
-  mutateAsync
+  mutateAsync,
+  openList
 }) => {
   const { user } = useContext(UserContext)
   const dateFormatted = new Date(date)
@@ -81,21 +82,27 @@ const CardComponent = ({
               marginRight: `${
                 participants && participants.length !== 0 ? "5px" : "0px"
               }`,
+              textTransform: "none",
+              fontSize: "1em",
+              fontWeight: "regular",
+              backgroundColor: 'var(--color-gray-700)'
             }}
           >
             {textBtn}
           </Button>
         )}
         {participants && participants.length !== 0 && (
-          <AvatarGroup
-            max={4}
-            spacing="medium"
-            sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30 } }}
-          >
-            {participants.map((avatar, index) => (
-              <Avatar key={index} alt="profile photo" src={avatar?.photo} />
-            ))}
-          </AvatarGroup>
+          <Button onClick={openList}>
+            <AvatarGroup
+              max={4}
+              spacing="medium"
+              sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30, cursor: "pointer" } }}
+            >
+              {participants.map((avatar, index) => (
+                <Avatar key={index} alt="profile photo" src={avatar?.photo} />
+              ))}
+            </AvatarGroup>
+          </Button>
         )}
       </CardActions>
     </Card>

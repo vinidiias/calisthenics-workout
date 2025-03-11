@@ -31,6 +31,9 @@ module.exports = {
                 photo,
                 name,
                 email,
+                followers: [],
+                following: [],
+                history: [],
                 password: cryptedPassword
             })
             
@@ -71,6 +74,78 @@ module.exports = {
             return res.status(200).send(users)
         } catch(err) {
             return res.status(500).send({ error: err.message })
+        }
+    },
+    async getUser(req, res) {
+        const { id } = req.params
+
+        try {
+            const user = await User.findById(id).select('-password')
+
+            if(!user) {
+                return res.status(404).json({ message: 'User not found' })
+            }
+
+            return res.status(200).send(user)
+        } catch(err) {
+            return res.status(500).send({ error: err.message })
+        }
+    },
+    async updateUser(req, res) {
+        try {
+            const { id } = req.params;
+            const { auth } = req.headers;
+            const data = req.body; // Captura todos os dados do corpo da requisição
+    
+            if (!id) {
+                return res.status(400).json({ error: "ID do usuário é obrigatório." });
+            }
+
+            if(id !== auth ) {
+                return res.status(401).json({ message: 'Unauthorized' })
+            }
+    
+            const updatedUser = await User.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+    
+            if (!updatedUser) {
+                return res.status(404).json({ error: "Usuário não encontrado." });
+            }
+    
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(500).json({ error: "Erro ao atualizar usuário.", details: error.message });
+        }
+    },
+    async followUser(req, res) {
+        const { userTo } = req.params;
+        const { userFrom } = req.body
+
+        try {
+            const userFriend = await User.findById(userTo);
+
+            if(!userFriend) {
+                return res.status(404).json({ message: 'User friend not found' })
+            }
+
+            const user = await User.findById(userFrom);
+
+            if(!user) {
+                return res.status(404).json({ message: 'User not found' })
+            }
+
+            if(user.following.includes(userTo)) {
+                return res.status(400).json({ message: 'User is already following' })
+            }
+
+            user.following.push(userTo)
+            user.save()
+
+            userFriend.followers.push(userFrom)
+            userFriend.save()
+
+            return res.status(200).json({ userFrom: user, userTo: userFriend })
+        } catch(err) {
+            return res.status(500).json({Error: 'Error to follow user', Details: err.message})
         }
     }
 }
