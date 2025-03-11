@@ -38,7 +38,7 @@ mongoose.connect(dbUri)
 })
 .catch((err) => console.error(err))
 
-const allowedOrigins = ['http://localhost:3000', ''];
+const allowedOrigins = ['http://localhost:3000', 'https://calisthenics-workout-frontend.vercel.app'];
 app.use(cors({
     origin: function (origin, callback) {
         if (allowedOrigins.includes(origin) || !origin) {
