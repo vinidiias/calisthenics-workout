@@ -5,8 +5,12 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { UserContext } from '../../contexts/UserContext';
+import axios from 'axios';
+import api from '../../services';
 
 const style = {
   position: 'absolute',
@@ -24,23 +28,74 @@ const fields = [
   { name: "title", label: "Title", type: "text" },
   { name: "description", label: "Description", type: "text" },
   {
-    name: "location",
-    label: "Location",
+    name: "outdoorGym",
+    label: "Outdoor Gym",
     type: "select",
-    option: [
-      { value: "vila_a", label: "Vila A" },
-      { value: "vila_c", label: "Vila C" },
-      { value: "cidade_nova", label: "Cidade Nova (frente a Unioeste)" },
-    ],
+  },
+  {
+    name: "date",
+    label: "Date",
+    type: "datetime-local",
   },
 ];
 
+const fetchOutdoorGym = async () => {
+  const { data } = await api.get('/outdoorGym')
+  return data
+}
+
+const createWorkout = async ({ workout, auth }) => {
+  const { data } = await api.post('/workout/create', workout, {
+    headers: { auth: auth}
+  })
+
+  return data
+}
+
 export default function TransitionsModal({ openModal, onClose }) {
+  const { user } = React.useContext(UserContext)
 
-  const { register, handleSubmit } = useForm()
+  const queryClient = useQueryClient()
 
-  const submit = (data) => {
-    console.log(data)
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["outdoor_gyms"],
+    queryFn: fetchOutdoorGym,
+  });
+
+  const { mutateAsync: createWorkoutFn } = useMutation({
+    mutationFn: createWorkout,
+    onSuccess(newData) {
+      // Obtém os dados mais recentes do cache antes de atualizar
+      queryClient.setQueryData(['workouts'], (oldData) => {
+        return oldData ? [...oldData, newData] : [newData];
+      });
+  
+      // Opcional: refaz a requisição para garantir que os dados no servidor estão sincronizados
+      queryClient.invalidateQueries(['workouts']);
+    }
+  });
+
+  const handleCreateWorkout = async (data) => {
+    try {
+      await createWorkoutFn({
+        workout: data,
+        auth: user._id
+      })
+      alert('Workout created sucessfully!')
+    } catch(err) {
+      console.error(err)
+    }
+  }
+
+  const { register, handleSubmit } = useForm();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    const message =
+      axios.isAxiosError(error) && error.response
+        ? `Error ${error.response.status} ${error.response.statusText}`
+        : error.message;
+    return <div>{message}</div>;
   }
 
   return (
@@ -59,50 +114,94 @@ export default function TransitionsModal({ openModal, onClose }) {
         }}
       >
         <Fade in={openModal}>
-          <Box sx={style} >
-            <Typography variant="h5" component="h2" sx={{ marginBottom: 2 }}>
-              Create Workout
-            </Typography>
-            <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4">
-              {fields.map((field, index) => {
-                switch (field.type) {
-                  case 'text':
-                    return (
-                      <TextField
-                        fullWidth
-                        key={index}
-                        label={field.label}
-                        name={field.name}
-                        id={field.name}
-                        type={field.type}
-                        {...register(field.name, { required: true })}
-                      />
-                    )
-                  case 'select':
-                    return (
-                      <FormControl sx={{ display: "block" }}>
-                        <InputLabel id="location">Location</InputLabel>
-                        <Select
-                          fullWidth
-                          key={index}
-                          label={field.label}
-                          name={field.name}
-                          {...register(field.name, { required: true })}
-                        >
-                          {field.option.map((option, indexOption) => (
-                            <MenuItem key={indexOption} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    );
-                }
-              })}
-              <Button color='primary' type='submit' variant='contained'>
-                Create Workout
-              </Button>
-            </form>
+          <Box sx={style}>
+            {isLoading ? (
+              <CircularProgress />
+            ) : (
+              <>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  sx={{ marginBottom: 2 }}
+                >
+                  Create Workout
+                </Typography>
+                <form
+                  onSubmit={handleSubmit(handleCreateWorkout)}
+                  className="flex flex-col gap-4"
+                >
+                  {fields.map((field, index) => {
+                    switch (field.type) {
+                      case "text":
+                        return (
+                          <TextField
+                            fullWidth
+                            key={index}
+                            label={field.label}
+                            name={field.name}
+                            id={field.name}
+                            type={field.type}
+                            {...register(field.name, { required: true })}
+                          />
+                        );
+                      case "file":
+                        return (
+                          <TextField
+                            fullWidth
+                            key={index}
+                            hiddenLabel
+                            name={field.name}
+                            id={field.name}
+                            type={field.type}
+                            {...register(field.name, { required: true })}
+                          />
+                        );
+                        case "datetime-local":
+                        return (
+                          <TextField
+                            fullWidth
+                            key={index}
+                            hiddenLabel
+                            name={field.name}
+                            id={field.name}
+                            type={field.type}
+                            {...register(field.name, { required: true })}
+                          />
+                        );
+                      case "select":
+                        return (
+                          <FormControl sx={{ display: "block" }} key={index}>
+                            <InputLabel id="location">Location</InputLabel>
+                            <Select
+                              fullWidth
+                              label={field.label}
+                              name={field.name}
+                              defaultValue=""
+                              {...register(field.name, { required: true })}
+                            >
+                              {data.map((option, indexOption) => (
+                                <MenuItem key={indexOption} value={option._id}>
+                                  {`${option.name} | ${option.address.neighborhood}`}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
+                  <Button
+                    loading={isLoading}
+                    color="primary"
+                    type="submit"
+                    variant="contained"
+                  >
+                    Create Workout
+                  </Button>
+                </form>
+              </>
+            )}
           </Box>
         </Fade>
       </Modal>

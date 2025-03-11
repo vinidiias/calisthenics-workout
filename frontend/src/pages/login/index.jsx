@@ -16,18 +16,33 @@ import { useAtom } from "jotai";
 import { useTheme } from "../../App";
 import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom";
+import api from "../../services";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
+
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [theme] = useAtom(useTheme);
+  const { setUser } = useContext(UserContext)
 
-  const submit = (data) => {
-    navigate("/workouts");
+  const submit = async (data) => {
+    try {
+      await api.post('/user/auth', data)
+      .then((resp) => {
+        console.log(resp.data)
+        setUser({...resp.data, isLogged: true});
+        alert("Logged in successfully");
+        navigate('/workouts')
+      })
+    } catch(err) {
+      console.error(err)
+    }
   };
 
   const fields = [
     { name: "email", label: "Email", type: "email" },
-    { name: "password", label: "Password", type: "password" },
+    { name: "password", label: "Password", type: "password", autocomplete: 'password'},
   ];
 
   return (
@@ -45,11 +60,13 @@ const Login = () => {
       >
         {fields.map((field, index) => (
           <TextField
+            key={index}
             className="bg-white"
             type={field.type}
             id={field.name}
             label={field.label}
             variant="outlined"
+            autoComplete={field.autocomplete ?? ""}
             {...register(field.name, { required: true })}
           />
         ))}
@@ -71,6 +88,7 @@ const Login = () => {
           justifyContent="space-between"
           alignItems="center"
         >
+
           <Link href="#" variant="body2">
             Forget the password?
           </Link>

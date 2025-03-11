@@ -9,9 +9,35 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
+import styles from './CardComponent.module.css'
 
-const CardComponent = ({ img, alt, title, description, textBtn }) => {
+const CardComponent = ({
+  index,
+  img,
+  alt,
+  title,
+  description,
+  textBtn,
+  participants,
+  date,
+  mutateAsync
+}) => {
+  const { user } = useContext(UserContext)
+  const dateFormatted = new Date(date)
+
+  const handleSubscription = async() => {
+    try {
+      await mutateAsync({ auth: user._id, workoutId: index })
+      alert('Subscribed sucessfully!')
+    } catch(err) { 
+      console.error(err)
+    }
+  }
+
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>
@@ -20,33 +46,57 @@ const CardComponent = ({ img, alt, title, description, textBtn }) => {
           <Typography gutterBottom variant="h5" component="div">
             {title}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography marginBottom={1} variant="body1" color="text.secondary">
             {description}
+          </Typography>{" "}
+          <Typography
+            display="flex"
+            alignSelf="center"
+            gap={0.5}
+            variant="subtitle1"
+            color="text.secondary"
+          >
+            <DateRangeIcon />{" "}
+            <span>
+              {dateFormatted.toLocaleDateString()} às{" "}
+              {dateFormatted.toLocaleTimeString()}
+            </span>
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions className={`${!textBtn ? 'flex justify-center': ''}`}>
+      <CardActions
+        className={`${
+          !textBtn || (participants && participants.length === 0)
+            ? `${styles.justify_center}`
+            : ""
+        }`}
+      >
         {textBtn && (
           <Button
+            onClick={handleSubscription}
             loadingPosition="end"
             endIcon={<AddIcon />}
             variant="contained"
-            sx={{ marginRight: 5 }}
+            sx={{
+              marginRight: `${
+                participants && participants.length !== 0 ? "5px" : "0px"
+              }`,
+            }}
           >
             {textBtn}
           </Button>
         )}
-        <AvatarGroup
-          max={4}
-          spacing="medium"
-          sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30 } }}
-        >
-          <Avatar alt="Remy Sharp" src="" />
-          <Avatar alt="Travis Howard" src="" />
-          <Avatar alt="Cindy Baker" src="" />
-          <Avatar alt="Agnes Walker" src="" />
-          <Avatar alt="Trevor Henderson" src="" />
-        </AvatarGroup>
+        {participants && participants.length !== 0 && (
+          <AvatarGroup
+            max={4}
+            spacing="medium"
+            sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30 } }}
+          >
+            {participants.map((avatar, index) => (
+              <Avatar key={index} alt="profile photo" src={avatar?.photo} />
+            ))}
+          </AvatarGroup>
+        )}
       </CardActions>
     </Card>
   );
