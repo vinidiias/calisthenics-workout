@@ -66,7 +66,7 @@ export default function Profile() {
     }
   })
 
-  const { data, error, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['user'],
     queryFn: () => getUser({ id: params.id, auth: user._id })
   })

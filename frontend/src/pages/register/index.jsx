@@ -1,8 +1,6 @@
 import { Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "../../App";
 import LockIcon from "@mui/icons-material/Lock";
 import api from "../../services";
 import { useContext, useEffect } from "react";
@@ -28,7 +26,6 @@ const Register = () => {
   const { user, setUser } = useContext(UserContext);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const [theme] = useAtom(useTheme);
 
   useEffect(() => setUser({}), [setUser]);
 
@@ -73,7 +70,7 @@ const Register = () => {
   return (
     <Box
       width="100%"
-      className={`flex flex-col flex-1 justify-center items-center gap-2 ${theme}`}
+      className={`flex flex-col flex-1 justify-center items-center gap-2`}
     >
       <LockIcon sx={{ fontSize: "2em" }} className="text-[#463c9e]" />
       <Typography align="center" fontSize={"2em"}>

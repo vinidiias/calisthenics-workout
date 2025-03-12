@@ -1,7 +1,6 @@
 import { Box, createTheme } from '@mui/material';
 import Navbar from './layouts/navbar';
 import Login from './pages/login';
-import { atom } from 'jotai';
 import Footer from './layouts/footer';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Menu from './pages/menu';
@@ -11,10 +10,7 @@ import { UserProvider } from './contexts/UserContext';
 import { ThemeProvider } from '@emotion/react';
 import { Settings } from './pages/settings';
 
-export const useTheme = atom('bg-gray-50')
-
 function App() {
-
   const theme = createTheme({
     typography: {
       "fontFamily": `"IBM Plex Sans"`,
