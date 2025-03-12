@@ -12,8 +12,6 @@ import {
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useForm } from "react-hook-form";
-import { useAtom } from "jotai";
-import { useTheme } from "../../App";
 import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom";
 import api from "../../services";
@@ -23,7 +21,6 @@ import { UserContext } from "../../contexts/UserContext";
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const [theme] = useAtom(useTheme);
   const { setUser } = useContext(UserContext)
 
   useEffect(() => setUser({}), [setUser]);
@@ -50,7 +47,7 @@ const Login = () => {
   return (
     <Box
       width="100%"
-      className={`flex flex-col flex-1 justify-center items-center gap-2 ${theme}`}
+      className={`flex flex-col flex-1 justify-center items-center gap-2`}
     >
       <LockIcon sx={{ fontSize: "2em" }} className="text-[#463c9e]" />
       <Typography align="center" fontSize={"2em"}>
