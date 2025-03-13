@@ -3,14 +3,7 @@ import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { CircularProgress } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { UserContext } from '../../contexts/UserContext';
-import axios from 'axios';
-import api from '../../services';
 import { BasicTable } from '../table/BasicTable'
 import { SearchInput } from './SearchInput';
 import { useState } from 'react';
@@ -28,7 +21,6 @@ const style = {
 };
 
 export default function ParticipantsListModal({ openModal, onClose, participants, handleFollowFn }) {
-  const { user } = React.useContext(UserContext)
   const [search, setSearch] = useState('')
 
   const follow = async({ userFrom, userTo }) => {

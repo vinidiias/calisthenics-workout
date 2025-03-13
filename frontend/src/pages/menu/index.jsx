@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   FormControl,
   Grid2,
   MenuItem,
@@ -60,7 +61,7 @@ const Menu = ({ isParticipe, title }) => {
     queryFn: () => isParticipe ? fetchWorkoutNotSubscribed({ auth: user._id }) : fetchWorkoutSubscribed({ auth: user._id })
   });
 
-  const { mutateAsync: subscribeToWorkoutFn } = useMutation({
+  const { mutateAsync: subscribeToWorkoutFn, isPending } = useMutation({
     mutationFn: subscribeToWorkout,
     onSuccess: (data) => {
     }
@@ -77,7 +78,6 @@ const Menu = ({ isParticipe, title }) => {
   })
 
   const openListModal = ( participants ) => {
-    console.log('aqui', participants)
     setParticipants(participants)
     setOpenList(true)
   }
@@ -89,7 +89,10 @@ const Menu = ({ isParticipe, title }) => {
   })
 
   return (
-    <Box sx={{ flex:1, padding: 5, display: 'flex', flexDirection: 'column' }} className="bg-gray-50">
+    <Box
+      sx={{ flex: 1, padding: 5, display: "flex", flexDirection: "column" }}
+      className="bg-gray-50"
+    >
       <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
       <ParticipantsListModal
         openModal={openList}
@@ -135,31 +138,37 @@ const Menu = ({ isParticipe, title }) => {
           </Button>
         )}
       </Box>
-        <Grid2 container spacing={10}>
-          {data &&
-            data.map((workout, index) => (
-              <Grid2 key={index}>
-                <CardComponent
-                  index={workout._id}
-                  mutateAsync={subscribeToWorkoutFn}
-                  img={workout.outdoorGym.photo}
-                  alt="img"
-                  title={workout.title}
-                  description={workout.description}
-                  participants={workout.participants}
-                  date={workout?.date}
-                  textBtn={
-                    isParticipe
-                      ? "Subscribe"
-                      : workout.creator._id === user._id
-                      ? "Edit"
-                      : "Unsubscribe"
-                  }
-                  openList={() => openListModal(workout.participants)}
-                />
-              </Grid2>
-            ))}
-        </Grid2>
+      <Grid2 container spacing={10} margin={`${(!data || isLoading) ? 'auto' : '0'}`}>
+        {isLoading ? (
+          <CircularProgress />
+        ) : data.length > 0 ? (
+          data.map((workout, index) => (
+            <Grid2 key={index}>
+              <CardComponent
+                index={workout._id}
+                mutateAsync={subscribeToWorkoutFn}
+                img={workout.outdoorGym.photo}
+                alt="img"
+                title={workout.title}
+                description={workout.description}
+                participants={workout.participants}
+                date={workout?.date}
+                textBtn={
+                  isParticipe
+                    ? "Subscribe"
+                    : workout.creator._id === user._id
+                    ? "Edit"
+                    : "Unsubscribe"
+                }
+                openList={() => openListModal(workout.participants)}
+                loading={isPending}
+              />
+            </Grid2>
+          ))
+        ) : (
+            <Typography>No Workouts</Typography>
+        )}
+      </Grid2>
     </Box>
   );
 };
