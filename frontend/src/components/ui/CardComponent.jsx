@@ -25,7 +25,8 @@ const CardComponent = ({
   participants,
   date,
   mutateAsync,
-  openList
+  openList,
+  loading
 }) => {
   const { user } = useContext(UserContext)
   const dateFormatted = new Date(date)
@@ -33,7 +34,6 @@ const CardComponent = ({
   const handleSubscription = async() => {
     try {
       await mutateAsync({ auth: user._id, workoutId: index })
-      alert('Subscribed sucessfully!')
     } catch(err) { 
       console.error(err)
     }
@@ -87,6 +87,7 @@ const CardComponent = ({
               fontWeight: "regular",
               backgroundColor: 'var(--color-gray-700)'
             }}
+            loading={loading}
           >
             {textBtn}
           </Button>

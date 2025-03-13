@@ -9,7 +9,6 @@ import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField 
 import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '../../contexts/UserContext';
-import axios from 'axios';
 import api from '../../services';
 
 const style = {
@@ -62,7 +61,7 @@ export default function TransitionsModal({ openModal, onClose }) {
     queryFn: fetchOutdoorGym,
   });
 
-  const { mutateAsync: createWorkoutFn } = useMutation({
+  const { mutateAsync: createWorkoutFn, isPending } = useMutation({
     mutationFn: createWorkout,
     onSuccess(newData) {
       // Obtém os dados mais recentes do cache antes de atualizar
@@ -72,34 +71,21 @@ export default function TransitionsModal({ openModal, onClose }) {
   
       // Opcional: refaz a requisição para garantir que os dados no servidor estão sincronizados
       queryClient.invalidateQueries(['workouts']);
+      onClose()
     }
   });
 
   const handleCreateWorkout = async (data) => {
-    try {
       await createWorkoutFn({
         workout: data,
-        auth: user._id
-      })
-      alert('Workout created sucessfully!')
-    } catch(err) {
-      console.error(err)
-    }
+        auth: user._id,
+      });
   }
 
   const { register, handleSubmit } = useForm();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) {
-    const message =
-      axios.isAxiosError(error) && error.response
-        ? `Error ${error.response.status} ${error.response.statusText}`
-        : error.message;
-    return <div>{message}</div>;
-  }
-
   return (
-    <div>
+    <>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -192,7 +178,7 @@ export default function TransitionsModal({ openModal, onClose }) {
                     }
                   })}
                   <Button
-                    loading={isLoading}
+                    loading={isPending}
                     type="submit"
                     variant="contained"
                     sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'var(--color-gray-700)' }}
@@ -205,6 +191,6 @@ export default function TransitionsModal({ openModal, onClose }) {
           </Box>
         </Fade>
       </Modal>
-    </div>
+    </>
   );
 }
