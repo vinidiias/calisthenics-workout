@@ -17,6 +17,13 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/UserContext";
+import { useMutation } from "@tanstack/react-query";
+
+const createAuth = async({ userData }) => {
+  const { data } = await api.post('/user/auth', userData)
+
+  return data
+}
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
@@ -25,19 +32,13 @@ const Login = () => {
 
   useEffect(() => setUser({}), [setUser]);
 
-  const submit = async (data) => {
-    try {
-      await api.post('/user/auth', data)
-      .then((resp) => {
-        console.log(resp)
-        setUser({...resp.data, isLogged: true});
-        alert("Logged in successfully");
+  const { mutateAsync: handleAuthFn, isPending } = useMutation({
+    mutationFn: (data) => createAuth({ userData: data }),
+    onSuccess: (resp) => {
+        setUser({...resp, isLogged: true});
         navigate('/workouts')
-      })
-    } catch(err) {
-      console.error(err)
     }
-  };
+  })
 
   const fields = [
     { name: "email", label: "Email", type: "email" },
@@ -55,7 +56,7 @@ const Login = () => {
       </Typography>
       <form
         className="flex flex-col gap-2 w-full max-w-100"
-        onSubmit={handleSubmit(submit)}
+        onSubmit={handleSubmit(handleAuthFn)}
       >
         {fields.map((field, index) => (
           <TextField
@@ -102,8 +103,8 @@ const Login = () => {
           variant="contained"
           disableElevation
         >
-          <Button  type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} >Sign in</Button>
-          <Button sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} >
+          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} loading={isPending} >Sign in</Button>
+          <Button sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} loading={isPending} >
             <GoogleIcon fontSize="small" className="mr-2" />
             Sign in with Google
           </Button>

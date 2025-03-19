@@ -23,24 +23,23 @@ const createUser = async (dataUser) => {
 };
 
 const Register = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   useEffect(() => setUser({}), [setUser]);
 
-  const { mutateAsync: createImageFn } = useMutation({
+  const { mutateAsync: createImageFn, isPending: isPendingImage } = useMutation({
     mutationFn: createImage,
     onSuccess: (data) => {
       createUserFn(data);
     },
   });
 
-  const { mutateAsync: createUserFn } = useMutation({
+  const { mutateAsync: createUserFn, isPending: isPendingUser } = useMutation({
     mutationFn: createUser,
     onSuccess: (data) => {
       setUser(data);
-      alert("User created sucessfully");
       navigate("/");
     },
   });
@@ -97,11 +96,11 @@ const Register = () => {
           variant="contained"
           disableElevation
         >
-          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} >Sign Up</Button>
+          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} loading={isPendingImage || isPendingUser} >Sign Up</Button>
           <Typography textAlign="center" variant="overline">
             Or
           </Typography>
-          <Button onClick={() => navigate("/")} type="button" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }}>
+          <Button onClick={() => navigate("/")} type="button" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} loading={isPendingImage || isPendingUser}>
             Sign In
           </Button>
         </ButtonGroup>

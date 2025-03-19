@@ -3,9 +3,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SwitchThemeButton from '../../components/ui/SwitchTheme'
 import { useContext, useState } from 'react'
-import MenuIcon from '@mui/icons-material/Menu';
 import { useCurrentIndex } from '../../hooks/useCurrentIndex';
-import { Link } from 'react-router-dom';
 import { UserContext } from '../../contexts/UserContext';
 
 const navigation = [
