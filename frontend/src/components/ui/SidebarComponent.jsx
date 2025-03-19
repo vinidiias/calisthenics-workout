@@ -11,7 +11,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import { Box, Toolbar } from "@mui/material";
 
-export const Sidebar = () => {
+export const SidebarComponent = () => {
   const drawerWidth = 240;
 
   return (

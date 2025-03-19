@@ -9,7 +9,6 @@ import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField 
 import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '../../contexts/UserContext';
-import axios from 'axios';
 import api from '../../services';
 
 const style = {
@@ -88,15 +87,6 @@ export default function TransitionsModal({ openModal, onClose }) {
   }
 
   const { register, handleSubmit } = useForm();
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) {
-    const message =
-      axios.isAxiosError(error) && error.response
-        ? `Error ${error.response.status} ${error.response.statusText}`
-        : error.message;
-    return <div>{message}</div>;
-  }
 
   return (
     <div>
