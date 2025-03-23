@@ -1,84 +1,219 @@
-import { Box, Button, Divider, Input, OutlinedInput, Paper, TextField, Typography } from "@mui/material"
-import { useQuery } from "@tanstack/react-query"
-import React, { useContext, useState } from "react"
-import { UserContext } from "../../contexts/UserContext"
-import api from "../../services"
-import EditIcon from '@mui/icons-material/Edit';
-import { UpdatePersonalData } from "../../components/ui/UpdatePersonalData"
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Grid2,
+  Input,
+  OutlinedInput,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import React, { useContext, useState } from "react";
+import { UserContext } from "../../contexts/UserContext";
+import api from "../../services";
+import EditIcon from "@mui/icons-material/Edit";
+import { UpdatePersonalData } from "../../components/ui/UpdatePersonalData";
+import Footer from "../../layouts/footer";
 
-const getUser = async({ id }) => {
-    const { data } = await api.get(`/user/${id}`)
-    return data
-  }
+const getUser = async ({ id }) => {
+  const { data } = await api.get(`/user/${id}`);
+  return data;
+};
 
 export const Settings = () => {
-    const { user } = useContext(UserContext)
-    const [open, setOpen] = useState(false)
-    const { data, error, isLoading } = useQuery({
-        queryKey: ["user"],
-        queryFn: () => getUser({ id: user._id })
-    })
+  const { user } = useContext(UserContext);
+  const [open, setOpen] = useState(false);
+  const [fields, setFields] = useState([])
+  const [filteredData, setFilteredData] = useState({})
 
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => getUser({ id: user._id }),
+  });
 
-    const infos = [
-      { label: "Photo", value: <img className="h-15 w-15 br-10 object-cover rounded-full" src={data?.photo} /> },
-      { label: "Name", value: data?.name },
-      { label: "Email", value: data?.email },
-      { label: "Address", value: data?.address },
-      { label: "Biography", value: data?.biography },
-    ]
+  const infos = [
+    {
+      label: "Photo",
+      value: (
+        <img
+          className="h-15 w-15 br-10 object-cover rounded-full"
+          src={data?.photo}
+        />
+      ),
+      type: "file",
+      name: "newPhoto",
+    },
+    { label: "Name", value: data?.name, type: "text", name: "name" },
+    { label: "Phone", value: data?.phone, type: "tel", name: "phone" },
+    { label: "Email", value: data?.email, type: "email", name: "email" },
+    {
+      label: "Biography",
+      value: data?.biography,
+      type: "text",
+      name: "biography",
+    },
+  ];
 
-    return (
-      <Box flexGrow={1} className="p-4 bg-gray-50 flex justify-center">
-        <UpdatePersonalData open={open} handleClose={() => setOpen(false)} data={data} />
-        <div className="flex flex-col gap-7 w-300">
-          <Typography fontSize="1.2em">My Profile</Typography>
-          <Paper sx={{ padding: 4, paddingX: 5 }}>
-            <div className="flex gap-10">
-              <img
-                src={data?.photo}
-                alt=""
-                className=" h-25 w-25 object-cover rounded-full"
-              />
-              <div className="flex flex-col gap-1">
-                <Typography fontWeight="medium">{data?.name}</Typography>
-                <Typography>
-                  {data?.email || "Foz do Iguaçu, Brazil"}
-                </Typography>
-                <Typography>
-                  {data?.address || "Foz do Iguaçu, Brazil"}
-                </Typography>
-              </div>
+  const address = [
+    { label: "Street", value: data?.address?.street, type: 'text', name: 'address.street' },
+    { label: "Number", value: data?.address?.number, type: 'text', name: 'address.number' },
+    { label: "Neighborhood", value: data?.address?.neighborhood, type: 'text', name: 'address.neighborhood' },
+    { label: "ZIP Code", value: data?.address?.zipCode, type: 'text', name: 'address.zipCode' },
+    { label: "City", value: data?.address?.city, type: 'text', name: 'address.city' },
+    { label: "State", value: data?.address?.state, type: 'text', name: 'address.state' },
+  ];
+
+  const filterData = (data, infos, address) => {
+    // Criando objetos para armazenar as chaves filtradas
+    const filteredInfos = {};
+    const filteredAddress = {};
+  
+    // Filtrando os dados de 'infos'
+    infos.forEach(info => {
+      if (Object.prototype.hasOwnProperty.call(data, info.name)) {
+        filteredInfos[info.name] = data[info.name];
+      }
+    });
+  
+    // Filtrando os dados de 'address'
+    address.forEach(addr => {
+      const key = addr.name.split('.')[1]; // Extraímos a chave após o ponto
+      if (data.address && Object.prototype.hasOwnProperty.call(data.address, key)) {
+        filteredAddress[key] = data.address[key];
+      }
+    });
+  
+    // Retorna os objetos filtrados
+    return { filteredInfos, filteredAddress };
+  };
+
+  const handleOpen = ({ fieldsProps, dataGroupName }) => {
+    const { filteredInfos, filteredAddress } = filterData(data, infos, address);
+    console.log(filteredInfos, filteredAddress)
+    setOpen(true)
+    setFields(fieldsProps)
+    setFilteredData(
+      dataGroupName === "infos" ? filteredInfos : { address: filteredAddress }
+    );
+  }
+
+  return (
+    <Container disableGutters maxWidth='xl' className="p-4 bg-gray-50 flex justify-center">
+      <UpdatePersonalData
+        open={open}
+        handleClose={() => setOpen(false)}
+        data={filteredData ?? null}
+        fields={fields}
+      />
+      <div className="flex flex-col gap-7 w-300">
+        <Typography fontSize="1.2em">My Profile</Typography>
+        <Paper sx={{ padding: 4, paddingX: 5 }}>
+          <div className="flex gap-10">
+            <img
+              src={data?.photo}
+              alt=""
+              className=" h-25 w-25 object-cover rounded-full"
+            />
+            <div className="flex flex-col gap-1">
+              <Typography fontWeight="medium">{data?.name}</Typography>
+              <Typography>{data?.email || "Foz do Iguaçu, Brazil"}</Typography>
+              <Typography>
+                {data?.address.city || "Foz do Iguaçu, Brazil"}
+              </Typography>
             </div>
-          </Paper>
-          <Paper>
-            <div className="p-8">
-              <div className="flex justify-between mb-3">
-                <Typography fontSize="1.2em" fontWeight="regular">
-                  Personal Information
-                </Typography>
-                <Button variant="contained" type="button" size="small" endIcon={<EditIcon />} onClick={() => setOpen(true)} sx={{ backgroundColor: 'oklch(0.446 0.03 256.802)', textTransform: "none", fontSize: '.9em'}}>
-                  Edit
-                </Button>
-              </div>
-              <Divider sx={{ marginBottom: 2 }} />
-              <div className="flex flex-col gap-5">
-                {infos &&
-                  infos.map((info) => (
-                    <React.Fragment key={info.label}>
-                      <div className="flex items-center">
-                        <Typography width="40%" fontWeight="medium">
+          </div>
+        </Paper>
+        <Paper>
+          <div className="p-8">
+            <div className="flex justify-between mb-3">
+              <Typography fontSize="1.2em" fontWeight="regular">
+                Personal Information
+              </Typography>
+              <Button
+                variant="contained"
+                type="button"
+                size="small"
+                endIcon={<EditIcon />}
+                onClick={() =>
+                  handleOpen({ fieldsProps: infos, dataGroupName: "infos" })
+                }
+                sx={{
+                  backgroundColor: "oklch(0.446 0.03 256.802)",
+                  textTransform: "none",
+                  fontSize: ".9em",
+                }}
+              >
+                Edit
+              </Button>
+            </div>
+            <Divider sx={{ marginBottom: 2.5 }} />
+            <div className="flex flex-col gap-5">
+              {infos &&
+                infos.map((info) => (
+                  <React.Fragment key={info.label}>
+                    <div className="flex items-center">
+                      <Typography width="40%" fontWeight="medium">
+                        {info.label}
+                      </Typography>
+                      <Typography fontWeight="regular">{info.value}</Typography>
+                    </div>
+                    <Divider />
+                  </React.Fragment>
+                ))}
+            </div>
+          </div>
+        </Paper>
+        <Paper>
+          <div className="p-8">
+            <div className="flex justify-between mb-3">
+              <Typography fontSize="1.2em" fontWeight="regular">
+                Address
+              </Typography>
+              <Button
+                variant="contained"
+                type="button"
+                size="small"
+                endIcon={<EditIcon />}
+                onClick={() =>
+                  handleOpen({ fieldsProps: address, dataGroupName: "address" })
+                }
+                sx={{
+                  backgroundColor: "oklch(0.446 0.03 256.802)",
+                  textTransform: "none",
+                  fontSize: ".9em",
+                }}
+              >
+                Edit
+              </Button>
+            </div>
+            <Divider sx={{ marginBottom: 2.5 }} />
+            <Grid2 container rowSpacing={2.5}>
+              {address &&
+                address.map((info) => (
+                  <React.Fragment key={info.label}>
+                    <Grid2 container size={6} key={info.label}>
+                      <Grid2 size={5}>
+                        <Typography fontWeight="medium">
                           {info.label}
                         </Typography>
-                        <Typography fontWeight="regular">{info.value}</Typography>
-                      </div>
-                      <Divider />
-                    </React.Fragment>
-                  ))}
-              </div>
-            </div>
-          </Paper>
-        </div>
-      </Box>
-    );
-}
+                      </Grid2>
+                      <Grid2>
+                        <Typography fontWeight="regular">
+                          {info.value}
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Divider sx={{ width: '100%' }} />
+                  </React.Fragment>
+                ))}
+              <Divider />
+            </Grid2>
+          </div>
+        </Paper>
+      </div>      
+    </Container>
+  );
+};

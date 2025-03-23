@@ -13,9 +13,39 @@ const Schema = mongoose.Schema({
         type: String,
         required: true,
     },
+    phone: {
+        type: String,
+        required: true,
+    },
     email: {
         type: String,
         required: true,
+    },
+    address: {
+      street: {
+        type: String,
+        default: ''
+      },
+      number: {
+        type: String,
+        default: ''
+      },
+      neighborhood: {
+        type: String,
+        default: ''
+      },
+      zipCode: {
+        type: String,
+        default: ''
+      },
+      city: {
+        type: String,
+        default: ''
+      },
+      state: {
+        type: String,
+        default: ''
+      }
     },
     biography: {
         type: String,

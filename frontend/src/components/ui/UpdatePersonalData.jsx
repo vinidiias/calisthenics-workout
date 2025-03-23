@@ -1,6 +1,11 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material"
-import { useEffect } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
+import { useUploadImage } from '../../util/useUploadImage'
+import api from "../../services";
+import { UserContext } from "../../contexts/UserContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createImage } from '../../services/imageApi'
 
 const style = {
     position: 'absolute',
@@ -16,22 +21,60 @@ const style = {
     pb: 3,
   };
 
-const fields = [
-    { label: 'Name', type: 'text', name: 'name' },
-    { label: 'Email', type: 'email', name: 'email' },
-    { label: 'Phone', type: 'tel', name: 'phone' },
-    { label: 'Address', type: 'text', name: 'address' },
-    { label: 'Biography', type: 'textarea', name: 'biography' },
-]
+  const updateUser = async({ updatedData, id }) => {
+    const { data } = await api.patch(`/user/${id}`, updatedData, {
+      headers: { auth: id }
+    })
 
-export const UpdatePersonalData = ({ open, handleClose, data }) => {
+    return data
+  }
+
+export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
+    const { user, setUser } = useContext(UserContext)
     const formMethods = useForm()
-    
+    const [preview, setPreview] = useState(null);
+    const file = formMethods.watch('newPhoto')
+
+    console.log(preview)
+
+    const queryClient = useQueryClient()
+
+    useEffect(() => {
+      if(file && file.length > 0) {
+        const newFile = file[0]
+        const reader = new FileReader();
+        reader.onloadend = () => setPreview(reader.result); // Gera a pré-visualização
+        reader.readAsDataURL(newFile);
+       } // Lê o arquivo
+    }, [file])
+
     useEffect(() => {
         if(data) {
             formMethods.reset(data)
         }
     }, [data, formMethods])
+
+    const { mutateAsync: updateUserFn, isPending: isPedingUser } = useMutation({
+      mutationFn: updateUser,
+      onSuccess: (updatedData) => {
+        console.log(updatedData)
+        queryClient.setQueriesData(['user'], (oldData) => {
+          return { ...oldData, ...updatedData }
+        })
+        setUser(prevState => ({
+          ...prevState,
+          ...updatedData
+        }))
+        handleClose()
+      }
+    })
+
+    const { mutateAsync: updateImageFn, isPending: isPendingImage } = useMutation({
+      mutationFn: createImage,
+      onSuccess: (updatedData) => {
+        updateUserFn({ updatedData: updatedData, id: user._id })
+      }
+    })
 
     return (
       <Modal
@@ -51,22 +94,69 @@ export const UpdatePersonalData = ({ open, handleClose, data }) => {
             Update Informations
           </Typography>
           <FormProvider {...formMethods}>
-            <form className="flex flex-col gap-3">
+            <form
+              onSubmit={formMethods.handleSubmit((data) =>
+                file
+                  ? updateImageFn({ ...data, photo: file })
+                  : updateUserFn({ updatedData: data, id: user._id })
+              )}
+              className="flex flex-col gap-3"
+            >
               {fields &&
                 fields.map((field) => (
-                  <div  key={field.name} className="flex flex-col gap-1">
-                    <Typography fontWeight="regular">{field.label}</Typography>
-                    <TextField fullWidth size="small" type={field.type} {...formMethods.register(field.name)} />
+                  <div
+                    key={field.label}
+                    className={`${
+                      formMethods.watch("newPhoto") && field.type === "file"
+                        ? "flex items-center gap-0"
+                        : ""
+                    }`}
+                  >
+                    <div key={field.name} className="flex flex-col gap-1">
+                      <Typography fontWeight="regular">
+                        {field.label}
+                      </Typography>
+                      {!file || field.type !== "file" ? (
+                        <TextField
+                          fullWidth
+                          size="small"
+                          type={field.type}
+                          {...formMethods.register(field.name)}
+                        />
+                      ) : (
+                        <div className="flex items-center gap-3">
+                          {file && (
+                            <img
+                              src={preview}
+                              className="h-15 w-15 object-cover rounded-full"
+                            />
+                          )}
+                          <Button
+                            onClick={() =>
+                              formMethods.setValue("newPhoto", null)
+                            }
+                            color="error"
+                            size="small"
+                            variant="contained"
+                            sx={{ textTransform: "none" }}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               <Button
                 variant="contained"
+                type="submit"
                 size="small"
                 sx={{
                   backgroundColor: "oklch(0.446 0.03 256.802)",
                   textTransform: "none",
                   fontSize: ".9em",
                 }}
+                loading={ isPedingUser || isPendingImage}
               >
                 Save
               </Button>

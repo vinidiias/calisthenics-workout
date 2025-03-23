@@ -23,7 +23,7 @@ function App() {
   })
 
   return (
-    <Box className="flex flex-col h-[100%]">
+    <Box className="flex flex-col h-[100%] overflow-x-hidden">
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <UserProvider>
