@@ -13,11 +13,12 @@ import CardComponent from "../../components/ui/CardComponent";
 import AddIcon from "@mui/icons-material/Add";
 import TransitionsModal from "../../components/ui/CreateForm";
 import api from "../../services";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserContext } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import ParticipantsListModal from "../../components/ui/ParticipantsListModal";
 import { SearchInput } from "../../components/ui/SearchInput";
+import { useFetchAddress } from "../../hooks/useFetchAddress";
 
 const fetchWorkoutNotSubscribed = async({ auth }) => {
   const { data } = await api.get('/workout/not-subscribed', {
@@ -54,16 +55,28 @@ const Menu = ({ isParticipe, title }) => {
   const [open, setOpen] = useState(false);
   const [openList, setOpenList] = useState(false)
   const [participants, setParticipants] = useState([])
+  const { data: dataAddress, isLoading: isLoadingAddress, error: errorAddress } = useFetchAddress("address", "/address")
   const navigate = useNavigate()
+  const [addressFilter, setAddressFilter] = useState(null)
+  
+  const queryClient = useQueryClient()
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["workouts"],
     queryFn: () => isParticipe ? fetchWorkoutNotSubscribed({ auth: user._id }) : fetchWorkoutSubscribed({ auth: user._id })
   });
 
+  const [dataFiltered, setDataFiltered] = useState(data || [])
+
+
   const { mutateAsync: subscribeToWorkoutFn, isPending } = useMutation({
     mutationFn: subscribeToWorkout,
-    onSuccess: (data) => {
+    onSuccess: (newData) => {
+      console.log(newData)
+      queryClient.setQueriesData(["workouts"], (oldData) => {
+        console.log(oldData)
+        return oldData ? oldData.filter(workout => workout._id !== newData.workout._id) : oldData
+      })
     }
   })
 
@@ -81,6 +94,16 @@ const Menu = ({ isParticipe, title }) => {
     setParticipants(participants)
     setOpenList(true)
   }
+
+  useEffect(() => {
+    if(data) {
+      if(addressFilter === null || addressFilter === '') {
+        setDataFiltered(data)
+      } else {
+        setDataFiltered(data.filter(workout => workout.outdoorGym.address === addressFilter))
+      }
+    }
+  }, [addressFilter, setDataFiltered, data])
 
   useEffect(() => {
     if(!user.isLogged) {
@@ -118,13 +141,15 @@ const Menu = ({ isParticipe, title }) => {
               inputProps={{ "aria-label": "Without label" }}
               defaultValue=""
               sx={{ backgroundColor: "white" }}
+              onChange={(e) => setAddressFilter(e.target.value)}
             >
-              <MenuItem value="">
-                <em>All</em>
-              </MenuItem>
-              <MenuItem value="vila-a">Vila A</MenuItem>
-              <MenuItem value="vila-c">Vila C</MenuItem>
-              <MenuItem value="cidade-nova">Cidade Nova</MenuItem>
+              <MenuItem value="">All</MenuItem>
+              {dataAddress &&
+                dataAddress.map((address) => (
+                  <MenuItem key={address._id} value={address._id}>
+                    {address.neighborhood}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
         </Box>
@@ -138,11 +163,15 @@ const Menu = ({ isParticipe, title }) => {
           </Button>
         )}
       </Box>
-      <Grid2 container spacing={10} margin={`${(!data || isLoading) ? 'auto' : '0'}`}>
+      <Grid2
+        container
+        spacing={10}
+        margin={`${!data || isLoading || data.length === 0 ? "auto" : "0"}`}
+      >
         {isLoading ? (
           <CircularProgress />
-        ) : data.length > 0 ? (
-          data.map((workout, index) => (
+        ) :dataFiltered.length > 0 ? (
+         dataFiltered.map((workout, index) => (
             <Grid2 key={index}>
               <CardComponent
                 index={workout._id}
@@ -166,7 +195,7 @@ const Menu = ({ isParticipe, title }) => {
             </Grid2>
           ))
         ) : (
-            <Typography>No Workouts</Typography>
+          <Typography>No Workouts</Typography>
         )}
       </Grid2>
     </Box>

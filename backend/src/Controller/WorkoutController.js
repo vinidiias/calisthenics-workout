@@ -93,6 +93,7 @@ module.exports = {
         try {
             const workoutNotSubscribed = await Workout.find({
               participants: { $in: [auth] },
+              isExpired: false
             }).populate([
               { path: "creator", select: "-password" },
               { path: "outdoorGym" },
