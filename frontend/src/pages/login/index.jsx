@@ -49,9 +49,10 @@ const Login = () => {
     <Box
       width="100%"
       className={`flex flex-col flex-1 justify-center items-center gap-2`}
+      sx={{ backgroundColor: 'background.default'}}
     >
       <LockIcon sx={{ fontSize: "2em" }} className="text-[#463c9e]" />
-      <Typography align="center" fontSize={"2em"}>
+      <Typography align="center" fontSize={"2em"} sx={{ color: 'text.primary' }}>
         Sign In
       </Typography>
       <form
@@ -67,6 +68,7 @@ const Login = () => {
             label={field.label}
             variant="outlined"
             autoComplete={field.autocomplete ?? ""}
+            sx={{ backgroundColor: 'background.default' }}
             {...register(field.name, { required: true })}
           />
         ))}
@@ -78,7 +80,7 @@ const Login = () => {
           label="Remember me"
           color="primary"
           sx={{
-            "& .MuiFormControlLabel-label": { fontSize: ".9em" },
+            "& .MuiFormControlLabel-label": { fontSize: ".9em", color: 'text.primary' },
           }}
         />
         <Box
@@ -103,8 +105,8 @@ const Login = () => {
           variant="contained"
           disableElevation
         >
-          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} loading={isPending} >Sign in</Button>
-          <Button sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} loading={isPending} >
+          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white' }} loading={isPending} >Sign in</Button>
+          <Button sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white' }} loading={isPending} >
             <GoogleIcon fontSize="small" className="mr-2" />
             Sign in with Google
           </Button>

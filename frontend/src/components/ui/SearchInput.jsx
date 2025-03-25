@@ -45,7 +45,7 @@ const Search = styled("div")(({ theme }) => ({
   export const SearchInput = ({ search, setSearch}) => {
     return (
         <Search
-        sx={{ backgroundColor: "white", border: "1px solid #d6d6d6" }}
+        sx={{ backgroundColor: "input.primary", color: 'input.secondary', borderWidth: '1px', borderStyle: 'solid', borderColor: 'input.border'  }}
       >
         <SearchIconWrapper>
           <SearchIcon />

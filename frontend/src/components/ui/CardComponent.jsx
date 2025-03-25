@@ -14,6 +14,7 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import styles from './CardComponent.module.css'
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 const CardComponent = ({
   index,
@@ -29,6 +30,7 @@ const CardComponent = ({
   loading
 }) => {
   const { user } = useContext(UserContext)
+  const { isDark } = useThemeColor()
   const dateFormatted = new Date(date)
 
   const handleSubscription = async() => {
@@ -44,7 +46,7 @@ const CardComponent = ({
       <CardActionArea>
         <CardMedia component="img" height={140} image={img} alt={alt} />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant="h5" component="div" color="text.primay">
             {title}
           </Typography>
           <Typography marginBottom={1} variant="body1" color="text.secondary">
@@ -85,7 +87,8 @@ const CardComponent = ({
               textTransform: "none",
               fontSize: "1em",
               fontWeight: "regular",
-              backgroundColor: 'var(--color-gray-700)'
+              backgroundColor: 'button.primary',
+              color: 'white'
             }}
             loading={loading}
           >

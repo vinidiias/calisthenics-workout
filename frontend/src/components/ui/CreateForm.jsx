@@ -108,7 +108,7 @@ export default function TransitionsModal({ openModal, onClose }) {
                 <Typography
                   variant="h5"
                   component="h2"
-                  sx={{ marginBottom: 2 }}
+                  sx={{ marginBottom: 2, color: 'text.primary' }}
                 >
                   Create Workout
                 </Typography>
@@ -151,6 +151,16 @@ export default function TransitionsModal({ openModal, onClose }) {
                             name={field.name}
                             id={field.name}
                             type={field.type}
+                            sx={{
+                              "& .MuiInputBase-input": {
+                                color: "input.secondary", // Altere para a cor desejada
+                              },
+                              "& input[type='datetime-local']::-webkit-calendar-picker-indicator":
+                                {
+                                  filter: "invert(1)", // Inverte a cor do ícone (branco em fundo escuro)
+                                  cursor: "pointer",
+                                },
+                            }}
                             {...register(field.name, { required: true })}
                           />
                         );
@@ -181,7 +191,7 @@ export default function TransitionsModal({ openModal, onClose }) {
                     loading={isPending}
                     type="submit"
                     variant="contained"
-                    sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'var(--color-gray-700)' }}
+                    sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white' }}
                   >
                     Create Workout
                   </Button>

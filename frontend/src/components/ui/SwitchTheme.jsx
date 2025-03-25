@@ -5,6 +5,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -32,7 +33,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     },
   },
   "& .MuiSwitch-thumb": {
-    backgroundColor: "#001e3c",
+    backgroundColor: "color-mix(in oklab, var(--color-blue-800) 100%, transparent)",
     width: 32,
     height: 32,
     "&::before": {
@@ -63,15 +64,13 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }));
 
 export default function SwitchThemeButton() {
-  function toggleTheme() {
-    //const newTheme = theme === "bg-[#D0D1D5]" ? "bg-[#2C2D30]" : "bg-[#D0D1D5]";
-    //setTheme(newTheme);
-  }
+  const { isDark, handleClick } = useThemeColor()
 
   return (
     <FormControlLabel
-      control={<MaterialUISwitch sx={{ m: 1 }}  />}
-      onClick={toggleTheme}
+      checked={isDark}
+      control={<MaterialUISwitch  sx={{ m: 1 }}  />}
+      onClick={handleClick}
     />
   );
 }

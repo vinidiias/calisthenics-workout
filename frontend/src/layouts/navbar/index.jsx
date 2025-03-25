@@ -5,6 +5,8 @@ import SwitchThemeButton from '../../components/ui/SwitchTheme'
 import { useContext, useState } from 'react'
 import { useCurrentIndex } from '../../hooks/useCurrentIndex';
 import { UserContext } from '../../contexts/UserContext';
+import { useThemeColor } from '../../hooks/useThemeColor';
+import { Typography } from '@mui/material';
 
 const navigation = [
   { name: 'Workouts', href: '/workouts', current: true },
@@ -18,9 +20,17 @@ function classNames(...classes) {
 export default function Navbar() {
   const current = useCurrentIndex()
   const { user, setUser } = useContext(UserContext)
+  const { isDark } = useThemeColor()
 
   return (
-    <Disclosure as="nav" className="bg-gray-800 w-full z-1500">
+    <Disclosure
+      as="nav"
+      className={`fixed ${
+        isDark
+          ? "bg-[#202124] border-b-gray-600/50 border-b-solid border-b-1"
+          : "bg-[#fff] border-b-gray-800/10 border-b-solid border-b-1"
+      } w-full z-1500`}
+    >
       <div className="mx-auto max-w-[1700px] px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -49,8 +59,8 @@ export default function Navbar() {
                 />
               </a>
             </div>
-            <div className="hidden sm:ml-6 sm:block">
-              {user.isLogged && (
+            {user.isLogged && (
+              <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
                   {navigation.map((item, index) => (
                     <a
@@ -59,30 +69,31 @@ export default function Navbar() {
                       aria-current={index === current ? "page" : undefined}
                       className={classNames(
                         index === current
-                          ? "bg-gray-900 text-white"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "rounded-md px-3 py-2 text-sm font-medium"
+                          ? "bg-blue-800/80 text-white"
+                          : "hover:bg-blue-800/60 hover:text-white",
+                        "rounded-md px-3 py-2 text-sm font-medium",
+                        isDark ? "text-[#757575]" : "text-[#121212]"
                       )}
                     >
                       {item.name}
                     </a>
                   ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <SwitchThemeButton />
-           {user.isLogged && (
-             <button
-             type="button"
-             className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
-           >
-             <span className="absolute -inset-1.5" />
-             <span className="sr-only">View notifications</span>
-             <BellIcon aria-hidden="true" className="size-6" />
-           </button>
-           )}
+            {user.isLogged && (
+              <button
+                type="button"
+                className="relative rounded-full bg-blue-800/80 p-1 text-white hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
+              >
+                <span className="absolute -inset-1.5" />
+                <span className="sr-only">View notifications</span>
+                <BellIcon aria-hidden="true" className="size-6" />
+              </button>
+            )}
 
             {/* Profile dropdown */}
             {user.isLogged && (
