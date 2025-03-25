@@ -113,8 +113,9 @@ const Menu = ({ isParticipe, title }) => {
 
   return (
     <Box
-      sx={{ flex: 1, padding: 5, display: "flex", flexDirection: "column" }}
+      sx={{ flex: 1, padding: 5, display: "flex", flexDirection: "column", backgroundColor: 'background.default' }}
       className="bg-gray-50"
+
     >
       <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
       <ParticipantsListModal
@@ -124,14 +125,14 @@ const Menu = ({ isParticipe, title }) => {
         handleFollowFn={followToUserFn}
       />
       <Box className="flex justify-center gap-4 mb-4">
-        <Typography variant="h4" className="text-gray-800" fontWeight="regular">
+        <Typography variant="h4" color="text.primary" fontWeight="regular">
           {title}
         </Typography>
       </Box>
       <Box className="flex justify-between items-center gap-10 mb-10">
         <SearchInput />
         <Box className="flex items-center">
-          <Typography fontSize="1em" className="text-gray-600">
+          <Typography fontSize="1em" color="text.secondary" className="text-gray-600">
             Locality
           </Typography>
           <FormControl sx={{ m: 1, minWidth: 100 }}>
@@ -140,7 +141,11 @@ const Menu = ({ isParticipe, title }) => {
               displayEmpty
               inputProps={{ "aria-label": "Without label" }}
               defaultValue=""
-              sx={{ backgroundColor: "white" }}
+              sx={(theme) => ({
+                backgroundColor: theme.palette.input.primary,
+                color: theme.palette.input.secondary,
+                borderColor: `${theme.palette.input.border}`,
+              })}
               onChange={(e) => setAddressFilter(e.target.value)}
             >
               <MenuItem value="">All</MenuItem>
@@ -157,7 +162,7 @@ const Menu = ({ isParticipe, title }) => {
           <Button
             onClick={() => setOpen(true)}
             variant="contained"
-            sx={{ backgroundColor: "var(--color-gray-700)" }}
+            sx={{ backgroundColor: "button.primary", color: 'white' }}
           >
             <AddIcon />
           </Button>
@@ -195,7 +200,7 @@ const Menu = ({ isParticipe, title }) => {
             </Grid2>
           ))
         ) : (
-          <Typography>No Workouts</Typography>
+          <Typography color="text.primary">No Workouts</Typography>
         )}
       </Grid2>
     </Box>

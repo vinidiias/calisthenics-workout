@@ -35,8 +35,6 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
     const [preview, setPreview] = useState(null);
     const file = formMethods.watch('newPhoto')
 
-    console.log(preview)
-
     const queryClient = useQueryClient()
 
     useEffect(() => {
@@ -90,6 +88,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
             textAlign="center"
             fontWeight="medium"
             marginBottom="1em"
+            sx={{ color: "text.primary" }}
           >
             Update Informations
           </Typography>
@@ -113,7 +112,10 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                     }`}
                   >
                     <div key={field.name} className="flex flex-col gap-1">
-                      <Typography fontWeight="regular">
+                      <Typography
+                        fontWeight="regular"
+                        sx={{ color: "text.primary" }}
+                      >
                         {field.label}
                       </Typography>
                       {!file || field.type !== "file" ? (
@@ -121,6 +123,11 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                           fullWidth
                           size="small"
                           type={field.type}
+                          sx={{
+                            "& .MuiInputBase-input": {
+                              color: "input.secondary", // Altere para a cor desejada
+                            },
+                          }}
                           {...formMethods.register(field.name)}
                         />
                       ) : (
@@ -138,7 +145,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                             color="error"
                             size="small"
                             variant="contained"
-                            sx={{ textTransform: "none" }}
+                            sx={{ textTransform: "none", backgroundColor: 'button.primary' }}
                           >
                             Delete
                           </Button>
@@ -152,11 +159,12 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                 type="submit"
                 size="small"
                 sx={{
-                  backgroundColor: "oklch(0.446 0.03 256.802)",
+                  backgroundColor: 'button.primary',
+                  color: 'white',
                   textTransform: "none",
                   fontSize: ".9em",
                 }}
-                loading={ isPedingUser || isPendingImage}
+                loading={isPedingUser || isPendingImage}
               >
                 Save
               </Button>

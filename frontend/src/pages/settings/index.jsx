@@ -17,6 +17,7 @@ import api from "../../services";
 import EditIcon from "@mui/icons-material/Edit";
 import { UpdatePersonalData } from "../../components/ui/UpdatePersonalData";
 import Footer from "../../layouts/footer";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 const getUser = async ({ id }) => {
   const { data } = await api.get(`/user/${id}`);
@@ -25,6 +26,7 @@ const getUser = async ({ id }) => {
 
 export const Settings = () => {
   const { user } = useContext(UserContext);
+  const { isDark } = useThemeColor()
   const [open, setOpen] = useState(false);
   const [fields, setFields] = useState([])
   const [filteredData, setFilteredData] = useState({})
@@ -101,7 +103,7 @@ export const Settings = () => {
   }
 
   return (
-    <Container disableGutters maxWidth='xl' className="p-4 bg-gray-50 flex justify-center">
+    <Container disableGutters maxWidth='xl' className={`p-4 ${isDark ? 'bg-[#202124]' : ''} flex justify-center`}>
       <UpdatePersonalData
         open={open}
         handleClose={() => setOpen(false)}
@@ -109,7 +111,7 @@ export const Settings = () => {
         fields={fields}
       />
       <div className="flex flex-col gap-7 w-300">
-        <Typography fontSize="1.2em">My Profile</Typography>
+        <Typography fontSize="1.2em" color="text.primary">Settings</Typography>
         <Paper sx={{ padding: 4, paddingX: 5 }}>
           <div className="flex gap-10">
             <img
@@ -141,7 +143,8 @@ export const Settings = () => {
                   handleOpen({ fieldsProps: infos, dataGroupName: "infos" })
                 }
                 sx={{
-                  backgroundColor: "oklch(0.446 0.03 256.802)",
+                  backgroundColor: 'button.primary',
+                  color: 'white',
                   textTransform: "none",
                   fontSize: ".9em",
                 }}
@@ -181,7 +184,8 @@ export const Settings = () => {
                   handleOpen({ fieldsProps: address, dataGroupName: "address" })
                 }
                 sx={{
-                  backgroundColor: "oklch(0.446 0.03 256.802)",
+                  backgroundColor: 'button.primary',
+                  color: 'white',
                   textTransform: "none",
                   fontSize: ".9em",
                 }}

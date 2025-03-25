@@ -10,9 +10,11 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import { Box, Toolbar } from "@mui/material";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 export const SidebarComponent = () => {
   const drawerWidth = 240;
+  const { isDark } = useThemeColor()
 
   return (
     <Drawer
@@ -20,7 +22,15 @@ export const SidebarComponent = () => {
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box", backgroundColor: '' },
+        [`& .MuiDrawer-paper`]: {
+          width: drawerWidth,
+          boxSizing: "border-box",
+          backgroundColor: isDark ? "#202124" : "",
+          borderColor: isDark ? "color-mix(in oklab, var(--color-gray-600) 50%, transparent)" : "",
+        },
+        [`& .MuiDivider-root`]: {
+          borderColor: isDark ? "color-mix(in oklab, var(--color-gray-800) 50%, transparent)" : "",
+        }
       }}
     >
       <Toolbar />
@@ -28,34 +38,13 @@ export const SidebarComponent = () => {
         <Typography
           marginLeft="1em"
           marginTop={2}
-          fontWeight="bold"
+          fontWeight="regular"
           variant="body1"
         >
           Profile
         </Typography>
         <List>
-          {["Profile", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <Typography
-          marginLeft="1em"
-          marginTop={2}
-          fontWeight="bold"
-          variant="body1"
-        >
-          Settings
-        </Typography>
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
+          {["Profile", "Language", "Dark Mode", "Notifications"].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton>
                 <ListItemIcon>

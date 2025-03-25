@@ -14,6 +14,7 @@ import { useState } from "react";
 import UploadButton from "../../components/form/UploadButton";
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect } from "react";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 const createImage = async (photo) => {
   const formData = new FormData();
@@ -44,6 +45,7 @@ export default function Profile() {
   const { user } = useContext(UserContext);
   const [isMe] = useState(params.id === user._id || false)
   const [openEdit, setOpenEdit] = useState(false)
+  const { isDark } = useThemeColor()
 
 
   const watchBackPhoto = methods.watch("backgroundPhoto");
@@ -85,7 +87,7 @@ export default function Profile() {
       display="flex"
       flexDirection="column"
       gap={4}
-      className="bg-gray-50"
+      sx={{ backgroundColor: 'background.primary'}}
     >
       <FormProvider {...methods}>
         <Paper>
@@ -138,6 +140,7 @@ export default function Profile() {
               src={data?.photo}
               alt=""
               className=" h-25 w-25 br-10 mt-30 object-cover rounded-[100px] outline-white outline-5"
+              style={{ outlineColor: isDark ? 'rgb(45 46 49)' : '#fff'}}
             />
             <Box display="flex" flexDirection="column">
               <Box
