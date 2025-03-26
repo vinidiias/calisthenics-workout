@@ -44,7 +44,7 @@ function App() {
       },
       input: {
         primary: isDark ? 'rgba(29, 33, 38, 0.4)' : '#fff',
-        secondary: isDark ? 'rgb(152, 164, 179)' : '#121212',
+        secondary: isDark ? 'rgb(152, 164, 179)' : 'rgba(0, 0, 0, 0.6)',
         border: isDark ? "color-mix(in oklab, var(--color-gray-600) 80%, transparent)" : "color-mix(in oklab, var(--color-gray-800) 20%, transparent)"
       },
       divider: isDark ? "#424242" : "#e0e0e0", // Cor dos divisores
