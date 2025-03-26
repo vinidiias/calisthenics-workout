@@ -8,7 +8,7 @@ const Footer = () => {
     const { isDark } = useThemeColor()
 
     return (
-      <footer style={{ backgroundColor: isDark ? "#202124" : "#fff", color: isDark ? '#fff' : '#121212'}} className="py-2 flex  items-center justify-center gap-5 z-1500">
+      <footer style={{ backgroundColor: isDark ? "#202124" : "#fff", color: isDark ? 'rgb(152, 164, 179)' : '#121212'}} className="py-2 flex  items-center justify-center gap-5 z-1500">
         <p>&copy; 2025. All right reserved.</p>
         <ul className="flex items-center gap-2">
           <li className="cursor-pointer  hover:scale-110  transition-all  duration-500">
