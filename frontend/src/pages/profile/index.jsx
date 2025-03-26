@@ -86,11 +86,12 @@ export default function Profile() {
       padding={2}
       display="flex"
       flexDirection="column"
+      alignItems='center'
       gap={4}
-      sx={{ backgroundColor: 'background.primary'}}
+      sx={{ backgroundColor: "background.primary", width: '100%' }}
     >
       <FormProvider {...methods}>
-        <Paper>
+        <Paper sx={{ width: { xs: '100%', sm: '90%' } }}>
           <div className="relative text-right">
             {data?.backgroundPhoto ? (
               <img
@@ -140,19 +141,36 @@ export default function Profile() {
               src={data?.photo}
               alt=""
               className=" h-25 w-25 br-10 mt-30 object-cover rounded-[100px] outline-white outline-5"
-              style={{ outlineColor: isDark ? 'rgb(45 46 49)' : '#fff'}}
+              style={{ outlineColor: isDark ? "rgb(45 46 49)" : "#fff" }}
             />
-            <Box display="flex" flexDirection="column">
+            <Box display="flex" flexDirection="column" width='100%'>
               <Box
                 display="flex"
                 component="section"
                 justifyContent="space-between"
                 width="100%"
                 marginBottom={2}
+                sx={{
+                  flexDirection: "row",
+                  "@media (max-width: 1000px)": {
+                    flexDirection: "column",
+                    gap: 5,
+                  },
+                }}
               >
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center mt-1 gap-3">
-                    <Typography variant="h4">{data?.name}</Typography>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        fontSize: "2.125rem",
+                        "@media (max-width: 480px)": {
+                          fontSize: "1.8rem",
+                        },
+                      }}
+                    >
+                      {data?.name}
+                    </Typography>
                     {!isMe && (
                       <Button
                         variant="contained"
@@ -171,9 +189,9 @@ export default function Profile() {
                       </Button>
                     )}
                   </div>
-                  <Typography>{data?.biography}</Typography>
+                  <Typography variant="body1" fontWeight='light'>{data?.biography}</Typography>
                 </div>
-                <Stack flexDirection="row" gap={10}>
+                <Stack flexDirection="row" sx={{ gap: { xs: 5, sm: 10}}} >
                   <Box display="flex" flexDirection="column">
                     <Typography
                       color="textSecondary"
@@ -216,7 +234,7 @@ export default function Profile() {
           </div>
         </Paper>
       </FormProvider>
-      <Paper sx={{ flex: 1 }}>
+      <Paper sx={{ flex: 1, width: { xs: '100%', sm: '90%' } }}>
         <Box className="p-7 px-10 h-full">
           <Typography
             variant="body1"
