@@ -70,9 +70,10 @@ const Register = () => {
     <Box
       width="100%"
       className={`flex flex-col flex-1 justify-center items-center gap-2`}
+      sx={{ backgroundColor: 'background.default'}}
     >
       <LockIcon sx={{ fontSize: "2em" }} className="text-[#463c9e]" />
-      <Typography align="center" fontSize={"2em"}>
+      <Typography align="center" fontSize={"2em"} sx={{ color: 'text.primary'}}>
         Sign Up
       </Typography>
       <form
@@ -88,6 +89,7 @@ const Register = () => {
             label={field.label}
             variant="outlined"
             autoComplete={field.autocomplete ?? ""}
+            sx={{ backgroundColor: 'background.default' }}
             {...register(field.name, { required: true })}
           />
         ))}
@@ -96,11 +98,11 @@ const Register = () => {
           variant="contained"
           disableElevation
         >
-          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} loading={isPendingImage || isPendingUser} >Sign Up</Button>
-          <Typography textAlign="center" variant="overline">
+          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white' }} loading={isPendingImage || isPendingUser} >Sign Up</Button>
+          <Typography textAlign="center" variant="overline" sx={{ color: 'text.secondary' }}>
             Or
           </Typography>
-          <Button onClick={() => navigate("/")} type="button" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular' }} loading={isPendingImage || isPendingUser}>
+          <Button onClick={() => navigate("/")} type="button" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white' }} loading={isPendingImage || isPendingUser}>
             Sign In
           </Button>
         </ButtonGroup>

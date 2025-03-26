@@ -52,7 +52,7 @@ export default function Navbar() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <a href="/workouts">
+              <a href="/workouts" className='max-sm:hidden'>
                 <FitnessCenterIcon
                   sx={{ fontSize: "2em" }}
                   className="text-[#463c9e]"

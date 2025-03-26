@@ -64,7 +64,7 @@ function App() {
               <Route path="/workouts" element={<Menu isParticipe={true} title="Workouts" />} />
               <Route path="/workouts/my-workouts" element={<Menu isParticipe={false} title="My Workouts" />} />
               <Route path="/profile/:id" element={<Profile />} />
-              <Route path="/settings" element={<div className='flex flex-1'><SidebarComponent /><Settings /></div>} />
+              <Route path="/settings" element={<div className='flex flex-1'><div className='max-[961px]:hidden'><SidebarComponent /></div><Settings /></div>} />
             </Routes>
             <Footer />
           </UserProvider>
