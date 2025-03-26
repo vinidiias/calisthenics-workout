@@ -90,6 +90,7 @@ const Register = () => {
             variant="outlined"
             autoComplete={field.autocomplete ?? ""}
             sx={{ backgroundColor: 'background.default' }}
+            defaultValue=''
             {...register(field.name, { required: true })}
           />
         ))}

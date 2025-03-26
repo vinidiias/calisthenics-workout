@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '../../contexts/UserContext';
 import api from '../../services';
+import { useThemeColor } from '../../hooks/useThemeColor';
 
 const style = {
   position: 'absolute',
@@ -53,6 +54,7 @@ const createWorkout = async ({ workout, auth }) => {
 
 export default function TransitionsModal({ openModal, onClose }) {
   const { user } = React.useContext(UserContext)
+  const { isDark } = useThemeColor()
 
   const queryClient = useQueryClient()
 
@@ -157,7 +159,7 @@ export default function TransitionsModal({ openModal, onClose }) {
                               },
                               "& input[type='datetime-local']::-webkit-calendar-picker-indicator":
                                 {
-                                  filter: "invert(1)", // Inverte a cor do ícone (branco em fundo escuro)
+                                  filter: isDark ? "invert(1)" : "invert(0)", // Inverte a cor do ícone (branco em fundo escuro)
                                   cursor: "pointer",
                                 },
                             }}
