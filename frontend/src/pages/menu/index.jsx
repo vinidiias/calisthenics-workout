@@ -129,36 +129,37 @@ const Menu = ({ isParticipe, title }) => {
           {title}
         </Typography>
       </Box>
-      <Box className="flex justify-between items-center gap-10 mb-10">
+      <Box className="flex justify-between items-center gap-10 mb-10 max-sm:flex-col max-sm:gap-5">
         <SearchInput />
-        <Box className="flex items-center">
-          <Typography fontSize="1em" color="text.secondary" className="text-gray-600">
-            Locality
-          </Typography>
-          <FormControl sx={{ m: 1, minWidth: 100 }}>
-            <Select
-              size="small"
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-              defaultValue=""
-              sx={(theme) => ({
-                backgroundColor: theme.palette.input.primary,
-                color: theme.palette.input.secondary,
-                borderColor: `${theme.palette.input.border}`,
-              })}
-              onChange={(e) => setAddressFilter(e.target.value)}
-            >
-              <MenuItem value="">All</MenuItem>
-              {dataAddress &&
-                dataAddress.map((address) => (
-                  <MenuItem key={address._id} value={address._id}>
-                    {address.neighborhood}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-        </Box>
-        {isParticipe && (
+        <Box className="flex items-center gap-5">
+          <div className="flex items-center">
+            <Typography fontSize="1em" color="text.secondary" className="text-gray-600">
+              Locality
+            </Typography>
+            <FormControl sx={{ m: 1, minWidth: 100 }}>
+              <Select
+                size="small"
+                displayEmpty
+                inputProps={{ "aria-label": "Without label" }}
+                defaultValue=""
+                sx={(theme) => ({
+                  backgroundColor: theme.palette.input.primary,
+                  color: theme.palette.input.secondary,
+                  borderColor: `${theme.palette.input.border}`,
+                })}
+                onChange={(e) => setAddressFilter(e.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                {dataAddress &&
+                  dataAddress.map((address) => (
+                    <MenuItem key={address._id} value={address._id}>
+                      {address.neighborhood}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </div>
+          {isParticipe && (
           <Button
             onClick={() => setOpen(true)}
             variant="contained"
@@ -167,6 +168,7 @@ const Menu = ({ isParticipe, title }) => {
             <AddIcon />
           </Button>
         )}
+        </Box>
       </Box>
       <Grid2
         container

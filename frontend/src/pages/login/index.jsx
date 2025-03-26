@@ -100,17 +100,15 @@ const Login = () => {
             Sign Up!
           </Link>
         </Box>
-        <ButtonGroup
+        <Box
           className="flex flex-col gap-2"
-          variant="contained"
-          disableElevation
         >
-          <Button type="submit" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white' }} loading={isPending} >Sign in</Button>
-          <Button sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white' }} loading={isPending} >
+          <Button type="submit" variant="contained" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white', borderRadius: 0, border: 'none' }} loading={isPending} >Sign in</Button>
+          <Button variant="contained" sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white', borderRadius: 0 }} loading={isPending} >
             <GoogleIcon fontSize="small" className="mr-2" />
             Sign in with Google
           </Button>
-        </ButtonGroup>
+        </Box>
       </form>
     </Box>
   );

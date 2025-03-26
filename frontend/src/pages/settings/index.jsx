@@ -103,14 +103,14 @@ export const Settings = () => {
   }
 
   return (
-    <Container disableGutters maxWidth='xl' className={`p-4 ${isDark ? 'bg-[#202124]' : ''} flex justify-center`}>
+    <Container disableGutters maxWidth='xl' className={`p-4 ${isDark ? 'bg-[#202124]' : ''} flex justify-center w-auto`}>
       <UpdatePersonalData
         open={open}
         handleClose={() => setOpen(false)}
         data={filteredData ?? null}
         fields={fields}
       />
-      <div className="flex flex-col gap-7 w-300">
+      <div className="flex flex-col gap-7 w-300 max-lg:w-full max-2xl:w-200 max-[1470px]:w-250 ">
         <Typography fontSize="1.2em" color="text.primary">Settings</Typography>
         <Paper sx={{ padding: 4, paddingX: 5 }}>
           <div className="flex gap-10">
