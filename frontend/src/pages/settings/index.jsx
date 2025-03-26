@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   Divider,
+  Grid,
   Grid2,
   Input,
   OutlinedInput,
@@ -103,7 +104,13 @@ export const Settings = () => {
   }
 
   return (
-    <Container disableGutters maxWidth='xl' className={`p-4 ${isDark ? 'bg-[#202124]' : ''} flex justify-center w-auto`}>
+    <Container
+      disableGutters
+      maxWidth="xl"
+      className={`p-4 ${
+        isDark ? "bg-[#202124]" : ""
+      } flex justify-center w-auto`}
+    >
       <UpdatePersonalData
         open={open}
         handleClose={() => setOpen(false)}
@@ -111,7 +118,9 @@ export const Settings = () => {
         fields={fields}
       />
       <div className="flex flex-col gap-7 w-300 max-lg:w-full max-2xl:w-200 max-[1470px]:w-250 ">
-        <Typography fontSize="1.2em" color="text.primary">Settings</Typography>
+        <Typography fontSize="1.2em" color="text.primary">
+          Settings
+        </Typography>
         <Paper sx={{ padding: 4, paddingX: 5 }}>
           <div className="flex gap-10">
             <img
@@ -143,8 +152,8 @@ export const Settings = () => {
                   handleOpen({ fieldsProps: infos, dataGroupName: "infos" })
                 }
                 sx={{
-                  backgroundColor: 'button.primary',
-                  color: 'white',
+                  backgroundColor: "button.primary",
+                  color: "white",
                   textTransform: "none",
                   fontSize: ".9em",
                 }}
@@ -153,20 +162,26 @@ export const Settings = () => {
               </Button>
             </div>
             <Divider sx={{ marginBottom: 2.5 }} />
-            <div className="flex flex-col gap-5">
+            <Grid2 container rowSpacing={2.5}>
               {infos &&
                 infos.map((info) => (
                   <React.Fragment key={info.label}>
-                    <div className="flex items-center">
-                      <Typography width="40%" fontWeight="medium">
-                        {info.label}
-                      </Typography>
-                      <Typography fontWeight="regular">{info.value}</Typography>
-                    </div>
-                    <Divider />
+                    <Grid2 container size={12}>
+                      <Grid2 size={6}>
+                        <Typography width="40%" fontWeight="medium">
+                          {info.label}
+                        </Typography>
+                      </Grid2>
+                      <Grid2 size={6}>
+                        <Typography fontWeight="regular">
+                          {info.value}
+                        </Typography>
+                      </Grid2>
+                    </Grid2>
+                    <Divider sx={{ width: '100%' }} />
                   </React.Fragment>
                 ))}
-            </div>
+            </Grid2>
           </div>
         </Paper>
         <Paper>
@@ -184,8 +199,8 @@ export const Settings = () => {
                   handleOpen({ fieldsProps: address, dataGroupName: "address" })
                 }
                 sx={{
-                  backgroundColor: 'button.primary',
-                  color: 'white',
+                  backgroundColor: "button.primary",
+                  color: "white",
                   textTransform: "none",
                   fontSize: ".9em",
                 }}
@@ -198,26 +213,26 @@ export const Settings = () => {
               {address &&
                 address.map((info) => (
                   <React.Fragment key={info.label}>
-                    <Grid2 container size={6} key={info.label}>
-                      <Grid2 size={5}>
+                    <Grid2 container size={12} key={info.label}>
+                      <Grid2 size={6}>
                         <Typography fontWeight="medium">
                           {info.label}
                         </Typography>
                       </Grid2>
-                      <Grid2>
+                      <Grid2 size={6}>
                         <Typography fontWeight="regular">
                           {info.value}
                         </Typography>
                       </Grid2>
                     </Grid2>
-                    <Divider sx={{ width: '100%' }} />
+                    <Divider sx={{ width: "100%" }} />
                   </React.Fragment>
                 ))}
               <Divider />
             </Grid2>
           </div>
         </Paper>
-      </div>      
+      </div>
     </Container>
   );
 };
