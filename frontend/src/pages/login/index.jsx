@@ -68,7 +68,11 @@ const Login = () => {
             label={field.label}
             variant="outlined"
             autoComplete={field.autocomplete ?? ""}
-            sx={{ backgroundColor: 'background.default' }}
+            sx={{ backgroundColor: 'background.default',
+              ['.MuiOutlinedInput-root']: {
+                color: 'input.secondary'
+              }
+             }}
             {...register(field.name, { required: true })}
           />
         ))}

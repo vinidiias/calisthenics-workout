@@ -129,6 +129,9 @@ export default function TransitionsModal({ openModal, onClose }) {
                             name={field.name}
                             id={field.name}
                             type={field.type}
+                            sx={{['.MuiOutlinedInput-root']: {
+                              color: 'input.secondary'
+                            }}}
                             {...register(field.name, { required: true })}
                           />
                         );
@@ -141,6 +144,9 @@ export default function TransitionsModal({ openModal, onClose }) {
                             name={field.name}
                             id={field.name}
                             type={field.type}
+                            sx={{['.MuiOutlinedInput-root']: {
+                              color: 'input.secondary'
+                            }}}
                             {...register(field.name, { required: true })}
                           />
                         );
@@ -154,8 +160,9 @@ export default function TransitionsModal({ openModal, onClose }) {
                             id={field.name}
                             type={field.type}
                             sx={{
-                              "& .MuiInputBase-input": {
-                                color: "input.secondary", // Altere para a cor desejada
+                            
+                              ['.MuiOutlinedInput-root']: {
+                                color: 'input.secondary'
                               },
                               "& input[type='datetime-local']::-webkit-calendar-picker-indicator":
                                 {

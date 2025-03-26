@@ -124,9 +124,9 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                           size="small"
                           type={field.type}
                           sx={{
-                            "& .MuiInputBase-input": {
-                              color: "input.secondary", // Altere para a cor desejada
-                            },
+                            ['.MuiOutlinedInput-root']: {
+                              color: 'input.secondary'
+                            }
                           }}
                           {...formMethods.register(field.name)}
                         />
