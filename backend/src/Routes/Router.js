@@ -10,10 +10,11 @@ const routes = Router()
 // User
 routes.post('/user', UserController.create)
 routes.post('/user/auth', UserController.auth)
+routes.post('/user/:userTo', UserController.followUser)
 routes.patch('/user/:id', UserController.updateUser)
 routes.get('/user', UserController.getUsers)
 routes.get('/user/:id', UserController.getUser)
-routes.post('/user/:userTo', UserController.followUser)
+routes.get('/user/:id/followers', UserController.getFollowersByUser)
 
 // Address
 routes.post('/address/create', AddressController.create)

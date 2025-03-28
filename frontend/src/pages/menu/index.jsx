@@ -198,6 +198,7 @@ const Menu = ({ isParticipe, title }) => {
                 }
                 openList={() => openListModal(workout.participants)}
                 loading={isPending}
+                isClick={true}
               />
             </Grid2>
           ))

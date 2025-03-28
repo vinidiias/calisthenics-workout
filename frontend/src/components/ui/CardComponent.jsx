@@ -7,6 +7,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  Divider,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,6 +16,8 @@ import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import styles from './CardComponent.module.css'
 import { useThemeColor } from "../../hooks/useThemeColor";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import CommentIcon from '@mui/icons-material/Comment';
 
 const CardComponent = ({
   index,
@@ -27,6 +30,7 @@ const CardComponent = ({
   date,
   mutateAsync,
   openList,
+  isClick,
   loading
 }) => {
   const { user } = useContext(UserContext)
@@ -42,73 +46,135 @@ const CardComponent = ({
   }
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
-        <CardMedia component="img" height={140} image={img} alt={alt} />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div" color="text.primay">
-            {title}
-          </Typography>
-          <Typography marginBottom={1} variant="body1" color="text.secondary">
-            {description}
-          </Typography>{" "}
-          <Typography
-            display="flex"
-            alignSelf="center"
-            gap={0.5}
-            variant="subtitle1"
-            color="text.secondary"
-          >
-            <DateRangeIcon />{" "}
-            <span>
-              {dateFormatted.toLocaleDateString()} às{" "}
-              {dateFormatted.toLocaleTimeString()}
-            </span>
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions
-        className={`${
-          !textBtn || (participants && participants.length === 0)
-            ? `${styles.justify_center}`
-            : ""
-        }`}
-      >
-        {textBtn && (
-          <Button
-            onClick={handleSubscription}
-            loadingPosition="end"
-            endIcon={<AddIcon />}
-            variant="contained"
-            sx={{
-              marginRight: `${
-                participants && participants.length !== 0 ? "5px" : "0px"
-              }`,
-              textTransform: "none",
-              fontSize: "1em",
-              fontWeight: "regular",
-              backgroundColor: 'button.primary',
-              color: 'white'
-            }}
-            loading={loading}
-          >
-            {textBtn}
-          </Button>
-        )}
-        {participants && participants.length !== 0 && (
-          <Button onClick={openList}>
-            <AvatarGroup
-              max={4}
-              spacing="medium"
-              sx={{ ".MuiAvatarGroup-avatar": { width: 30, height: 30, cursor: "pointer" } }}
+    <Card
+      sx={{
+        maxWidth: isClick ? 345 : '100%',
+        backgroundColor: isClick ? "" : "transparent",
+      }}
+      elevation={isClick ? 1 : 0}
+    >
+      {isClick ? (
+        <CardActionArea>
+          <CardMedia component="img" height={140} image={img} alt={alt} />
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              color="text.primary"
             >
-              {participants.map((avatar, index) => (
-                <Avatar key={index} alt="profile photo" src={avatar?.photo} />
-              ))}
-            </AvatarGroup>
-          </Button>
-        )}
-      </CardActions>
+              {title}
+            </Typography>
+            <Typography marginBottom={1} variant="body1" color="text.secondary">
+              {description}
+            </Typography>
+            {date && (
+              <Typography
+                display="flex"
+                alignSelf="center"
+                gap={0.5}
+                variant="subtitle1"
+                color="text.secondary"
+              >
+                <DateRangeIcon />{" "}
+                <span>
+                  {dateFormatted.toLocaleDateString()} às{" "}
+                  {dateFormatted.toLocaleTimeString()}
+                </span>
+              </Typography>
+            )}
+          </CardContent>
+        </CardActionArea>
+      ) : (
+        <CardContent>
+          <CardMedia component="img" height={140} image={img} alt={alt} />
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              color="text.primay"
+            >
+              {title}
+            </Typography>
+            <Typography marginBottom={1} variant="body1" color="text.secondary" fontSize='1em'>
+              {description}
+            </Typography>
+            <Button onClick={openList} sx={{ minWidth: 0, padding: 0 }}>
+              <AvatarGroup
+                max={4}
+                spacing="medium"
+                sx={{
+                  ".MuiAvatarGroup-avatar": {
+                    width: 30,
+                    height: 30,
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                {participants?.map((avatar, index) => (
+                  <Avatar key={index} alt="profile photo" src={avatar?.photo} />
+                ))}
+              </AvatarGroup>
+            </Button>
+            <Divider sx={{ my: 2 }} />
+            <div className="flex items-center justify-around">
+              <Button sx={{ textTransform: 'none', color: 'text.secondary' }} startIcon={<FavoriteIcon />}>Like</Button>
+              <Button sx={{ textTransform: 'none', color: 'text.secondary' }} startIcon={<CommentIcon />}>Comment</Button>
+            </div>
+          </CardContent>
+        </CardContent>
+      )}
+      {isClick && (
+        <CardActions
+          className={`${
+            !textBtn || (participants && participants.length === 0)
+              ? `${styles.justify_center}`
+              : ""
+          }`}
+        >
+          {textBtn && (
+            <Button
+              onClick={handleSubscription}
+              loadingPosition="end"
+              endIcon={<AddIcon />}
+              variant="contained"
+              sx={{
+                marginRight: `${
+                  participants && participants.length !== 0 ? "5px" : "0px"
+                }`,
+                textTransform: "none",
+                fontSize: "1em",
+                fontWeight: "regular",
+                backgroundColor: "button.primary",
+                color: "white",
+              }}
+              loading={loading}
+            >
+              {textBtn}
+            </Button>
+          )}
+          {isClick && participants && participants.length !== 0 && (
+            <Button onClick={openList}>
+              <AvatarGroup
+                max={4}
+                spacing="medium"
+                sx={{
+                  ".MuiAvatarGroup-avatar": {
+                    width: 30,
+                    height: 30,
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                {participants.map((avatar, index) => (
+                  <Avatar key={index} alt="profile photo" src={avatar?.photo} />
+                ))}
+              </AvatarGroup>
+            </Button>
+          )}
+        </CardActions>
+      )}
     </Card>
   );
 };
