@@ -1,5 +1,6 @@
 const Workout = require('../Models/Workout')
-const OutdoorGym = require('../Models/OutdoorGym')
+const OutdoorGym = require('../Models/OutdoorGym');
+const User = require('../Models/User');
 
 async function markExpiredWorkouts() {
     const now = new Date();
@@ -26,7 +27,14 @@ module.exports = {
 
         console.log(title , description, outdoorGym, date, auth)
         try {
+            const user = await User.findById(auth)
+
+            if(!user) {
+                return res.status(401).json({ message: 'User not found' })
+            }
+
             const outdoorGymExists = await OutdoorGym.findById(outdoorGym)
+
             if(!outdoorGymExists) {
                 return res.status(401).send('Outdoor Gym does not exist')    
             }
@@ -43,8 +51,11 @@ module.exports = {
             if(!workoutCreated) {
                 return res.status(400).status('Error to create workout', workoutCreated)
             }
+
+            user.history.push(workoutCreated._id)
+            user.save()
+
             const newWorkout = await workoutCreated.populate('outdoorGym')
-            console.log(newWorkout)
             return res.status(201).send(newWorkout)
 
         } catch(err) {

@@ -80,7 +80,13 @@ module.exports = {
         const { id } = req.params
 
         try {
-            const user = await User.findById(id).select('-password')
+            const user = await User.findById(id).select('-password').populate({
+                path: 'history',
+                populate: [
+                    { path: 'outdoorGym' },
+                    { path: 'participants' },
+                ]
+            }).populate('followers')
 
             if(!user) {
                 return res.status(404).json({ message: 'User not found' })
@@ -146,6 +152,21 @@ module.exports = {
             return res.status(200).json({ userFrom: user, userTo: userFriend })
         } catch(err) {
             return res.status(500).json({Error: 'Error to follow user', Details: err.message})
+        }
+    },
+    async getFollowersByUser(req, res) {
+        const { id } = req.params;
+
+        try {
+            const user = await User.findById(id)
+
+            if(!user) {
+                return res.status(404).json({ message: 'User not found' })
+            }
+
+            return res.status(200).json(user.followers)
+        } catch(err) {
+            return res.status(500).json({Error: 'Error to get followers', Details: err.message})
         }
     }
 }

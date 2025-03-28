@@ -29,9 +29,9 @@ export default function Navbar() {
         isDark
           ? "bg-[#202124] border-b-gray-600/50 border-b-solid border-b-1"
           : "bg-[#fff] border-b-gray-800/10 border-b-solid border-b-1"
-      } w-full z-1500`}
+      } w-full z-150000`}
     >
-      <div className="mx-auto max-w-[1700px] px-2 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[2000px] px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button*/}

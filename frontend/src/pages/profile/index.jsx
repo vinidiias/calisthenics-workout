@@ -2,16 +2,17 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 
 import api from "../../services";
+import UploadButton from "../../components/form/UploadButton";
+import CardComponent from "../../components/ui/CardComponent";
 import CssBaseline from "@mui/material/CssBaseline";
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Grid2, Paper, Stack, Typography } from "@mui/material";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import UploadButton from "../../components/form/UploadButton";
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useThemeColor } from "../../hooks/useThemeColor";
@@ -72,7 +73,7 @@ export default function Profile() {
     queryKey: ['user'],
     queryFn: () => getUser({ id: params.id, auth: user._id })
   })
-
+console.log(data)
   useEffect(() => {
     if (watchBackPhoto) {
       createBackPhotoFn(watchBackPhoto[0])
@@ -86,12 +87,12 @@ export default function Profile() {
       padding={2}
       display="flex"
       flexDirection="column"
-      alignItems='center'
+      alignItems="center"
       gap={4}
-      sx={{ backgroundColor: "background.primary", width: '100%' }}
+      sx={{ backgroundColor: "background.primary", width: "100%" }}
     >
       <FormProvider {...methods}>
-        <Paper sx={{ width: { xs: '100%', sm: '90%' } }}>
+        <Paper sx={{ width: { xs: "100%", sm: "80%" } }}>
           <div className="relative text-right">
             {data?.backgroundPhoto ? (
               <img
@@ -136,14 +137,14 @@ export default function Profile() {
             )}
           </div>
           <CssBaseline />
-          <div className="flex flex-col p-7 px-10 relative z-20000">
+          <div className="flex flex-col p-7 px-10 items-center lg:items-start relative z-20000">
             <img
               src={data?.photo}
               alt=""
               className=" h-25 w-25 br-10 mt-30 object-cover rounded-[100px] outline-white outline-5"
               style={{ outlineColor: isDark ? "rgb(45 46 49)" : "#fff" }}
             />
-            <Box display="flex" flexDirection="column" width='100%'>
+            <Box display="flex" flexDirection="column" width="100%">
               <Box
                 display="flex"
                 component="section"
@@ -158,7 +159,7 @@ export default function Profile() {
                   },
                 }}
               >
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col items-center lg:items-start gap-1">
                   <div className="flex items-center mt-1 gap-3">
                     <Typography
                       variant="h4"
@@ -189,9 +190,11 @@ export default function Profile() {
                       </Button>
                     )}
                   </div>
-                  <Typography variant="body1" fontWeight='light'>{data?.biography}</Typography>
+                  <Typography variant="body1" fontWeight="light">
+                    {data?.biography}
+                  </Typography>
                 </div>
-                <Stack flexDirection="row" sx={{ gap: { xs: 5, sm: 10}}} >
+                <Stack flexDirection="row" sx={{ gap: { xs: 5, sm: 10 }, justifyContent: 'center' }} className='items-center lg:items-start'>
                   <Box display="flex" flexDirection="column">
                     <Typography
                       color="textSecondary"
@@ -234,21 +237,59 @@ export default function Profile() {
           </div>
         </Paper>
       </FormProvider>
-      <Paper sx={{ flex: 1, width: { xs: '100%', sm: '90%' } }}>
-        <Box className="p-7 px-10 h-full">
-          <Typography
-            variant="body1"
-            fontSize="large"
-            color="textSecondary"
-            fontWeight="regular"
-          >
-            Atividades
-          </Typography>
-          <div className="text-center mt-13">
-            <Typography>Nenhuma Atividade</Typography>
-          </div>
+      <Box display="flex" className='flex-col lg:flex-row' gap={5} sx={{ width: { xs: "100%", sm: "80%" } }}>
+        <Paper>
+          <Box className="flex flex-col gap-5 p-7 px-10 h-full">
+            <Typography
+              variant="body1"
+              fontSize="large"
+              color="textSecondary"
+              fontWeight="regular"
+            >
+              Friends
+            </Typography>
+            <Grid2 container size={12} justifyContent='space-between' rowSpacing={2} columnSpacing={5}>
+              {data?.followers?.slice(0, 9).map((follower) => (
+                <Grid2 size={4}>
+                  <Button sx={{ display: 'flex', flexDirection: 'column', textTransform: 'none', color: 'white', fontSize: '16px', alignItems: 'start' }}>
+                    <Avatar variant="rounded" alt={`${follower.name}-photo`} src={follower.photo} sx={{ width: 100, height: 100 }} />
+                    <Typography
+                      variant="body1"
+                      fontWeight="medium"
+                      fontSize="1em"
+                      textAlign='left'
+                    >
+                      {follower.name}
+                    </Typography>
+                  </Button>
+                </Grid2>
+              ))}
+            </Grid2>
+          </Box>
+        </Paper>
+        <Box display='flex' flexDirection='column' gap={5} sx={{ flex: 1 }}>
+          {data?.history?.map(hist => {
+            const date = new Date(hist.date)
+            console.log(date)
+            return (
+              <Paper>
+              <Box className="flex items-center gap-3 p-4">
+                <Avatar src={data?.photo} sx={{ width: 60, height: 60}} />
+                <div>
+                  <Typography variant="body1" fontSize="1em" color="text.primary" fontWeight="regular">
+                    {data?.name}
+                  </Typography>
+                  <Typography variant="body2" fontSize="" color="text.secondary" fontWeight="regular">
+                    {`${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`}
+                  </Typography>
+                </div>
+              </Box>
+              <CardComponent index={hist?._id} img={hist?.outdoorGym?.photo} title={hist?.title} description={hist?.description} participants={hist?.participants} isClick={false} />
+            </Paper>
+            )
+          })}
         </Box>
-      </Paper>
+      </Box>
     </Box>
   );
 }

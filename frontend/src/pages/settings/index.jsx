@@ -75,8 +75,8 @@ export const Settings = () => {
     const filteredAddress = {};
   
     // Filtrando os dados de 'infos'
-    infos.forEach(info => {
-      if (Object.prototype.hasOwnProperty.call(data, info.name)) {
+    infos?.forEach(info => {
+      if (Object.prototype.hasOwnProperty.call(data, info?.name)) {
         filteredInfos[info.name] = data[info.name];
       }
     });
