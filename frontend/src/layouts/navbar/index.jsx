@@ -6,8 +6,7 @@ import { useContext, useState } from 'react'
 import { useCurrentIndex } from '../../hooks/useCurrentIndex';
 import { UserContext } from '../../contexts/UserContext';
 import { useThemeColor } from '../../hooks/useThemeColor';
-import { Typography } from '@mui/material';
-
+import { IconLogo } from '../../components/logo/logo_org';
 const navigation = [
   { name: 'Workouts', href: '/workouts', current: true },
   { name: 'My Workouts', href: '/workouts/my-workouts', current: false },
@@ -50,13 +49,10 @@ export default function Navbar() {
               </DisclosureButton>
             )}
           </div>
-          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+          <div className="flex flex-1 items-center justify-center sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <a href="/workouts" className='max-sm:hidden'>
-                <FitnessCenterIcon
-                  sx={{ fontSize: "2em" }}
-                  className="text-[#463c9e]"
-                />
+              <a href="/workouts" className='w-13'>
+                <IconLogo />
               </a>
             </div>
             {user.isLogged && (

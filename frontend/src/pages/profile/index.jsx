@@ -7,7 +7,7 @@ import CardComponent from "../../components/ui/CardComponent";
 import CssBaseline from "@mui/material/CssBaseline";
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
-import { Avatar, Button, Grid2, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Grid, Grid2, Paper, Stack, Typography } from "@mui/material";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
@@ -73,7 +73,6 @@ export default function Profile() {
     queryKey: ['user'],
     queryFn: () => getUser({ id: params.id, auth: user._id })
   })
-console.log(data)
   useEffect(() => {
     if (watchBackPhoto) {
       createBackPhotoFn(watchBackPhoto[0])
@@ -86,208 +85,311 @@ console.log(data)
       flexGrow={1}
       padding={2}
       display="flex"
-      flexDirection="column"
-      alignItems="center"
+      justifyContent="center"
       gap={4}
-      sx={{ backgroundColor: "background.primary", width: "100%" }}
+      sx={{ backgroundColor: "background.primary" }}
     >
-      <FormProvider {...methods}>
-        <Paper sx={{ width: { xs: "100%", sm: "80%" } }}>
-          <div className="relative text-right">
-            {data?.backgroundPhoto ? (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
+          width: { xs: "100%", sm: "80%" },
+        }}
+      >
+        <FormProvider {...methods}>
+          <Paper>
+            <div className="relative text-right">
+              {data?.backgroundPhoto ? (
+                <div className="absolute w-full h-[300px]">
+                  <img
+                    src={data?.backgroundPhoto}
+                    alt="Background"
+                    className="object-cover w-full h-full"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                </div>
+              ) : (
+                <div className="w-full h-[300px] bg-gray-300"></div>
+              )}
+              {isMe && !openEdit && (
+                <EditIcon
+                  htmlColor="#FFF"
+                  className="cursor-pointer absolute top-3 right-3 z-30"
+                  onClick={() => setOpenEdit(true)}
+                />
+              )}
+              {isMe && openEdit && (
+                <div className="absolute flex gap-3 w-full justify-end p-3 z-30000">
+                  <Button
+                    variant="contained"
+                    color="error"
+                    size="small"
+                    sx={{ textTransform: "none" }}
+                  >
+                    Delete Photo
+                  </Button>
+                  <UploadButton name="backgroundPhoto" />
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      textTransform: "none",
+                      backgroundColor: "button.primary",
+                      color: "white",
+                      padding: 0,
+                    }}
+                    onClick={() => setOpenEdit(false)}
+                  >
+                    <CloseIcon />
+                  </Button>
+                </div>
+              )}
+            </div>
+            <CssBaseline />
+            <div className="flex flex-col p-7 mt-10 items-center lg:items-start relative z-20000">
               <img
-                src={data?.backgroundPhoto}
+                src={data?.photo}
                 alt=""
-                className="object-cover w-full h-50 absolute"
+                className=" h-45 w-45 br-10 mt-30 object-cover rounded-[100px] outline-white outline-5"
+                style={{ outlineColor: isDark ? "rgb(45 46 49)" : "#fff" }}
               />
-            ) : (
-              <div className="w-full h-50 absolute bg-gray-300"></div>
-            )}
-            {isMe && !openEdit && (
-              <EditIcon
-                htmlColor="#FFF"
-                className="cursor-pointer absolute top-3 right-3 z-30000"
-                onClick={() => setOpenEdit(true)}
-              />
-            )}
-            {isMe && openEdit && (
-              <div className="absolute flex gap-3 w-full justify-end p-3 z-30000">
-                <Button
-                  variant="contained"
-                  color="error"
-                  size="small"
-                  sx={{ textTransform: "none" }}
-                >
-                  Delete Photo
-                </Button>
-                <UploadButton name="backgroundPhoto" />
-                <Button
-                  variant="contained"
-                  size="small"
+              <Box display="flex" flexDirection="column" width="100%">
+                <Box
+                  display="flex"
+                  component="section"
+                  justifyContent="space-between"
+                  width="100%"
+                  marginBottom={2}
                   sx={{
-                    textTransform: "none",
-                    backgroundColor: "var(--color-gray-700)",
-                    padding: 0,
+                    flexDirection: "row",
+                    "@media (max-width: 1000px)": {
+                      flexDirection: "column",
+                      gap: 5,
+                    },
                   }}
-                  onClick={() => setOpenEdit(false)}
                 >
-                  <CloseIcon />
-                </Button>
-              </div>
-            )}
-          </div>
-          <CssBaseline />
-          <div className="flex flex-col p-7 px-10 items-center lg:items-start relative z-20000">
-            <img
-              src={data?.photo}
-              alt=""
-              className=" h-25 w-25 br-10 mt-30 object-cover rounded-[100px] outline-white outline-5"
-              style={{ outlineColor: isDark ? "rgb(45 46 49)" : "#fff" }}
-            />
-            <Box display="flex" flexDirection="column" width="100%">
-              <Box
-                display="flex"
-                component="section"
-                justifyContent="space-between"
-                width="100%"
-                marginBottom={2}
-                sx={{
-                  flexDirection: "row",
-                  "@media (max-width: 1000px)": {
-                    flexDirection: "column",
-                    gap: 5,
-                  },
-                }}
-              >
-                <div className="flex flex-col items-center lg:items-start gap-1">
-                  <div className="flex items-center mt-1 gap-3">
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        fontSize: "2.125rem",
-                        "@media (max-width: 480px)": {
-                          fontSize: "1.8rem",
-                        },
-                      }}
-                    >
-                      {data?.name}
-                    </Typography>
-                    {!isMe && (
-                      <Button
-                        variant="contained"
-                        size="small"
+                  <div className="flex flex-col items-center lg:items-start gap-1">
+                    <div className="flex items-center mt-1 gap-3">
+                      <Typography
+                        variant="h4"
                         sx={{
-                          textTransform: "none",
-                          fontSize: ".9em",
-                          fontWeight: "regular",
-                          backgroundColor: "var(--color-gray-700)",
-                          borderRadius: 5,
+                          fontSize: "2.125rem",
+                          "@media (max-width: 480px)": {
+                            fontSize: "1.8rem",
+                          },
                         }}
                       >
-                        {user.following.includes(data?._id)
-                          ? "Stop Following"
-                          : "Follow"}
-                      </Button>
-                    )}
+                        {data?.name}
+                      </Typography>
+                      {!isMe && (
+                        <Button
+                          variant="contained"
+                          size="small"
+                          sx={{
+                            textTransform: "none",
+                            fontSize: ".9em",
+                            fontWeight: "regular",
+                            backgroundColor: "var(--color-gray-700)",
+                            borderRadius: 5,
+                          }}
+                        >
+                          {user.following.includes(data?._id)
+                            ? "Stop Following"
+                            : "Follow"}
+                        </Button>
+                      )}
+                    </div>
+                    <Typography variant="body1" fontWeight="light">
+                      {data?.biography}
+                    </Typography>
                   </div>
-                  <Typography variant="body1" fontWeight="light">
-                    {data?.biography}
-                  </Typography>
-                </div>
-                <Stack flexDirection="row" sx={{ gap: { xs: 5, sm: 10 }, justifyContent: 'center' }} className='items-center lg:items-start'>
-                  <Box display="flex" flexDirection="column">
-                    <Typography
-                      color="textSecondary"
-                      fontWeight="regular"
-                      variant="body1"
-                    >
-                      Followers
-                    </Typography>
-                    <Typography fontSize="1.6em" fontWeight="medium">
-                      {data?.followers.length}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" flexDirection="column">
-                    <Typography
-                      color="textSecondary"
-                      fontWeight="regular"
-                      variant="body1"
-                    >
-                      Following
-                    </Typography>
-                    <Typography fontSize="1.6em" fontWeight="medium">
-                      {data?.following.length}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" flexDirection="column">
-                    <Typography
-                      color="textSecondary"
-                      fontWeight="regular"
-                      variant="body1"
-                    >
-                      Workouts
-                    </Typography>
-                    <Typography fontSize="1.6em" fontWeight="medium">
-                      {data?.history.length}
-                    </Typography>
-                  </Box>
-                </Stack>
+                  <Stack
+                    flexDirection="row"
+                    sx={{ gap: { xs: 5, sm: 10 }, justifyContent: "center" }}
+                    className="items-center lg:items-start"
+                  >
+                    <Box display="flex" flexDirection="column">
+                      <Typography
+                        color="textSecondary"
+                        fontWeight="regular"
+                        variant="body1"
+                      >
+                        Followers
+                      </Typography>
+                      <Typography fontSize="1.6em" fontWeight="medium">
+                        {data?.followers.length}
+                      </Typography>
+                    </Box>
+                    <Box display="flex" flexDirection="column">
+                      <Typography
+                        color="textSecondary"
+                        fontWeight="regular"
+                        variant="body1"
+                      >
+                        Following
+                      </Typography>
+                      <Typography fontSize="1.6em" fontWeight="medium">
+                        {data?.following.length}
+                      </Typography>
+                    </Box>
+                    <Box display="flex" flexDirection="column">
+                      <Typography
+                        color="textSecondary"
+                        fontWeight="regular"
+                        variant="body1"
+                      >
+                        Workouts
+                      </Typography>
+                      <Typography fontSize="1.6em" fontWeight="medium">
+                        {data?.history.length}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Box>
               </Box>
+            </div>
+          </Paper>
+        </FormProvider>
+        <Box className="flex flex-col lg:flex-row" gap={2} flex={1}>
+          <Paper
+            sx={
+              data?.followers?.length === 0
+                ? { flex: 1 }
+                : { alignSelf: "flex-start", position: "sticky", top: 0 }
+            }
+          >
+            <Box className="flex flex-col gap-2 p-7">
+              <Typography
+                variant="body1"
+                fontSize="large"
+                color="textSecondary"
+                fontWeight="regular"
+              >
+                Friends
+              </Typography>
+              <Grid2
+                container
+                columns={3}
+                rowSpacing={2}
+                spacing={1}
+                sx={{
+                  justifyContent: {
+                    xs: "center",
+                    sm: "space-between",
+                    lg: "start",
+                  },
+                }}
+                wrap="wrap"
+              >
+                {data ? (
+                  <>
+                    {data?.followers?.slice(0, 9).map((follower) => (
+                      <Grid2 key={follower._id} size="auto">
+                        <Button
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            textTransform: "none",
+                            color: "white",
+                            fontSize: "16px",
+                            alignItems: "start",
+                            width: "auto",
+                          }}
+                        >
+                          <div className="w-[min-content]">
+                            <Avatar
+                              variant="rounded"
+                              alt={`${follower.name}-photo`}
+                              src={follower.photo}
+                              sx={{
+                                minWidth: { xs: "130px" },
+                                minHeight: { xs: "130px" },
+                              }}
+                            />
+                            <Typography
+                              variant="body1"
+                              fontWeight="medium"
+                              fontSize="1em"
+                              textAlign="left"
+                              sx={{
+                                color: "text.primary",
+                                wordBreak: "break-word",
+                              }}
+                            >
+                              {follower.name}
+                            </Typography>
+                          </div>
+                        </Button>
+                      </Grid2>
+                    ))}
+                  </>
+                ) : (
+                  <Grid2>
+                    <Typography textAlign="center" variant="body1">
+                      No friends
+                    </Typography>
+                  </Grid2>
+                )}
+              </Grid2>
             </Box>
-          </div>
-        </Paper>
-      </FormProvider>
-      <Box display="flex" className='flex-col lg:flex-row' gap={5} sx={{ width: { xs: "100%", sm: "80%" } }}>
-        <Paper>
-          <Box className="flex flex-col gap-5 p-7 px-10 h-full">
-            <Typography
-              variant="body1"
-              fontSize="large"
-              color="textSecondary"
-              fontWeight="regular"
-            >
-              Friends
-            </Typography>
-            <Grid2 container size={12} justifyContent='space-between' rowSpacing={2} columnSpacing={5}>
-              {data?.followers?.slice(0, 9).map((follower) => (
-                <Grid2 size={4}>
-                  <Button sx={{ display: 'flex', flexDirection: 'column', textTransform: 'none', color: 'white', fontSize: '16px', alignItems: 'start' }}>
-                    <Avatar variant="rounded" alt={`${follower.name}-photo`} src={follower.photo} sx={{ width: 100, height: 100 }} />
-                    <Typography
-                      variant="body1"
-                      fontWeight="medium"
-                      fontSize="1em"
-                      textAlign='left'
-                    >
-                      {follower.name}
-                    </Typography>
-                  </Button>
-                </Grid2>
-              ))}
-            </Grid2>
+          </Paper>
+          <Box display="flex" flexDirection="column" gap={5} flex={2}>
+            {data?.history?.length > 0 ? (
+              <>
+                {data.history?.map((hist) => {
+                  const date = new Date(hist.date);
+                  return (
+                    <Paper key={hist._id} sx={{ flexGrow: 1 }}>
+                      <Box className="flex items-center gap-3 p-4">
+                        <Avatar
+                          src={data?.photo}
+                          sx={{ width: 60, height: 60 }}
+                        />
+                        <div>
+                          <Typography
+                            variant="body1"
+                            fontSize="1em"
+                            color="text.primary"
+                            fontWeight="regular"
+                          >
+                            {data?.name}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            fontSize=""
+                            color="text.secondary"
+                            fontWeight="regular"
+                          >
+                            {`${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`}
+                          </Typography>
+                        </div>
+                      </Box>
+                      <CardComponent
+                        index={hist?._id}
+                        img={hist?.outdoorGym?.photo}
+                        title={hist?.title}
+                        description={hist?.description}
+                        participants={hist?.participants}
+                        isClick={false}
+                      />
+                    </Paper>
+                  );
+                })}
+              </>
+            ) : (
+              <Paper
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flex: 1,
+                }}
+              >
+                <Typography>Sem atividades</Typography>
+              </Paper>
+            )}
           </Box>
-        </Paper>
-        <Box display='flex' flexDirection='column' gap={5} sx={{ flex: 1 }}>
-          {data?.history?.map(hist => {
-            const date = new Date(hist.date)
-            console.log(date)
-            return (
-              <Paper>
-              <Box className="flex items-center gap-3 p-4">
-                <Avatar src={data?.photo} sx={{ width: 60, height: 60}} />
-                <div>
-                  <Typography variant="body1" fontSize="1em" color="text.primary" fontWeight="regular">
-                    {data?.name}
-                  </Typography>
-                  <Typography variant="body2" fontSize="" color="text.secondary" fontWeight="regular">
-                    {`${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`}
-                  </Typography>
-                </div>
-              </Box>
-              <CardComponent index={hist?._id} img={hist?.outdoorGym?.photo} title={hist?.title} description={hist?.description} participants={hist?.participants} isClick={false} />
-            </Paper>
-            )
-          })}
         </Box>
       </Box>
     </Box>

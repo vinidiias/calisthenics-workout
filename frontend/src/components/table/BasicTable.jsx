@@ -4,7 +4,7 @@ import { Button, Typography } from "@mui/material";
 import { UserContext } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 
-export const BasicTable = ({ dataTable, handleFollow, search, setSearch }) => {
+export const BasicTable = ({ dataTable, handleFollow, search }) => {
   const { user } = useContext(UserContext)
   const navigate = useNavigate()
 
@@ -29,7 +29,7 @@ export const BasicTable = ({ dataTable, handleFollow, search, setSearch }) => {
           <div className="flex flex-col gap-2">
             <Typography
               onClick={() => navigate(`/profile/${row.original._id}`)}
-              sx={{ cursor: "pointer"}}
+              sx={{ cursor: "pointer", color: 'text.primary'}}
             >
               {row.original.name}
             </Typography>
@@ -50,7 +50,8 @@ export const BasicTable = ({ dataTable, handleFollow, search, setSearch }) => {
                     textTransform: "none",
                     fontSize: ".9em",
                     fontWeight: "regular",
-                    backgroundColor: "var(--color-gray-700)",
+                    backgroundColor: "button.primary",
+                    color: 'white',
                     borderRadius: 5,
                   }}
                   onClick={() => handleFollow({ userFrom: user._id, userTo: row.original._id })}
@@ -92,7 +93,7 @@ export const BasicTable = ({ dataTable, handleFollow, search, setSearch }) => {
                 <tr key={row.id} className="flex items-start mb-5">
                   {row.getVisibleCells().map((cell) => (
                     <>
-                      <td key={cell.id} className="px-3">
+                      <td key={cell.id} className="px-3 flex-1">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
