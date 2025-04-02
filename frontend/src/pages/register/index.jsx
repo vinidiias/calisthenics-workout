@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, TextField, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, TextField, Toolbar, Typography, useMediaQuery } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
@@ -52,6 +52,7 @@ const Register = () => {
     { name: "photo", type: "file" },
     { name: "name", label: "Name", type: "text" },
     { name: "email", label: "Email", type: "email" },
+    { name: "phone", label: "Phone", type: "text" },
     {
       name: "password",
       label: "Password",
@@ -65,6 +66,9 @@ const Register = () => {
       autocomplete: "new-password",
     },
   ];
+
+  const isLargeScreen = useMediaQuery("(min-width:1600px)");
+
 
   return (
     <Box
@@ -88,11 +92,12 @@ const Register = () => {
             id={field.name}
             label={field.label}
             variant="outlined"
+            size={isLargeScreen ? "medium" : "small"}
             autoComplete={field.autocomplete ?? ""}
             sx={{ backgroundColor: 'background.default',
               ['.MuiOutlinedInput-root']: {
                 color: 'input.secondary'
-              }
+              },
              }}
             defaultValue=''
             {...register(field.name, { required: true })}

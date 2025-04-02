@@ -6,7 +6,7 @@ function UploadButton({ name, handleClick }) {
   const { register } = useFormContext();
 
   return (
-    <Button variant="contained" size="small" component="label" onClick={handleClick} sx={{ textTransform: 'none'}}>
+    <Button variant="contained" size="small" component="label" onClick={handleClick} sx={{ textTransform: 'none', backgroundColor: 'button.primary', color: 'white'}}>
       <label htmlFor={name} className="custom-file-button">
         Choose Photo
       </label>

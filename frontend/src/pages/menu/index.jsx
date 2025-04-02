@@ -113,9 +113,8 @@ const Menu = ({ isParticipe, title }) => {
 
   return (
     <Box
-      sx={{ flex: 1, padding: 5, display: "flex", flexDirection: "column", backgroundColor: 'background.default' }}
+      sx={{ flex: 1, padding: 5, display: "flex", flexDirection: "column", backgroundColor: 'background.default', overflowY: 'clip' }}
       className="bg-gray-50"
-
     >
       <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
       <ParticipantsListModal

@@ -13,7 +13,7 @@ async function hashedPassword(password) {
 
 module.exports = {
     async create(req, res) {
-        const { photo, name, email, password, confirmPassword} = req.body
+        const { photo, name, phone, email, password, confirmPassword} = req.body
         
         try {
             if(password !== confirmPassword) {
@@ -31,6 +31,7 @@ module.exports = {
                 photo,
                 name,
                 email,
+                phone,
                 followers: [],
                 following: [],
                 history: [],

@@ -121,7 +121,7 @@ export const Settings = () => {
         <Typography fontSize="1.2em" color="text.primary">
           Settings
         </Typography>
-        <Paper sx={{ padding: 4, paddingX: 5 }}>
+        <Paper sx={{ padding: 4, paddingX: 5 }} elevation={2}>
           <div className="flex gap-10">
             <img
               src={data?.photo}
@@ -137,7 +137,7 @@ export const Settings = () => {
             </div>
           </div>
         </Paper>
-        <Paper>
+        <Paper elevation={2}>
           <div className="p-8">
             <div className="flex justify-between mb-3">
               <Typography fontSize="1.2em" fontWeight="regular">
@@ -184,7 +184,7 @@ export const Settings = () => {
             </Grid2>
           </div>
         </Paper>
-        <Paper>
+        <Paper elevation={2}>
           <div className="p-8">
             <div className="flex justify-between mb-3">
               <Typography fontSize="1.2em" fontWeight="regular">

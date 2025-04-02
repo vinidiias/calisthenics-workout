@@ -51,7 +51,7 @@ const CardComponent = ({
         maxWidth: isClick ? 345 : '100%',
         backgroundColor: isClick ? "" : "transparent",
       }}
-      elevation={isClick ? 1 : 0}
+      elevation={isClick ? 2 : 0}
     >
       {isClick ? (
         <CardActionArea>

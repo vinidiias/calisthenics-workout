@@ -11,5 +11,5 @@ export const useCurrentIndex = () => {
     
     const index = paths.findIndex((path) => path.path === location.pathname)
 
-    return index !== - 1 ? index : 0
+    return index !== - 1 ? index : -1
 }
