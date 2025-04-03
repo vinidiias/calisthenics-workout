@@ -106,7 +106,7 @@ export const Settings = () => {
   return (
     <Container
       disableGutters
-      maxWidth="xl"
+      maxWidth="100%"
       className={`p-4 ${
         isDark ? "bg-[#202124]" : ""
       } flex justify-center w-auto`}

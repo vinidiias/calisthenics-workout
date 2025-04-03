@@ -25,7 +25,7 @@ module.exports = {
         const { title, description, outdoorGym, date } = req.body
         const { auth } = req.headers
 
-        console.log(title , description, outdoorGym, date, auth)
+        console.log(title, description, outdoorGym, date, auth)
         try {
             const user = await User.findById(auth)
 
@@ -45,7 +45,7 @@ module.exports = {
                 outdoorGym: outdoorGym,
                 creator: auth,
                 participants: [],
-                date: new Date(date)
+                date: date
             })
 
             if(!workoutCreated) {
