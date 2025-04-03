@@ -68,6 +68,7 @@ const Menu = ({ isParticipe, title }) => {
 
   const [dataFiltered, setDataFiltered] = useState(data || [])
 
+  console.log(data)
 
   const { mutateAsync: subscribeToWorkoutFn, isPending } = useMutation({
     mutationFn: subscribeToWorkout,
