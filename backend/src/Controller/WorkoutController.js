@@ -6,10 +6,23 @@ async function markExpiredWorkouts() {
     const now = new Date();
     
     try {
-        await Workout.updateMany(
+        const treinos = await Workout.db.collection('workouts').find().toArray()
+
+        treinos.forEach(treino => {
+            console.log("ID:", treino.title);
+            console.log("ID:", treino._id);
+            console.log("expiresAt:", treino.expiresAt.toLocaleString());
+            console.log("É do tipo Date?", treino.expiresAt instanceof Date);
+            console.log("isExpired:", treino.isExpired);
+
+          });
+            const workouts = await Workout.updateMany(
+
             { expiresAt: { $lt: now }, isExpired: false }, // Treinos expirados ainda não marcados
             { $set: { isExpired: true } } // Marca como expirado
         );
+
+        console.log(workouts)
 
         console.log(`[${new Date().toISOString()}] Treinos expirados atualizados!`);
     } catch (error) {
@@ -18,14 +31,13 @@ async function markExpiredWorkouts() {
 }
 
 // Roda essa função a cada 10 minutos
-setInterval(markExpiredWorkouts, 10 * 60 * 1000);
+setInterval(markExpiredWorkouts, 60 * 1000);
 
 module.exports = {
     async create(req, res) {
         const { title, description, outdoorGym, date } = req.body
         const { auth } = req.headers
 
-        console.log(title, description, outdoorGym, date, auth)
         try {
             const user = await User.findById(auth)
 
@@ -53,7 +65,7 @@ module.exports = {
             }
 
             user.history.push(workoutCreated._id)
-            user.save()
+            await user.save()
 
             const newWorkout = await workoutCreated.populate('outdoorGym')
             return res.status(201).send(newWorkout)
@@ -68,6 +80,7 @@ module.exports = {
                 { path: 'creator', select: '-password'},
                 { path: 'outdoorGym'},
             ])
+
             if(allWorkouts.lenght === 0) {
                 return res.status(204).send('No workouts found')
             }
@@ -100,7 +113,6 @@ module.exports = {
     },
     async getAllWorkoutSubscribed(req, res) {
         const { auth } = req.headers
-
         try {
             const workoutNotSubscribed = await Workout.find({
               participants: { $in: [auth] },
@@ -127,18 +139,15 @@ module.exports = {
           if (!workoutExist) {
             return res.status(404).send("Workout not found");
           }
-
-          console.log(`userID: ${auth} & workoutID: ${id}`)
         
           if (workoutExist.participants.includes(auth)) {
-            console.log(`ja inscrito`)
             return res
               .status(400)
               .send("You are already subscribed to this workout");
           }
           
           workoutExist.participants.push(auth)
-          workoutExist.save()
+          await workoutExist.save()
 
           return res.status(200).send({
             message: "You have been subscribed to this workout",
@@ -148,9 +157,38 @@ module.exports = {
             return res.status(500).send({ error: err.message })
         }
     },
+    async unsubscribeToWorkout(req, res) {
+        const { id } = req.params
+        const { auth } = req.headers
+
+        console.log(id, auth)
+
+        try {
+            const workoutExist = await Workout.findById(id)
+            if (!workoutExist) {
+                return res.status(404).send('Workout not found')
+            }
+
+            if(!workoutExist.participants.includes(auth)) {
+                return res
+                  .status(400)
+                  .send("You are not subscribed to this workout");
+            }
+
+            workoutExist.participants = workoutExist.participants.filter(participant => String(participant._id) !== String(auth))
+            await workoutExist.save()
+
+            return res.status(200).send({
+                message: 'Unsubscribed succesfully!',
+                workout: workoutExist
+            })
+        } catch(err) {
+            return res.status(500).send({ error: err.message })
+        }
+    },
     async deleteAll(req, res) {
         try {
-            const allWorkouts = await Workout.deleteMany()
+            await Workout.deleteMany()
 
             return res.status(200).send('Delete all workouts')
         } catch(err) {

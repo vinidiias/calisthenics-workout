@@ -27,6 +27,7 @@ routes.get('/outdoorGym', OutdoorGymController.getAll)
 //Workout
 routes.post('/workout/create', WorkoutController.create)
 routes.post('/workout/subscribe', WorkoutController.subscribeToWorkout)
+routes.delete('/workout/unsubscribe/:id', WorkoutController.unsubscribeToWorkout)
 routes.get('/workout/not-subscribed', WorkoutController.getAllWorkoutNotSubscribed)
 routes.get('/workout', WorkoutController.getAll)
 routes.get('/workout/subscribed', WorkoutController.getAllWorkoutSubscribed)

@@ -14,7 +14,7 @@ const WorkoutSchema = new mongoose.Schema({
 // Atualiza `expiresAt` ao salvar
 WorkoutSchema.pre('save', function(next) {
     if (this.date) {
-        this.expiresAt = new Date(this.date.getTime() + 2 * 60 * 60 * 1000);
+        this.expiresAt = new Date(this.date.getTime() +  60 * 1000);
     }
     next();
 });
