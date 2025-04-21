@@ -38,8 +38,17 @@ const subscribeToWorkout = async({ auth, workoutId }) => {
   const { data } = await api.post(
     `/workout/subscribe`,
     { id: workoutId },
-    { headers: { auth: auth } }
+    { headers: { auth } }
   );
+
+  return data
+}
+
+const unsubscribeToWorkout = async({ auth, workoutId }) => {
+  console.log(auth, workoutId)
+  const { data } = await api.delete(`/workout/unsubscribe/${workoutId}`, {
+    headers: { auth },
+  });
 
   return data
 }
@@ -68,14 +77,21 @@ const Menu = ({ isParticipe, title }) => {
 
   const [dataFiltered, setDataFiltered] = useState(data || [])
 
-  console.log(data)
-
   const { mutateAsync: subscribeToWorkoutFn, isPending } = useMutation({
     mutationFn: subscribeToWorkout,
     onSuccess: (newData) => {
       console.log(newData)
       queryClient.setQueriesData(["workouts"], (oldData) => {
         console.log(oldData)
+        return oldData ? oldData.filter(workout => workout._id !== newData.workout._id) : oldData
+      })
+    }
+  })
+
+  const { mutateAsync: unsubscribeToWorkoutFn, isPending: isPendingToUnsubscribe } = useMutation({
+    mutationFn: unsubscribeToWorkout,
+    onSuccess: (newData) => {
+      queryClient.setQueriesData(["workouts"], (oldData) => {
         return oldData ? oldData.filter(workout => workout._id !== newData.workout._id) : oldData
       })
     }
@@ -182,7 +198,7 @@ const Menu = ({ isParticipe, title }) => {
             <Grid2 key={index}>
               <CardComponent
                 index={workout._id}
-                mutateAsync={subscribeToWorkoutFn}
+                mutateAsync={isParticipe ? subscribeToWorkoutFn : unsubscribeToWorkoutFn}
                 img={workout.outdoorGym.photo}
                 alt="img"
                 title={workout.title}
