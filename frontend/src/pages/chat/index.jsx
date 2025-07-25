@@ -1,4 +1,4 @@
-import { Avatar, Container, Grid, Grid2, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, TextField } from "@mui/material";
+import { Avatar, Container, Grid, Grid2, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Paper, TextField, Typography, useTheme } from "@mui/material";
 import { useState } from "react"
 import { useEffect } from "react";
 import api from "../../services";
@@ -6,6 +6,8 @@ import { Lens } from "@mui/icons-material";
 
 export const ChatPage = ({ activeFriends, userId }) => {
     const [friendsFollowing, setFriendsFollowing] = useState([]);
+    // const [messages, setMessages] = useState();
+    const theme = useTheme();
     
     useEffect(() => {
       const getFollowers = async () => {
@@ -24,21 +26,29 @@ export const ChatPage = ({ activeFriends, userId }) => {
     return (
       <Container maxWidth={false} disableGutters sx={{ flex: 1 }}>
         <Grid2 container height="100%">
-          <Grid2 size={3}>
+          <Grid2
+            size={3}
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+              borderRightColor: theme.palette.divider,
+              borderRightWidth: 1,
+            }}
+          >
             <List
               dense
               disablePadding
-              sx={{
-                height: "100%",
-                borderRight: "1px solid #E8E9EB",
-                bgcolor: "snow",
-              }}
+              sx={{ backgroundColor: theme.palette.background.paper }}
             >
               {friendsFollowing.length > 0 &&
                 friendsFollowing.map((friend, index) => (
                   <ListItem
                     disableGutters
-                    sx={{ paddingLeft: 5 }}
+                    sx={{
+                      paddingLeft: 5,
+                      borderBottom: 1,
+                      borderColor: theme.palette.divider,
+                    }}
                     key={`${friend.name} - ${index}`}
                   >
                     <ListItemButton>
@@ -60,13 +70,49 @@ export const ChatPage = ({ activeFriends, userId }) => {
                 ))}
             </List>
           </Grid2>
-          <Grid2 container size='grow' direction='column'>
-            <Grid2 container flex={1} size={12}>
-              <Grid2 size="grow" textAlign="start" marginLeft={10}>texte</Grid2>
-              <Grid2 size="grow" textAlign="end" marginRight={10}>texte</Grid2>
+          <Grid2
+            container
+            size="grow"
+            direction="column"
+            color={theme.palette.text.primary}
+            sx={{ backgroundColor: theme.palette.background.paper }}
+          >
+            <Grid2 container flex={1} size={12} marginTop={2}>
+              <Grid2 size="grow" marginLeft={20} container spacing={2}>
+                <Grid2>
+                  <Avatar src={friendsFollowing[0]?.photo} />
+                </Grid2>
+                <Grid2>
+                  <Paper
+                    sx={{ width: "max-content", padding: 1, paddingY: 0.5 }}
+                  >
+                    <Typography>Texto</Typography>
+                  </Paper>
+                </Grid2>
+              </Grid2>
+              <Grid2
+                size="grow"
+                marginRight={20}
+                container
+                spacing={2}
+                justifyContent={"end"}
+              >
+                <Grid2>
+                  <Paper
+                    sx={{ width: "max-content", padding: 1, paddingY: 0.5 }}
+                  >
+                    <Typography>Texto</Typography>
+                  </Paper>
+                </Grid2>
+                <Grid2>
+                  <Avatar src={friendsFollowing[0]?.photo} />
+                </Grid2>
+              </Grid2>
             </Grid2>
-            <Grid2 size={12}>
-              <TextField name="message" />
+            <Grid2 size={12} container justifyContent={"center"}>
+              <Grid2 size={10}>
+                <TextField name="message" fullWidth size="small" />
+              </Grid2>
             </Grid2>
           </Grid2>
         </Grid2>

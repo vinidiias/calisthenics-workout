@@ -7,10 +7,12 @@ import { UserContext } from '../../contexts/UserContext';
 import { useThemeColor } from '../../hooks/useThemeColor';
 import { IconLogo } from '../../components/logo/logo_org';
 import { IconButton } from '@mui/material';
-import { MessageRounded, MessageSharp } from '@mui/icons-material'
+import { MessageSharp } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom';
+
 const navigation = [
-  { name: 'Workouts', href: '/workouts', current: true },
-  { name: 'My Workouts', href: '/workouts/my-workouts', current: false },
+  { name: 'Workouts', href: '/workouts' },
+  { name: 'My Workouts', href: '/workouts/my-workouts' },
 ]
 
 function classNames(...classes) {
@@ -18,17 +20,18 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-  const current = useCurrentIndex()
-  const { user, setUser } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext);
   const { isDark } = useThemeColor()
+  const current = useCurrentIndex()
+  const navigate = useNavigate();
 
   return (
     <Disclosure
       as="nav"
-      className={`fixed ${
+      className={`fixed border-b-solid border-b-1 ${
         isDark
-          ? "bg-[#202124] border-b-gray-600/50 border-b-solid border-b-1"
-          : "bg-[#fff] border-b-gray-800/10 border-b-solid border-b-1"
+          ? "bg-[#202124] border-b-[#4242424f]"
+          : "bg-[#fff] border-b-[#97979731]"
       } w-full z-150000`}
     >
       <div className="mx-auto max-w-[2000px] px-2 sm:px-6 lg:px-8">
@@ -82,8 +85,8 @@ export default function Navbar() {
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <SwitchThemeButton />
             {user.isLogged && (
-              <IconButton>
-                <MessageSharp color="primary" />
+              <IconButton onClick={() => navigate('/chat-friends')}>
+                <MessageSharp color="info" />
               </IconButton>
             )}
             {/* Profile dropdown */}

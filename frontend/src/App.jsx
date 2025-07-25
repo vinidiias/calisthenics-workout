@@ -79,7 +79,10 @@ function App() {
     palette: {
       mode: isDark ? "dark" : "light", // Defina o modo como 'dark' aqui para aplicar o tema escuro
       primary: {
-        main: "#90caf9", // Exemplo de cor principal no modo escuro
+        dark: isDark ? "#202124" : "#fff",
+        light: isDark ? "#fff" : "#202124",
+        main: "rgb(152, 164, 179)",
+        contrastText: isDark ? "#000" : "#fff",
       },
       button: {
         primary: "color-mix(in oklab, var(--color-blue-800) 80%, transparent)",
@@ -102,7 +105,7 @@ function App() {
           ? "color-mix(in oklab, var(--color-gray-600) 80%, transparent)"
           : "color-mix(in oklab, var(--color-gray-800) 20%, transparent)",
       },
-      divider: isDark ? "#424242" : "#e0e0e0", // Cor dos divisores
+      divider: isDark ? "#4242424f" : "#97979731", // Cor dos divisores
     },
   });
 

@@ -326,32 +326,3 @@ export default function Profile() {
     </Box>
   );
 }
-
-/*
-
-                <Button
-                  variant="contained"
-                  size="small"
-                  sx={{
-                    padding: 1,
-                    paddingX: 2,
-                    fontWeight: "550",
-                    textTransform: "none",
-                  }}
-                >
-                  Update Photo
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  sx={{
-                    padding: 1,
-                    paddingX: 2,
-                    color: "red",
-                    backgroundColor: "#eff",
-                    fontWeight: "550",
-                    textTransform: "none",
-                  }}
-                >
-                  Delete Photo
-                </Button>*/
