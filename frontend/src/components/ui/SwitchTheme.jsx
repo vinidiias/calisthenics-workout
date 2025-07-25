@@ -1,10 +1,6 @@
-import * as React from "react";
 import { styled } from "@mui/material/styles";
-import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import { useThemeColor } from "../../hooks/useThemeColor";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -69,7 +65,7 @@ export default function SwitchThemeButton() {
   return (
     <FormControlLabel
       checked={isDark}
-      control={<MaterialUISwitch  sx={{ m: 1 }}  />}
+      control={<MaterialUISwitch sx={{ ml: 1 }} />}
       onClick={handleClick}
     />
   );

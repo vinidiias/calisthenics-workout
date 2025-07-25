@@ -6,27 +6,12 @@ async function markExpiredWorkouts() {
     const now = new Date();
     
     try {
-        const treinos = await Workout.db.collection('workouts').find().toArray()
-
-        treinos.forEach(treino => {
-            console.log("ID:", treino.title);
-            console.log("ID:", treino._id);
-            console.log("expiresAt:", treino.expiresAt.toLocaleString());
-            console.log("É do tipo Date?", treino.expiresAt instanceof Date);
-            console.log("isExpired:", treino.isExpired);
-
-          });
-            const workouts = await Workout.updateMany(
-
-            { expiresAt: { $lt: now }, isExpired: false }, // Treinos expirados ainda não marcados
-            { $set: { isExpired: true } } // Marca como expirado
-        );
-
-        console.log(workouts)
-
-        console.log(`[${new Date().toISOString()}] Treinos expirados atualizados!`);
+      await Workout.updateMany(
+        { expiresAt: { $lt: now }, isExpired: false }, // Treinos expirados ainda não marcados
+        { $set: { isExpired: true } } // Marca como expirado
+      );
     } catch (error) {
-        console.error("Erro ao atualizar treinos expirados:", error);
+      console.error("Erro ao atualizar treinos expirados:", error);
     }
 }
 
@@ -41,8 +26,8 @@ module.exports = {
         try {
             const user = await User.findById(auth)
 
-            if(!user) {
-                return res.status(401).json({ message: 'User not found' })
+            if (!user) {
+              return res.status(401).json({ message: "User not found" });
             }
 
             const outdoorGymExists = await OutdoorGym.findById(outdoorGym)

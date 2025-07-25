@@ -1,12 +1,13 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import SwitchThemeButton from '../../components/ui/SwitchTheme'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { useCurrentIndex } from '../../hooks/useCurrentIndex';
 import { UserContext } from '../../contexts/UserContext';
 import { useThemeColor } from '../../hooks/useThemeColor';
 import { IconLogo } from '../../components/logo/logo_org';
+import { IconButton } from '@mui/material';
+import { MessageRounded, MessageSharp } from '@mui/icons-material'
 const navigation = [
   { name: 'Workouts', href: '/workouts', current: true },
   { name: 'My Workouts', href: '/workouts/my-workouts', current: false },
@@ -51,7 +52,7 @@ export default function Navbar() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <a href="/workouts" className='w-13'>
+              <a href="/workouts" className="w-13">
                 <IconLogo />
               </a>
             </div>
@@ -81,16 +82,10 @@ export default function Navbar() {
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <SwitchThemeButton />
             {user.isLogged && (
-              <button
-                type="button"
-                className="relative rounded-full bg-blue-800/80 p-1 text-white hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
-              >
-                <span className="absolute -inset-1.5" />
-                <span className="sr-only">View notifications</span>
-                <BellIcon aria-hidden="true" className="size-6" />
-              </button>
+              <IconButton>
+                <MessageSharp color="primary" />
+              </IconButton>
             )}
-
             {/* Profile dropdown */}
             {user.isLogged && (
               <Menu as="div" className="relative ml-3">

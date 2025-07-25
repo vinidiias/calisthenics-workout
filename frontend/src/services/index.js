@@ -4,7 +4,7 @@ import axios from 'axios'
     //'https://calisthenics-workout.vercel.app'
 
 const api = axios.create({
-    baseURL: 'https://calisthenics-workout.vercel.app'
+    baseURL: 'http://localhost:3001'
 })
 
 export default api

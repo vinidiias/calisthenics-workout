@@ -1,3 +1,4 @@
+const path = require('path')
 const User = require('../Models/User')
 const bcrypt = require('bcrypt')
 
@@ -157,9 +158,17 @@ module.exports = {
     },
     async getFollowersByUser(req, res) {
         const { id } = req.params;
+        let query = '--v';
+
+        if(req.query.filter) {
+            query = req.query.filter.split(",").join(" ");
+        }
 
         try {
-            const user = await User.findById(id)
+            const user = await User.findById(id).populate({
+              path: "followers",
+              select: query,
+            });
 
             if(!user) {
                 return res.status(404).json({ message: 'User not found' })

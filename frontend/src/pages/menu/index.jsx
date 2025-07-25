@@ -1,137 +1,170 @@
+import { useContext, useEffect, useMemo, useState } from "react";
+//MATERIAL UI
 import {
   Box,
   Button,
   CircularProgress,
   FormControl,
   Grid2,
-  MenuItem,
-  Select,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
-import CardComponent from "../../components/ui/CardComponent";
+//ICONS UI
 import AddIcon from "@mui/icons-material/Add";
-import TransitionsModal from "../../components/ui/CreateForm";
+//API
 import api from "../../services";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UserContext } from "../../contexts/UserContext";
-import { useNavigate } from "react-router-dom";
+//COMPONENTS
+import CardComponent from "../../components/ui/CardComponent";
+import TransitionsModal from "../../components/ui/CreateForm";
 import ParticipantsListModal from "../../components/ui/ParticipantsListModal";
 import { SearchInput } from "../../components/ui/SearchInput";
+//TANKSTACK  QUERY
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+//CONTEXT
+import { UserContext } from "../../contexts/UserContext";
+///HOOKS
 import { useFetchAddress } from "../../hooks/useFetchAddress";
+import { Select } from "../../components/ui/inputs/Select";
 
-const fetchWorkoutNotSubscribed = async({ auth }) => {
-  const { data } = await api.get('/workout/not-subscribed', {
-    headers: { auth: auth }
-  })
-  return data
-}
+const fetchWorkoutNotSubscribed = async ({ auth }) => {
+  const { data } = await api.get("/workout/not-subscribed", {
+    headers: { auth: auth },
+  });
 
-const fetchWorkoutSubscribed = async({ auth }) => {
-  const { data } = await api.get('/workout/subscribed', {
-    headers: { auth: auth }
-  })
-  return data
-}
+  return data;
+};
 
-const subscribeToWorkout = async({ auth, workoutId }) => {
+const fetchWorkoutSubscribed = async ({ auth }) => {
+  const { data } = await api.get("/workout/subscribed", {
+    headers: { auth: auth },
+  });
+  return data;
+};
+
+const subscribeToWorkout = async ({ auth, workoutId }) => {
   const { data } = await api.post(
     `/workout/subscribe`,
     { id: workoutId },
     { headers: { auth } }
   );
 
-  return data
-}
+  return data;
+};
 
-const unsubscribeToWorkout = async({ auth, workoutId }) => {
-  console.log(auth, workoutId)
+const unsubscribeToWorkout = async ({ auth, workoutId }) => {
   const { data } = await api.delete(`/workout/unsubscribe/${workoutId}`, {
     headers: { auth },
   });
 
-  return data
-}
+  return data;
+};
 
 const followToUser = async ({ userFrom, userTo }) => {
-  const { data } = await api.post(`/user/${userTo}`, { userFrom })
+  const { data } = await api.post(`/user/${userTo}`, { userFrom });
 
-  return { data }
-}
+  return data;
+};
 
 const Menu = ({ isParticipe, title }) => {
-  const { user, setUser } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext);
   const [open, setOpen] = useState(false);
-  const [openList, setOpenList] = useState(false)
-  const [participants, setParticipants] = useState([])
-  const { data: dataAddress, isLoading: isLoadingAddress, error: errorAddress } = useFetchAddress("address", "/address")
-  const navigate = useNavigate()
-  const [addressFilter, setAddressFilter] = useState(null)
-  
-  const queryClient = useQueryClient()
+  const [openList, setOpenList] = useState(false);
+  const [participants, setParticipants] = useState([]);
+
+  const {
+    data: dataAddress,
+    isLoading: isLoadingAddress,
+    error: errorAddress,
+  } = useFetchAddress("address", "/address");
+
+  const optionsAddress = useMemo(() => {
+    const options = [];
+
+    if(dataAddress) {
+      dataAddress.forEach(ad => {
+        options.push({ label: ad.neighborhood, value: ad._id });
+      });
+    }
+
+    return options;
+  }, [dataAddress])
+
+  const [addressFilter, setAddressFilter] = useState(null);
+
+  const queryClient = useQueryClient();
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["workouts"],
-    queryFn: () => isParticipe ? fetchWorkoutNotSubscribed({ auth: user._id }) : fetchWorkoutSubscribed({ auth: user._id })
+    queryFn: () =>
+      isParticipe
+        ? fetchWorkoutNotSubscribed({ auth: user._id })
+        : fetchWorkoutSubscribed({ auth: user._id }),
   });
 
-  const [dataFiltered, setDataFiltered] = useState(data || [])
+  const [dataFiltered, setDataFiltered] = useState(data || []);
 
   const { mutateAsync: subscribeToWorkoutFn, isPending } = useMutation({
     mutationFn: subscribeToWorkout,
     onSuccess: (newData) => {
-      console.log(newData)
+      console.log(newData);
       queryClient.setQueriesData(["workouts"], (oldData) => {
-        console.log(oldData)
-        return oldData ? oldData.filter(workout => workout._id !== newData.workout._id) : oldData
-      })
-    }
-  })
+        return oldData
+          ? oldData.filter((workout) => workout._id !== newData.workout._id)
+          : oldData;
+      });
+    },
+  });
 
-  const { mutateAsync: unsubscribeToWorkoutFn, isPending: isPendingToUnsubscribe } = useMutation({
+  const {
+    mutateAsync: unsubscribeToWorkoutFn,
+    isPending: isPendingToUnsubscribe,
+  } = useMutation({
     mutationFn: unsubscribeToWorkout,
     onSuccess: (newData) => {
       queryClient.setQueriesData(["workouts"], (oldData) => {
-        return oldData ? oldData.filter(workout => workout._id !== newData.workout._id) : oldData
-      })
-    }
-  })
+        return oldData
+          ? oldData.filter((workout) => workout._id !== newData.workout._id)
+          : oldData;
+      });
+    },
+  });
 
   const { mutateAsync: followToUserFn } = useMutation({
     mutationFn: followToUser,
     onSuccess: (data) => {
-      setUser(prevState => ({
+      setUser((prevState) => ({
         ...prevState,
-        following: [...prevState.following, data.data.userTo._id]
-      }))
-    }
-  })
+        following: [...prevState.following, data.data.userTo._id],
+      }));
+    },
+  });
 
-  const openListModal = ( participants ) => {
-    setParticipants(participants)
-    setOpenList(true)
-  }
+  const openListModal = (participants) => {
+    setParticipants(participants);
+    setOpenList(true);
+  };
 
   useEffect(() => {
-    if(data) {
-      if(addressFilter === null || addressFilter === '') {
-        setDataFiltered(data)
+    if (data) {
+      if (addressFilter === null || addressFilter === "") {
+        setDataFiltered(data);
       } else {
-        setDataFiltered(data.filter(workout => workout.outdoorGym.address === addressFilter))
+        setDataFiltered(
+          data.filter((workout) => workout.outdoorGym.address === addressFilter)
+        );
       }
     }
-  }, [addressFilter, setDataFiltered, data])
-
-  useEffect(() => {
-    if(!user.isLogged) {
-      navigate('/')
-    }
-  })
+  }, [addressFilter, setDataFiltered, data]);
 
   return (
     <Box
-      sx={{ flex: 1, padding: 5, display: "flex", flexDirection: "column", backgroundColor: 'background.default', overflowY: 'clip' }}
-      className="bg-gray-50"
+      flex={1}
+      padding={5}
+      display="flex"
+      flexDirection="column"
+      sx={{
+        backgroundColor: "background.default",
+        overflowY: "clip",
+      }}
     >
       <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
       <ParticipantsListModal
@@ -140,50 +173,44 @@ const Menu = ({ isParticipe, title }) => {
         participants={participants}
         handleFollowFn={followToUserFn}
       />
-      <Box className="flex justify-center gap-4 mb-4">
+      <Box display="flex" justifyContent="center" gap={4} marginBottom={4}>
         <Typography variant="h4" color="text.primary" fontWeight="regular">
           {title}
         </Typography>
       </Box>
       <Box className="flex justify-between items-center gap-10 mb-10 max-sm:flex-col max-sm:gap-5">
         <SearchInput />
-        <Box className="flex items-center gap-5">
-          <div className="flex items-center">
-            <Typography fontSize="1em" color="text.secondary" className="text-gray-600">
+        <Box display="flex" alignItems="center" gap={5}>
+          <Box display="flex" alignItems="center">
+            <Typography
+              fontSize="1em"
+              color="text.secondary"
+              className="text-gray-600"
+            >
               Locality
             </Typography>
             <FormControl sx={{ m: 1, minWidth: 100 }}>
               <Select
+                disabled={isLoadingAddress || errorAddress}
                 size="small"
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
                 defaultValue=""
-                sx={(theme) => ({
-                  backgroundColor: theme.palette.input.primary,
-                  color: theme.palette.input.secondary,
-                  borderColor: `${theme.palette.input.border}`,
-                })}
                 onChange={(e) => setAddressFilter(e.target.value)}
-              >
-                <MenuItem value="">All</MenuItem>
-                {dataAddress &&
-                  dataAddress.map((address) => (
-                    <MenuItem key={address._id} value={address._id}>
-                      {address.neighborhood}
-                    </MenuItem>
-                  ))}
-              </Select>
+                options={optionsAddress ?? []}
+                placeholder="All"
+              />
             </FormControl>
-          </div>
+          </Box>
           {isParticipe && (
-          <Button
-            onClick={() => setOpen(true)}
-            variant="contained"
-            sx={{ backgroundColor: "button.primary", color: 'white' }}
-          >
-            <AddIcon />
-          </Button>
-        )}
+            <Button
+              onClick={() => setOpen(true)}
+              variant="contained"
+              sx={{ backgroundColor: "button.primary", color: "white" }}
+            >
+              <AddIcon />
+            </Button>
+          )}
         </Box>
       </Box>
       <Grid2
@@ -193,12 +220,14 @@ const Menu = ({ isParticipe, title }) => {
       >
         {isLoading ? (
           <CircularProgress />
-        ) :dataFiltered.length > 0 ? (
-         dataFiltered.map((workout, index) => (
+        ) : dataFiltered.length > 0 ? (
+          dataFiltered.map((workout, index) => (
             <Grid2 key={index}>
               <CardComponent
                 index={workout._id}
-                mutateAsync={isParticipe ? subscribeToWorkoutFn : unsubscribeToWorkoutFn}
+                mutateAsync={
+                  isParticipe ? subscribeToWorkoutFn : unsubscribeToWorkoutFn
+                }
                 img={workout.outdoorGym.photo}
                 alt="img"
                 title={workout.title}
@@ -213,11 +242,13 @@ const Menu = ({ isParticipe, title }) => {
                     : "Unsubscribe"
                 }
                 openList={() => openListModal(workout.participants)}
-                loading={isPending}
+                loading={isPending || isPendingToUnsubscribe}
                 isClick={true}
               />
             </Grid2>
           ))
+        ) : error ? (
+          <Typography color="text.primary">Error to fetch workouts.</Typography>
         ) : (
           <Typography color="text.primary">No Workouts</Typography>
         )}

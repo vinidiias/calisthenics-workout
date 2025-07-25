@@ -5,9 +5,17 @@ import api from "../../services";
 import UploadButton from "../../components/form/UploadButton";
 import CardComponent from "../../components/ui/CardComponent";
 import CssBaseline from "@mui/material/CssBaseline";
-import EditIcon from '@mui/icons-material/Edit';
-import CloseIcon from '@mui/icons-material/Close';
-import { Avatar, Button, Grid, Grid2, Paper, Stack, Typography } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  Avatar,
+  Button,
+  Grid,
+  Grid2,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useParams } from "react-router-dom";
@@ -16,6 +24,8 @@ import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useThemeColor } from "../../hooks/useThemeColor";
+import { FriendsFollowing } from "../../components/pages/profile/FriendsFollowing";
+import { WorkoutPost } from "../../components/pages/profile/WorkoutPost";
 
 const createImage = async (photo) => {
   const formData = new FormData();
@@ -26,58 +36,64 @@ const createImage = async (photo) => {
   return { data };
 };
 
-const updateUser = async ({ id, auth, ...dataUser }, ) => { 
+const updateUser = async ({ id, auth, ...dataUser }) => {
   const { data } = await api.patch(`/user/${id}`, dataUser, {
-    headers: { auth: auth }
+    headers: { auth: auth },
   });
 
-  return { data }
-}
+  return { data };
+};
 
-const getUser = async({ id }) => {
-  const { data } = await api.get(`/user/${id}`)
-  return data
-}
+const getUser = async ({ id }) => {
+  const { data } = await api.get(`/user/${id}`);
+  return data;
+};
 
 export default function Profile() {
   const params = useParams();
   const methods = useForm();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { user } = useContext(UserContext);
-  const [isMe] = useState(params.id === user._id || false)
-  const [openEdit, setOpenEdit] = useState(false)
-  const { isDark } = useThemeColor()
-
+  const [isMe] = useState(params.id === user._id || false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const { isDark } = useThemeColor();
 
   const watchBackPhoto = methods.watch("backgroundPhoto");
 
-  const  { mutateAsync: createBackPhotoFn } = useMutation({
+  const { mutateAsync: createBackPhotoFn } = useMutation({
     mutationFn: createImage,
     onSuccess: (data) => {
-      updateBackPhotoFn({ id: params.id, auth: user._id, backgroundPhoto: data.data })
-    }
-  })
+      updateBackPhotoFn({
+        id: params.id,
+        auth: user._id,
+        backgroundPhoto: data.data,
+      });
+    },
+  });
 
-  const  { mutateAsync: updateBackPhotoFn } = useMutation({
+  const { mutateAsync: updateBackPhotoFn } = useMutation({
     mutationFn: updateUser,
     onSuccess: (newData) => {
-      queryClient.setQueriesData(['user'], (oldData) => {
-        console.log(newData)
-        return oldData ? {...oldData, backgroundPhoto: newData.data.backgroundPhoto } : newData.data
-      })
-      setOpenEdit(false)
-    }
-  })
+      queryClient.setQueriesData(["user"], (oldData) => {
+        console.log(newData);
+        return oldData
+          ? { ...oldData, backgroundPhoto: newData.data.backgroundPhoto }
+          : newData.data;
+      });
+      setOpenEdit(false);
+    },
+  });
 
   const { data } = useQuery({
-    queryKey: ['user'],
-    queryFn: () => getUser({ id: params.id, auth: user._id })
-  })
+    queryKey: ["user"],
+    queryFn: () => getUser({ id: params.id, auth: user._id }),
+  });
+
   useEffect(() => {
     if (watchBackPhoto) {
-      createBackPhotoFn(watchBackPhoto[0])
+      createBackPhotoFn(watchBackPhoto[0]);
     }
-  }, [createBackPhotoFn, watchBackPhoto])
+  }, [createBackPhotoFn, watchBackPhoto]);
 
   return (
     <Box
@@ -90,25 +106,27 @@ export default function Profile() {
       sx={{ backgroundColor: "background.primary" }}
     >
       <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-          width: { xs: "100%", sm: "80%" },
-        }}
+        display="flex"
+        flexDirection="column"
+        gap={3}
+        width={{ xs: "100%", sm: "80%" }}
       >
         <FormProvider {...methods}>
           <Paper>
-            <div className="relative text-right">
+            <Box
+              position="relative"
+              textAlign="right"
+              className="relative text-right"
+            >
               {data?.backgroundPhoto ? (
-                <div className="absolute w-full h-[300px]">
+                <Box position="absolute" width="100%" height={300}>
                   <img
                     src={data?.backgroundPhoto}
                     alt="Background"
                     className="object-cover w-full h-full"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                </div>
+                </Box>
               ) : (
                 <div className="w-full h-[300px] bg-gray-300"></div>
               )}
@@ -145,9 +163,17 @@ export default function Profile() {
                   </Button>
                 </div>
               )}
-            </div>
+            </Box>
             <CssBaseline />
-            <div className="flex flex-col p-7 mt-10 items-center lg:items-start relative z-20000">
+            <Box
+              display="flex"
+              flexDirection="column"
+              padding={7}
+              marginTop={10}
+              alignItems={{ xs: "center", lg: "start" }}
+              position="relative"
+              zIndex={20000}
+            >
               <img
                 src={data?.photo}
                 alt=""
@@ -157,20 +183,25 @@ export default function Profile() {
               <Box display="flex" flexDirection="column" width="100%">
                 <Box
                   display="flex"
+                  flexDirection={{ xs: "column", lg: "row" }}
+                  gap={{ lg: 5 }}
                   component="section"
                   justifyContent="space-between"
                   width="100%"
                   marginBottom={2}
-                  sx={{
-                    flexDirection: "row",
-                    "@media (max-width: 1000px)": {
-                      flexDirection: "column",
-                      gap: 5,
-                    },
-                  }}
                 >
-                  <div className="flex flex-col items-center lg:items-start gap-1">
-                    <div className="flex items-center mt-1 gap-3">
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems={{ xs: "center", lg: "start" }}
+                    gap={1}
+                  >
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      marginTop={1}
+                      gap={3}
+                    >
                       <Typography
                         variant="h4"
                         sx={{
@@ -199,15 +230,16 @@ export default function Profile() {
                             : "Follow"}
                         </Button>
                       )}
-                    </div>
+                    </Box>
                     <Typography variant="body1" fontWeight="light">
                       {data?.biography}
                     </Typography>
-                  </div>
+                  </Box>
                   <Stack
                     flexDirection="row"
-                    sx={{ gap: { xs: 5, sm: 10 }, justifyContent: "center" }}
-                    className="items-center lg:items-start"
+                    gap={{ xs: 5, sm: 10 }}
+                    justifyContent="center"
+                    alignItems={{ xs: "center", lg: "start" }}
                   >
                     <Box display="flex" flexDirection="column">
                       <Typography
@@ -248,7 +280,7 @@ export default function Profile() {
                   </Stack>
                 </Box>
               </Box>
-            </div>
+            </Box>
           </Paper>
         </FormProvider>
         <Box className="flex flex-col lg:flex-row" gap={2} flex={1}>
@@ -259,80 +291,7 @@ export default function Profile() {
                 : { alignSelf: "flex-start", position: "sticky", top: 0 }
             }
           >
-            <Box className="flex flex-col gap-2 p-7">
-              <Typography
-                variant="body1"
-                fontSize="large"
-                color="textSecondary"
-                fontWeight="regular"
-              >
-                Friends
-              </Typography>
-              <Grid2
-                container
-                columns={3}
-                rowSpacing={2}
-                spacing={1}
-                sx={{
-                  justifyContent: {
-                    xs: "center",
-                    sm: "space-between",
-                    lg: "start",
-                  },
-                }}
-                wrap="wrap"
-              >
-                {data ? (
-                  <>
-                    {data?.followers?.slice(0, 9).map((follower) => (
-                      <Grid2 key={follower._id} size="auto">
-                        <Button
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            textTransform: "none",
-                            color: "white",
-                            fontSize: "16px",
-                            alignItems: "start",
-                            width: "auto",
-                          }}
-                        >
-                          <div className="w-[min-content]">
-                            <Avatar
-                              variant="rounded"
-                              alt={`${follower.name}-photo`}
-                              src={follower.photo}
-                              sx={{
-                                minWidth: { xs: "130px" },
-                                minHeight: { xs: "130px" },
-                              }}
-                            />
-                            <Typography
-                              variant="body1"
-                              fontWeight="medium"
-                              fontSize="1em"
-                              textAlign="left"
-                              sx={{
-                                color: "text.primary",
-                                wordBreak: "break-word",
-                              }}
-                            >
-                              {follower.name}
-                            </Typography>
-                          </div>
-                        </Button>
-                      </Grid2>
-                    ))}
-                  </>
-                ) : (
-                  <Grid2>
-                    <Typography textAlign="center" variant="body1">
-                      No friends
-                    </Typography>
-                  </Grid2>
-                )}
-              </Grid2>
-            </Box>
+            <FriendsFollowing friends={data} />
           </Paper>
           <Box display="flex" flexDirection="column" gap={5} flex={2}>
             {data?.history?.length > 0 ? (
@@ -340,40 +299,12 @@ export default function Profile() {
                 {data.history?.map((hist) => {
                   const date = new Date(hist.date);
                   return (
-                    <Paper key={hist._id} sx={{ flexGrow: 1 }}>
-                      <Box className="flex items-center gap-3 p-4">
-                        <Avatar
-                          src={data?.photo}
-                          sx={{ width: 60, height: 60 }}
-                        />
-                        <div>
-                          <Typography
-                            variant="body1"
-                            fontSize="1em"
-                            color="text.primary"
-                            fontWeight="regular"
-                          >
-                            {data?.name}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            fontSize=""
-                            color="text.secondary"
-                            fontWeight="regular"
-                          >
-                            {`${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`}
-                          </Typography>
-                        </div>
-                      </Box>
-                      <CardComponent
-                        index={hist?._id}
-                        img={hist?.outdoorGym?.photo}
-                        title={hist?.title}
-                        description={hist?.description}
-                        participants={hist?.participants}
-                        isClick={false}
-                      />
-                    </Paper>
+                    <WorkoutPost
+                      photo={data.photo}
+                      hist={hist}
+                      name={data.name}
+                      date={date}
+                    />
                   );
                 })}
               </>
