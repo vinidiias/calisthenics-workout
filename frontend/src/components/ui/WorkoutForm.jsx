@@ -1,25 +1,33 @@
-import * as React from 'react';
-import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { UserContext } from '../../contexts/UserContext';
-import api from '../../services';
-import { useThemeColor } from '../../hooks/useThemeColor';
+import * as React from "react";
+import Backdrop from "@mui/material/Backdrop";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import {
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { UserContext } from "../../contexts/UserContext";
+import api from "../../services";
+import { useThemeColor } from "../../hooks/useThemeColor";
+import useMutationWorkout from "../../features/workout";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
@@ -40,49 +48,35 @@ const fields = [
 ];
 
 const fetchOutdoorGym = async () => {
-  const { data } = await api.get('/outdoorGym')
-  return data
-}
+  const { data } = await api.get("/outdoorGym");
+  return data;
+};
 
 const createWorkout = async ({ workout, auth }) => {
-  const { data } = await api.post('/workout/create', workout, {
-    headers: { auth: auth}
-  })
+  const { data } = await api.post("/workout/create", workout, {
+    headers: { auth: auth },
+  });
 
-  return data
-}
+  return data;
+};
 
-export default function TransitionsModal({ openModal, onClose }) {
-  const { user } = React.useContext(UserContext)
-  const { isDark } = useThemeColor()
+export default function WorkoutForm({ openModal, onClose }) {
+  const { user } = React.useContext(UserContext);
+  const { isDark } = useThemeColor();
 
-  const queryClient = useQueryClient()
+  const { create } = useMutationWorkout();
 
-  const { data, error, isLoading } = useQuery({
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useQuery({
     queryKey: ["outdoor_gyms"],
     queryFn: fetchOutdoorGym,
   });
 
-  const { mutateAsync: createWorkoutFn, isPending } = useMutation({
-    mutationFn: createWorkout,
-    onSuccess(newData) {
-      // Obtém os dados mais recentes do cache antes de atualizar
-      queryClient.setQueryData(['workouts'], (oldData) => {
-        return oldData ? [...oldData, newData] : [newData];
-      });
-  
-      // Opcional: refaz a requisição para garantir que os dados no servidor estão sincronizados
-      queryClient.invalidateQueries(['workouts']);
-      onClose()
-    }
-  });
-
-  const handleCreateWorkout = async (data) => {
-      await createWorkoutFn({
-        workout: data,
-        auth: user._id,
-      });
-  }
+  const handleCreateWorkout = React.useCallback(async (data) => {
+    create.mutate({ workout: data, auth: user._id })
+    onClose()
+  }, [create, onClose, user._id])
 
   const { register, handleSubmit } = useForm();
 
@@ -110,7 +104,7 @@ export default function TransitionsModal({ openModal, onClose }) {
                 <Typography
                   variant="h5"
                   component="h2"
-                  sx={{ marginBottom: 2, color: 'text.primary' }}
+                  sx={{ marginBottom: 2, color: "text.primary" }}
                 >
                   Create Workout
                 </Typography>
@@ -129,9 +123,11 @@ export default function TransitionsModal({ openModal, onClose }) {
                             name={field.name}
                             id={field.name}
                             type={field.type}
-                            sx={{['.MuiOutlinedInput-root']: {
-                              color: 'input.secondary'
-                            }}}
+                            sx={{
+                              [".MuiOutlinedInput-root"]: {
+                                color: "input.secondary",
+                              },
+                            }}
                             {...register(field.name, { required: true })}
                           />
                         );
@@ -144,13 +140,15 @@ export default function TransitionsModal({ openModal, onClose }) {
                             name={field.name}
                             id={field.name}
                             type={field.type}
-                            sx={{['.MuiOutlinedInput-root']: {
-                              color: 'input.secondary'
-                            }}}
+                            sx={{
+                              [".MuiOutlinedInput-root"]: {
+                                color: "input.secondary",
+                              },
+                            }}
                             {...register(field.name, { required: true })}
                           />
                         );
-                        case "datetime-local":
+                      case "datetime-local":
                         return (
                           <TextField
                             fullWidth
@@ -160,9 +158,8 @@ export default function TransitionsModal({ openModal, onClose }) {
                             id={field.name}
                             type={field.type}
                             sx={{
-                            
-                              ['.MuiOutlinedInput-root']: {
-                                color: 'input.secondary'
+                              [".MuiOutlinedInput-root"]: {
+                                color: "input.secondary",
                               },
                               "& input[type='datetime-local']::-webkit-calendar-picker-indicator":
                                 {
@@ -197,10 +194,16 @@ export default function TransitionsModal({ openModal, onClose }) {
                     }
                   })}
                   <Button
-                    loading={isPending}
+                    loading={create.isPending}
                     type="submit"
                     variant="contained"
-                    sx={{ textTransform: "none", fontSize: '1em', fontWeight: 'regular', backgroundColor: 'button.primary', color: 'white' }}
+                    sx={{
+                      textTransform: "none",
+                      fontSize: "1em",
+                      fontWeight: "regular",
+                      backgroundColor: "button.primary",
+                      color: "white",
+                    }}
                   >
                     Create Workout
                   </Button>

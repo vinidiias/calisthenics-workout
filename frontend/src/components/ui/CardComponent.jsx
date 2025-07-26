@@ -14,8 +14,6 @@ import AddIcon from "@mui/icons-material/Add";
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import styles from './CardComponent.module.css'
-import { useThemeColor } from "../../hooks/useThemeColor";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentIcon from '@mui/icons-material/Comment';
 
@@ -34,7 +32,6 @@ const CardComponent = ({
   loading
 }) => {
   const { user } = useContext(UserContext)
-  const { isDark } = useThemeColor()
   const dateFormatted = new Date(date)
 
   const handleSubscription = async() => {
@@ -48,7 +45,7 @@ const CardComponent = ({
   return (
     <Card
       sx={{
-        maxWidth: isClick ? 345 : '100%',
+        maxWidth: isClick ? 345 : "100%",
         backgroundColor: isClick ? "" : "transparent",
       }}
       elevation={isClick ? 2 : 0}
@@ -97,7 +94,12 @@ const CardComponent = ({
             >
               {title}
             </Typography>
-            <Typography marginBottom={1} variant="body1" color="text.secondary" fontSize='1em'>
+            <Typography
+              marginBottom={1}
+              variant="body1"
+              color="text.secondary"
+              fontSize="1em"
+            >
               {description}
             </Typography>
             <Button onClick={openList} sx={{ minWidth: 0, padding: 0 }}>
@@ -119,19 +121,28 @@ const CardComponent = ({
             </Button>
             <Divider sx={{ my: 2 }} />
             <div className="flex items-center justify-around">
-              <Button sx={{ textTransform: 'none', color: 'text.secondary' }} startIcon={<FavoriteIcon />}>Like</Button>
-              <Button sx={{ textTransform: 'none', color: 'text.secondary' }} startIcon={<CommentIcon />}>Comment</Button>
+              <Button
+                sx={{ textTransform: "none", color: "text.secondary" }}
+                startIcon={<FavoriteIcon />}
+              >
+                Like
+              </Button>
+              <Button
+                sx={{ textTransform: "none", color: "text.secondary" }}
+                startIcon={<CommentIcon />}
+              >
+                Comment
+              </Button>
             </div>
           </CardContent>
         </CardContent>
       )}
       {isClick && (
         <CardActions
-          className={`${
-            !textBtn || (participants && participants.length === 0)
-              ? `${styles.justify_center}`
-              : ""
-          }`}
+          sx={{
+            justifyContent:
+              !textBtn || participants?.length === 0 ? "center" : "",
+          }}
         >
           {textBtn && (
             <Button

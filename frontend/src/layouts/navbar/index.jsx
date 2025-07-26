@@ -1,12 +1,12 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SwitchThemeButton from '../../components/ui/SwitchTheme'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { useCurrentIndex } from '../../hooks/useCurrentIndex';
 import { UserContext } from '../../contexts/UserContext';
 import { useThemeColor } from '../../hooks/useThemeColor';
-import { IconLogo } from '../../components/logo/logo_org';
+import { IconLogo } from '../../components/ui/IconLogo';
+
 const navigation = [
   { name: 'Workouts', href: '/workouts', current: true },
   { name: 'My Workouts', href: '/workouts/my-workouts', current: false },

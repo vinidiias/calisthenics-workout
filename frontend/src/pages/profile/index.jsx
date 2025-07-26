@@ -1,8 +1,6 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
-
 import api from "../../services";
-import UploadButton from "../../components/form/UploadButton";
+import UploadButton from "../../components/ui/UploadButton";
 import CardComponent from "../../components/ui/CardComponent";
 import CssBaseline from "@mui/material/CssBaseline";
 import EditIcon from '@mui/icons-material/Edit';

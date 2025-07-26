@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import { CircularProgress } from '@mui/material';
-import { BasicTable } from '../table/BasicTable'
+import { UserTable } from './UserTable'
 import { SearchInput } from './SearchInput';
 import { useState } from 'react';
 
@@ -52,7 +52,7 @@ export default function ParticipantsListModal({ openModal, onClose, participants
           ) : (
             <div className="flex flex-col items-start gap-5 w-full">
               <SearchInput search={search} setSearch={setSearch}  />
-              <BasicTable dataTable={participants} handleFollow={follow} search={search} setSearch={setSearch} />
+              <UserTable dataTable={participants} handleFollow={follow} search={search} setSearch={setSearch} />
             </div>
           )}
         </Box>

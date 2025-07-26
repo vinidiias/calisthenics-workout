@@ -1,4 +1,4 @@
-import api from ".";
+import api from "../services";
 
 export const createImage = async (dataUser) => {
   const formData = new FormData();

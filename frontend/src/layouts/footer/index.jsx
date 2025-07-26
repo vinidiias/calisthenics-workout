@@ -3,7 +3,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { Link } from 'react-router-dom';
 import { useThemeColor } from '../../hooks/useThemeColor';
-import { IconLogo } from '../../components/logo/logo_org';
+import { IconLogo } from '../../components/ui/IconLogo';
 
 const Footer = () => {
     const { isDark } = useThemeColor()

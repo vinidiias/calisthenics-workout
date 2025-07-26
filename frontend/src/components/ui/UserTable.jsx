@@ -1,10 +1,10 @@
-import { useContext, useMemo, useState } from "react"
+import { useContext, useMemo } from "react"
 import { flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 import { Button, Typography } from "@mui/material";
 import { UserContext } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 
-export const BasicTable = ({ dataTable, handleFollow, search }) => {
+export const UserTable = ({ dataTable, handleFollow, search }) => {
   const { user } = useContext(UserContext)
   const navigate = useNavigate()
 

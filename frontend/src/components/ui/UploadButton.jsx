@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
-import { useState } from "react";
-import { useForm, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 function UploadButton({ name, handleClick }) {
   const { register } = useFormContext();

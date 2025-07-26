@@ -1,11 +1,10 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react";
-import { FormProvider, useForm, useWatch } from "react-hook-form";
-import { useUploadImage } from '../../util/useUploadImage'
-import api from "../../services";
+import { FormProvider, useForm } from "react-hook-form";
 import { UserContext } from "../../contexts/UserContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createImage } from '../../services/imageApi'
+import { createImage } from '../../api/users'
+import api from "../../services";
 
 const style = {
     position: 'absolute',

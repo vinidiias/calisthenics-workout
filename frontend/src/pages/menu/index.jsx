@@ -11,7 +11,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import CardComponent from "../../components/ui/CardComponent";
 import AddIcon from "@mui/icons-material/Add";
-import TransitionsModal from "../../components/ui/CreateForm";
+import WorkoutForm from "../../components/ui/WorkoutForm";
 import api from "../../services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserContext } from "../../contexts/UserContext";
@@ -64,13 +64,13 @@ const Menu = ({ isParticipe, title }) => {
   const [open, setOpen] = useState(false);
   const [openList, setOpenList] = useState(false)
   const [participants, setParticipants] = useState([])
-  const { data: dataAddress, isLoading: isLoadingAddress, error: errorAddress } = useFetchAddress("address", "/address")
+  const { data: dataAddress } = useFetchAddress("address", "/address")
   const navigate = useNavigate()
   const [addressFilter, setAddressFilter] = useState(null)
   
   const queryClient = useQueryClient()
 
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["workouts"],
     queryFn: () => isParticipe ? fetchWorkoutNotSubscribed({ auth: user._id }) : fetchWorkoutSubscribed({ auth: user._id })
   });
@@ -133,7 +133,7 @@ const Menu = ({ isParticipe, title }) => {
       sx={{ flex: 1, padding: 5, display: "flex", flexDirection: "column", backgroundColor: 'background.default', overflowY: 'clip' }}
       className="bg-gray-50"
     >
-      <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
+      <WorkoutForm openModal={open} onClose={() => setOpen(false)} />
       <ParticipantsListModal
         openModal={openList}
         onClose={() => setOpenList(false)}
@@ -213,7 +213,7 @@ const Menu = ({ isParticipe, title }) => {
                     : "Unsubscribe"
                 }
                 openList={() => openListModal(workout.participants)}
-                loading={isPending}
+                loading={isPending || isPendingToUnsubscribe}
                 isClick={true}
               />
             </Grid2>
