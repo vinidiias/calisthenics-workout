@@ -85,9 +85,15 @@ io.on('connect', (socket) => {
 })
 
 // Export for Vercel serverless
-module.exports = app;
-module.exports.io = io;
-module.exports.httpServer = httpServer;
+module.exports = (req, res) => {
+  // Attach Socket.IO to the HTTP server
+  if (!module.exports.io) {
+    module.exports.io = io;
+  }
+
+  // Handle the request through the HTTP server
+  return httpServer.emit('request', req, res);
+};
 
 // For local development
 if (require.main === module) {
