@@ -1,254 +1,226 @@
-import { Avatar, Box, Container, Grid, Grid2, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Paper, Stack, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useContext, useMemo, useState } from "react"
+import {
+  Container,
+  Grid2,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import { useContext, useMemo, useState } from "react";
 import { useEffect } from "react";
 import api from "../../services";
-import { Lens } from "@mui/icons-material";
 import { UserContext } from "../../contexts/UserContext";
-import { socket } from '../../services/socket/index';
+import { socket } from "../../services/socket/index";
+import { FriendListChat } from "../../components/pages/chat/FriendListChat";
+import { Message } from "../../components/pages/chat/Message";
+import { HeaderInformationFriend } from "../../components/pages/chat/HeaderInformationFriend";
 
 export const ChatPage = ({ activeFriends }) => {
-    const [friendsFollowing, setFriendsFollowing] = useState([]);
-    const [selectedConversationId, setSelectedConversationId] = useState(null);
-    const [conversation, setConversations] = useState([]);
-    const [messages, setMessages] = useState([]);
-    const [privateChatsData, setPrivateChatsData] = useState({});
-    const [friendToConversationMap, setFriendToConversationMap] = useState({});
-    const [messageInput, setMessageInput] = useState("");
+  const [friendsFollowing, setFriendsFollowing] = useState([]);
+  const [selectedConversationId, setSelectedConversationId] = useState(null);
+  const [conversation, setConversations] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [privateChatsData, setPrivateChatsData] = useState({});
+  const [friendToConversationMap, setFriendToConversationMap] = useState({});
+  const [messageInput, setMessageInput] = useState("");
 
-    const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
-    const theme = useTheme();
+  const theme = useTheme();
 
-    const matches = useMediaQuery(theme.breakpoints.down("sm"));
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
 
-    // inicializa conversa 1-1
-    useEffect(() => {
-      const initialConversations = [];
-      const initialFriendMap = {};
+  const selectedContact = useMemo(() => {
+    if (!selectedConversationId) return null;
 
-      friendsFollowing.forEach((friend) => {
-        const participantId = [user._id, friend._id].sort();
-        const conversationId = `private-${participantId[0]}-${participantId[1]}`;
+    const conv = conversation.find((c) => c.id === selectedConversationId);
+    return conv?.participants.find((p) => p._id !== user._id);
+  }, [selectedConversationId, conversation, user._id]);
 
-        initialConversations.push({
-          id: conversationId,
-          participants: [
-            { _id: user._id, name: "Você", isOnline: true, photo: user.photo },
-            friend,
-          ],
-          type: "private",
-          name: friend.name,
-          lastMessagePreview: "Nenhuma Mensagem",
-          unReadCount: 0,
-        });
-        initialFriendMap[friend._id] = conversationId;
-          // Inicializa o array de mensagens para essa conversa
-      setPrivateChatsData(prev => ({ ...prev, [conversationId]: [] }));
+  const selectConversation = (conversationId) => {
+    setSelectedConversationId(conversationId);
+    setMessages(privateChatsData[conversationId]);
+
+    setConversations((prev) =>
+      prev.map((c) => (c.id === conversationId ? { ...c, unReadCount: 0 } : c))
+    );
+  };
+
+  const sendMessage = (content) => {
+    if (!selectedConversationId || !content.trim()) return;
+
+    const newMessage = {
+      id: Math.random().toString(36).substring(7),
+      senderId: user._id,
+      senderName: user.name,
+      content,
+      timestamp: new Date().toISOString(),
+      type: "text",
+      read: true,
+    };
+
+    setMessages((prev) => [...prev, newMessage]);
+
+    setPrivateChatsData((prev) => ({
+      ...prev,
+      [selectedConversationId]: [
+        ...(prev[selectedConversationId] || []),
+        newMessage,
+      ],
+    }));
+
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === selectedConversationId
+          ? { ...conv, lastMessagePreview: content }
+          : conv
+      )
+    );
+
+    socket.emit("chat-message", {
+      conversationId: selectedConversationId,
+      senderId: user._id,
+      content,
+      timestamp: newMessage.timestamp,
     });
 
-    setConversations(initialConversations);
-    setFriendToConversationMap(initialFriendMap);
+    setMessageInput("");
+  };
 
-  }, [friendsFollowing, user._id, user.photo]);
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    sendMessage(messageInput);
+  };
 
+  const handleCloseChat = () => {
+    setSelectedConversationId(null);
+  };
 
-    const selectConversation = (conversationId) => {
-      setSelectedConversationId(conversationId);
-      setMessages(privateChatsData[conversationId]);
+  useEffect(() => {
+    const onReceiveMessage = (data) => {
+      const { conversationId, senderId, content, timestamp } = data;
 
-      setConversations((prev) =>
-        prev.map((c) =>
-          c.id === conversationId ? { ...c, unReadCount: 0 } : c
-        )
-      );
-    }
-    
-    const sendMessage = (content) => {
-      if (!selectedConversationId || !content.trim()) return;
+      if (senderId === user._id) return;
 
-      const newMessage = {
+      const senderContact = friendsFollowing.find((f) => f._id === senderId);
+      const senderName = senderContact ? senderContact.name : "Desconhecido";
+
+      const receivedMessage = {
         id: Math.random().toString(36).substring(7),
-        senderId: user._id,
-        senderName: user.name,
+        senderId,
+        senderName,
         content,
-        timestamp: new Date().toISOString(),
+        timestamp,
         type: "text",
-        read: true,
+        read: conversationId === selectedConversationId,
       };
-
-      setMessages((prev) => [...prev, newMessage]);
 
       setPrivateChatsData((prev) => ({
         ...prev,
-        [selectedConversationId]: [
-          ...(prev[selectedConversationId] || []),
-          newMessage,
-        ],
+        [conversationId]: [...(prev[conversationId] || []), receivedMessage],
       }));
 
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === selectedConversationId
-            ? { ...conv, lastMessagePreview: content }
-            : conv
-        )
-      );
-
-      socket.emit("chat-message", {
-        conversationId: selectedConversationId,
-        senderId: user._id,
-        content,
-        timestamp: newMessage.timestamp,
-      });
-
-      setMessageInput("");
-    }
-
-    const handleSendMessage = (e) => {
-      e.preventDefault();
-      sendMessage(messageInput);
-    };
-    
-    useEffect(() => {
-      const onReceiveMessage = (data) => {
-        const { conversationId, senderId, content, timestamp } = data;
-
-        if (senderId === user._id) return;
-
-        const senderContact = friendsFollowing.find((f) => f._id === senderId);
-        const senderName = senderContact ? senderContact.name : "Desconhecido";
-
-        const receivedMessage = {
-          id: Math.random().toString(36).substring(7),
-          senderId,
-          senderName,
-          content,
-          timestamp,
-          type: "text",
-          read: conversationId === selectedConversationId,
-        };
-
-        setPrivateChatsData((prev) => ({
-          ...prev,
-          [conversationId]: [...(prev[conversationId] || []), receivedMessage],
-        }));
-
-        if (conversationId === selectedConversationId) {
-          setMessages((prev) => [...prev, receivedMessage]);
-        } else {
-          setConversations((prev) =>
-            prev.map((conv) =>
-              conv.id === conversationId
-                ? { ...conv, unreadCount: (conv.unreadCount || 0) + 1 }
-                : conv
-            )
-          );
-        }
-
+      if (conversationId === selectedConversationId) {
+        setMessages((prev) => [...prev, receivedMessage]);
+      } else {
         setConversations((prev) =>
           prev.map((conv) =>
             conv.id === conversationId
-              ? { ...conv, lastMessagePreview: content }
+              ? { ...conv, unreadCount: (conv.unreadCount || 0) + 1 }
               : conv
           )
         );
       }
-        socket.on('receive-message', onReceiveMessage);
 
-        return () => {
-          socket.off('receive-message', onReceiveMessage);
-        };
-    }, [selectedConversationId, user._id, friendsFollowing]);
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === conversationId
+            ? { ...conv, lastMessagePreview: content }
+            : conv
+        )
+      );
+    };
+    socket.on("receive-message", onReceiveMessage);
 
-    const selectedContact = useMemo(() => {
-      if (!selectedConversationId) return null;
+    return () => {
+      socket.off("receive-message", onReceiveMessage);
+    };
+  }, [selectedConversationId, user._id, friendsFollowing]);
 
-      const conv = conversation.find((c) => c.id === selectedConversationId);
-      return conv?.participants.find((p) => p._id !== user._id);
-    }, [selectedConversationId, conversation, user._id]);
-    
-    useEffect(() => {
-      const getFollowers = async () => {
-        const query = ['name', 'photo', 'biography'];
-        const response = await api.get(`/user/${user._id}/followers/?filter=${query.join(',')}`);
+  // inicializa conversa 1-1
+  useEffect(() => {
+    const initialConversations = [];
+    const initialFriendMap = {};
 
-        if (!response) return new Error(response);
+    friendsFollowing.forEach((friend) => {
+      const participantId = [user._id, friend._id].sort();
+      const conversationId = `private-${participantId[0]}-${participantId[1]}`;
 
-        const data = await response.data;
-        setFriendsFollowing(data);
-      };
+      initialConversations.push({
+        id: conversationId,
+        participants: [
+          { _id: user._id, name: "Você", isOnline: true, photo: user.photo },
+          friend,
+        ],
+        type: "private",
+        name: friend.name,
+        lastMessagePreview: "Nenhuma Mensagem",
+        unReadCount: 0,
+      });
+      initialFriendMap[friend._id] = conversationId;
+      // Inicializa o array de mensagens para essa conversa
+      setPrivateChatsData((prev) => ({ ...prev, [conversationId]: [] }));
+    });
 
-      getFollowers();
-    }, [user._id]);
+    setConversations(initialConversations);
+    setFriendToConversationMap(initialFriendMap);
+  }, [friendsFollowing, user._id, user.photo]);
 
-    return (
-      <Container maxWidth={false} disableGutters sx={{ flex: 1 }}>
-        <Grid2 container size={12} height="100%">
+  useEffect(() => {
+    const getFollowers = async () => {
+      const query = ["name", "photo", "biography"];
+      const response = await api.get(
+        `/user/${user._id}/followers/?filter=${query.join(",")}`
+      );
+
+      if (!response) return new Error(response);
+
+      const data = await response.data;
+      setFriendsFollowing(data);
+    };
+
+    getFollowers();
+  }, [user._id]);
+
+  console.log('renderizou')
+
+  return (
+    <Container maxWidth={false} disableGutters sx={{ flex: 1 }}>
+      <Grid2 container size={12} height="100%">
+        {((matches && selectedConversationId === null) || !matches) && (
           <Grid2
-            size={4}
-            minWidth={500}
+            size={{ xs: 12, md: 5, lg: 4 }}
             sx={{
               backgroundColor: theme.palette.background.paper,
               color: theme.palette.text.primary,
               borderRightColor: theme.palette.divider,
               borderRightWidth: 1,
-              display: { xs: "none", md: "inherit" }
             }}
           >
-            <List
-              dense
-              disablePadding
-              sx={{ backgroundColor: theme.palette.background.paper }}
-            >
-              {friendsFollowing.length > 0 &&
-                friendsFollowing.map((friend, index) => {
-                  const conversationId = friendToConversationMap[friend._id];
-                  const conv = conversation.find(
-                    (c) => c.id === conversationId
-                  );
-
-                  return (
-                    <ListItem
-                      key={`${friend.name} - ${index}`}
-                      disableGutters
-                      sx={{
-                        paddingLeft: 5,
-                        borderBottom: 1,
-                        borderColor: theme.palette.divider,
-                      }}
-                    >
-                      <ListItemButton
-                        onClick={() => selectConversation(conversationId)}
-                      >
-                        <ListItemAvatar>
-                          <Avatar
-                            alt={`Avatar - {${index}}`}
-                            src={friend.photo}
-                          />
-                        </ListItemAvatar>
-                        <Box display={"flex"} flexDirection={"column"} flex={1}>
-                          <Typography variant="subtitle1" fontWeight="normal">
-                            {friend.name}
-                          </Typography>
-                          <Typography variant="subtitle2" fontWeight="light">
-                            {conv?.lastMessagePreview ?? ""}
-                          </Typography>
-                        </Box>
-                        {activeFriends && Array.isArray(activeFriends) && activeFriends.includes(friend._id) && (
-                          <Lens color="success" sx={{ fontSize: 10 }} />
-                        )}
-                        {conv?.unreadCount && conv?.unreadCount > 0 && (
-                          <ListItemText primary={conv.unreadCount} />
-                        )}
-                      </ListItemButton>
-                    </ListItem>
-                  );
-                })}
-            </List>
+            <FriendListChat
+              activeFriends={activeFriends}
+              conversation={conversation}
+              friendToConversationMap={friendToConversationMap}
+              friendsFollowing={friendsFollowing}
+              selectConversation={selectConversation}
+            />
           </Grid2>
+        )}
+        {((matches && selectedConversationId !== null) || !matches) && (
           <Grid2
             container
-            size="grow"
+            size={{ xs: 12, md: 7, lg: 8 }}
+            flex={1}
             direction="column"
             color={theme.palette.text.primary}
             sx={{ backgroundColor: theme.palette.background.paper }}
@@ -257,22 +229,15 @@ export const ChatPage = ({ activeFriends }) => {
           >
             {selectedContact ? (
               <>
-                <Grid2 size={12}>
-                  <Stack alignItems="center" justifyContent="center">
-                    <Avatar src={selectedContact.photo} />
-                    <Typography variant="h6">{selectedContact.name}</Typography>
-                    <Stack direction="row" alignItems={"center"} gap={1}>
-                      {activeFriends && Array.isArray(activeFriends) && activeFriends.includes(selectedContact._id) && (
-                        <Lens color="success" sx={{ fontSize: 10 }} />
-                      )}
-                      <Typography>
-                        {activeFriends && Array.isArray(activeFriends) && activeFriends.includes(selectedContact._id)
-                          ? "online"
-                          : "offline"}
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                </Grid2>
+                <HeaderInformationFriend
+                  selectedContact={selectedContact}
+                  isActive={
+                    activeFriends &&
+                    Array.isArray(activeFriends) &&
+                    activeFriends.includes(selectedContact._id)
+                  }
+                  handleClose={handleCloseChat}
+                />
                 <Grid2
                   container
                   flex={1}
@@ -281,61 +246,15 @@ export const ChatPage = ({ activeFriends }) => {
                   sx={{ overflowY: "auto", flexDirection: "column" }}
                 >
                   {messages && messages.length > 0 ? (
-                    messages.map((msg, index) => {
+                    messages.map((msg) => {
                       const isMyMessage = msg.senderId === user._id;
                       return (
-                        <Grid2
-                          key={msg.id || index}
-                          container
-                          spacing={1}
-                          sx={{
-                            justifyContent: isMyMessage
-                              ? "flex-end"
-                              : "flex-start",
-                            marginBottom: 1,
-                          }}
-                        >
-                          {!isMyMessage && (
-                            <Grid2>
-                              <Avatar src={selectedContact.photo} />
-                            </Grid2>
-                          )}
-                          <Grid2>
-                            <Paper
-                              sx={{
-                                width: "max-content",
-                                maxWidth: "400px",
-                                padding: 1,
-                                paddingY: 0.5,
-                                backgroundColor: isMyMessage
-                                  ? theme.palette.primary.main
-                                  : theme.palette.background.default,
-                                color: isMyMessage
-                                  ? theme.palette.primary.contrastText
-                                  : theme.palette.text.primary,
-                              }}
-                            >
-                              <Typography>{msg.content}</Typography>
-                              <Typography
-                                variant="caption"
-                                sx={{ fontSize: "0.65rem", opacity: 0.7 }}
-                              >
-                                {new Date(msg.timestamp).toLocaleTimeString(
-                                  "pt-BR",
-                                  {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  }
-                                )}
-                              </Typography>
-                            </Paper>
-                          </Grid2>
-                          {isMyMessage && (
-                            <Grid2>
-                              <Avatar src={user.photo} />
-                            </Grid2>
-                          )}
-                        </Grid2>
+                        <Message
+                          msg={msg}
+                          isMyMessage={isMyMessage}
+                          selectedContact={selectedContact}
+                          photo={user.photo}
+                        />
                       );
                     })
                   ) : (
@@ -381,7 +300,8 @@ export const ChatPage = ({ activeFriends }) => {
               </Grid2>
             )}
           </Grid2>
-        </Grid2>
-      </Container>
-    );
-}
+        )}
+      </Grid2>
+    </Container>
+  );
+};

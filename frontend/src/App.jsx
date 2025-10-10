@@ -11,9 +11,8 @@ import { ThemeProvider } from "@emotion/react";
 import { Settings } from "./pages/settings";
 import { SidebarComponent } from "./components/ui/SidebarComponent";
 import { useThemeColor } from "./hooks/useThemeColor";
-import { Chat } from "./components/chat/Chat";
 import { ChatPage } from "./pages/chat";
-import { Component, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { socket } from "./services/socket";
 
 const withProtectedRole = (ComponentToProtect, redirectPath = "/") => {
@@ -65,10 +64,26 @@ const withProtectedRole = (ComponentToProtect, redirectPath = "/") => {
   }
 };
 
+function SettingsPage () {
+  return (
+    <Box display="flex" flex={1}>
+      <div className="max-[961px]:hidden">
+        <SidebarComponent />
+      </div>
+      <Settings />
+    </Box>
+  );
+}
+
+const MenuWithProtectWorkouts = withProtectedRole(Menu, "/");
+const ProfileWithProtect = withProtectedRole(Profile, "/");
+const SettingsWithProtect = withProtectedRole(SettingsPage, "/");
+const ChatPageWithProtect = withProtectedRole(ChatPage, "/");
+
 function App() {
   const { isDark } = useThemeColor();
 
-  const theme = createTheme({
+  const theme = useMemo(() => createTheme({
     typography: {
       fontFamily: `"IBM Plex Sans"`,
       fontSize: 14,
@@ -107,24 +122,7 @@ function App() {
       },
       divider: isDark ? "#4242424f" : "#97979731", // Cor dos divisores
     },
-  });
-
-  function SettingsPage () {
-    return (
-      <Box display="flex" flex={1}>
-        <div className="max-[961px]:hidden">
-          <SidebarComponent />
-        </div>
-        <Settings />
-      </Box>
-    );
-  }
-
-  const MenuWithProtectWorkouts = withProtectedRole(Menu, "/");
-  const ProfileWithProtect = withProtectedRole(Profile, "/");
-  const SettingsWithProtect = withProtectedRole(SettingsPage, "/");
-  const ChatWithProtect = withProtectedRole(Chat, "/");
-  const ChatPageWithProtect = withProtectedRole(ChatPage, "/");
+  }), [isDark]);
 
   return (
     <Box className="flex flex-col h-[100%] overflow-x-hidden">
@@ -146,7 +144,6 @@ function App() {
               />
               <Route path="/profile/:id" element={<ProfileWithProtect />} />
               <Route path="/settings" element={<SettingsWithProtect />} />
-              <Route path="/chat" element={<ChatWithProtect />} />
               <Route path="/chat-friends" element={<ChatPageWithProtect />} />
             </Routes>
             <Footer />

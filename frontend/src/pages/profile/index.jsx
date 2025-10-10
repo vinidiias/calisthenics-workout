@@ -97,7 +97,6 @@ export default function Profile() {
 
   return (
     <Box
-      component="main"
       flexGrow={1}
       padding={2}
       display="flex"
@@ -283,28 +282,30 @@ export default function Profile() {
             </Box>
           </Paper>
         </FormProvider>
-        <Box className="flex flex-col lg:flex-row" gap={2} flex={1}>
-          <Paper
-            sx={
-              data?.followers?.length === 0
-                ? { flex: 1 }
-                : { alignSelf: "flex-start", position: "sticky", top: 0 }
-            }
+        {/* "flex flex-col lg:flex-row" */}
+        <Grid2 container size={12} spacing={5}>
+          <Grid2
+            size={{ xs: 12, md: 4 }}
+            sx={{ alignSelf: "flex-start", position: { xs: "inherit", md: "sticky" }, top: 0 }}
           >
-            <FriendsFollowing friends={data} />
-          </Paper>
-          <Box display="flex" flexDirection="column" gap={5} flex={2}>
+            <Paper>
+              <FriendsFollowing friends={data} />
+            </Paper>
+          </Grid2>
+          <Grid2 container size={{ xs: 12, md: 8 }} spacing={1}>
             {data?.history?.length > 0 ? (
               <>
                 {data.history?.map((hist) => {
                   const date = new Date(hist.date);
                   return (
-                    <WorkoutPost
-                      photo={data.photo}
-                      hist={hist}
-                      name={data.name}
-                      date={date}
-                    />
+                    <Grid2 key={hist.id}>
+                      <WorkoutPost
+                        photo={data.photo}
+                        hist={hist}
+                        name={data.name}
+                        date={date}
+                      />
+                    </Grid2>
                   );
                 })}
               </>
@@ -320,8 +321,8 @@ export default function Profile() {
                 <Typography>Sem atividades</Typography>
               </Paper>
             )}
-          </Box>
-        </Box>
+          </Grid2>
+        </Grid2>
       </Box>
     </Box>
   );
