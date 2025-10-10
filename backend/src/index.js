@@ -42,7 +42,8 @@ mongoose
 const allowedOrigins = [
   "http://localhost:5173",
   "https://calisthenics-workout-knqn.vercel.app",
-  "http://localhost:5000"
+  "http://localhost:5000",
+  "https://api-chat-azure.vercel.app"
 ];
 
 app.use(

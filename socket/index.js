@@ -13,11 +13,36 @@ const io = new Server(httpServer, {
       "https://calisthenics-workout-knqn.vercel.app",
       "http://localhost:5173",
     ],
-    methods: ["GET", "POST"],
-    credentials: true
+    methods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["*"]
   },
   transports: ['websocket', 'polling'],
-  allowEIO3: true
+  allowEIO3: true,
+  path: '/socket.io'
+});
+
+// Add CORS middleware for Express routes
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    "https://calisthenics-workout-knqn.vercel.app",
+    "http://localhost:5173"
+  ];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  next();
 });
 
 app.use(express.json());
