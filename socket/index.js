@@ -5,6 +5,8 @@ const { Server } = require('socket.io');
 
 const app = express();
 const httpServer = createServer(app);
+
+// Initialize Socket.IO with Vercel-compatible configuration
 const io = new Server(httpServer, {
   cors: {
     origin: [
@@ -12,10 +14,11 @@ const io = new Server(httpServer, {
       "http://localhost:5173",
     ],
     methods: ["GET", "POST"],
+    credentials: true
   },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true
 });
-
-const PORT = process.env.PORT;
 
 app.use(express.json());
 
@@ -56,7 +59,15 @@ io.on('connect', (socket) => {
     })
 })
 
-// Start server
-httpServer.listen(PORT, () => {
-  console.log(`Socket server running on port ${PORT}`);
-});
+// Export for Vercel serverless
+module.exports = app;
+module.exports.io = io;
+module.exports.httpServer = httpServer;
+
+// For local development
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001;
+  httpServer.listen(PORT, () => {
+    console.log(`Socket server running on port ${PORT}`);
+  });
+}
