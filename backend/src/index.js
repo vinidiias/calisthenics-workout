@@ -3,11 +3,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-const { createServer } = require("node:http");
 const { v4 } = require("uuid");
 const { S3Client } = require("@aws-sdk/client-s3");
 const multerS3 = require("multer-s3");
-const { Server } = require("socket.io");
 require("dotenv").config();
 
 const s3 = new S3Client({
@@ -29,14 +27,6 @@ const upload = multer({
 });
 
 const app = express();
-const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-  },
-});
-
-io.listen(4000);
 
 const PORT = process.env.PORT;
 const dbUri = process.env.DB_URI;
@@ -52,6 +42,7 @@ mongoose
 const allowedOrigins = [
   "http://localhost:5173",
   "https://calisthenics-workout-knqn.vercel.app",
+  "http://localhost:5000"
 ];
 
 app.use(
@@ -70,37 +61,6 @@ app.use(
 );
 
 app.use(express.json());
-
-const activeUser = new Map();
-
-io.on('connect', (socket) => {
-    socket.on('authenticate', (userId) => {
-      socket.userId = userId;
-      socket.join(userId);
-      activeUser.set(userId, socket.id);
-      console.log('userId: ' + userId + ' entrou');
-
-      io.emit('active-users', Array.from(activeUser.keys()))
-    })
-
-    socket.on('disconnect', () => {
-        if(socket.userId) {
-          activeUser.delete(socket.userId);
-          io.emit('active-users', Array.from(activeUser.keys()))
-        }
-    })
-
-    socket.on('chat-message', (msg) => {
-        console.log('message: ', msg)
-        // Broadcast the message to all users in the conversation
-        io.emit('receive-message', {
-          conversationId: msg.conversationId,
-          senderId: msg.senderId,
-          content: msg.content,
-          timestamp: msg.timestamp
-        })
-    })
-})
 
 app.post("/file", upload.single("photo"), (req, res) => {
   return res.status(201).send(req.file.location);
