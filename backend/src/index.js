@@ -91,8 +91,14 @@ io.on('connect', (socket) => {
     })
 
     socket.on('chat-message', (msg) => {
-      socket.client()
         console.log('message: ', msg)
+        // Broadcast the message to all users in the conversation
+        io.emit('receive-message', {
+          conversationId: msg.conversationId,
+          senderId: msg.senderId,
+          content: msg.content,
+          timestamp: msg.timestamp
+        })
     })
 })
 
