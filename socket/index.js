@@ -11,8 +11,12 @@ const PORT = process.env.PORT || 5000;
 // Initialize Socket.IO with Vercel-compatible configuration
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",                          // Desenvolvimento
+      "https://calisthenics-workout-knqn.vercel.app"   // Produção
+    ],
     methods: ["GET", "POST", "OPTIONS"],
+    credentials: true 
   },
 });
 
