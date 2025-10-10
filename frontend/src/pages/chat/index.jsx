@@ -1,6 +1,8 @@
 import {
+  Box,
   Container,
   Grid2,
+  IconButton,
   TextField,
   Typography,
   useMediaQuery,
@@ -14,6 +16,7 @@ import { socket } from "../../services/socket/index";
 import { FriendListChat } from "../../components/pages/chat/FriendListChat";
 import { Message } from "../../components/pages/chat/Message";
 import { HeaderInformationFriend } from "../../components/pages/chat/HeaderInformationFriend";
+import SendIcon from '@mui/icons-material/Send';
 
 export const ChatPage = ({ activeFriends }) => {
   const [friendsFollowing, setFriendsFollowing] = useState([]);
@@ -272,16 +275,21 @@ export const ChatPage = ({ activeFriends }) => {
                   )}
                 </Grid2>
                 <Grid2 size={12} container justifyContent={"center"}>
-                  <Grid2 size={10}>
+                  <Grid2 size={{ xs: 12, md: 7 }}>
                     <form onSubmit={handleSendMessage}>
-                      <TextField
-                        name="message"
-                        fullWidth
-                        size="small"
-                        value={messageInput}
-                        onChange={(e) => setMessageInput(e.target.value)}
-                        placeholder="Digite uma mensagem..."
-                      />
+                      <Box sx={{ display: "flex", alignItems: "center"}}>
+                        <TextField
+                          name="message"
+                          fullWidth
+                          size="small"
+                          value={messageInput}
+                          onChange={(e) => setMessageInput(e.target.value)}
+                          placeholder="Digite uma mensagem..."
+                        />
+                        <IconButton onClick={handleSendMessage}>
+                          <SendIcon color="primary" />
+                        </IconButton>
+                      </Box>
                     </form>
                   </Grid2>
                 </Grid2>
