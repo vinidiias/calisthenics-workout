@@ -52,6 +52,8 @@ export const ChatPage = ({ activeFriends }) => {
   const sendMessage = (content) => {
     if (!selectedConversationId || !content.trim()) return;
 
+    const receiverId = selectedContact._id;
+
     const newMessage = {
       id: Math.random().toString(36).substring(7),
       senderId: user._id,
@@ -83,6 +85,7 @@ export const ChatPage = ({ activeFriends }) => {
     socket.emit("chat-message", {
       conversationId: selectedConversationId,
       senderId: user._id,
+      receiverId: receiverId,
       content,
       timestamp: newMessage.timestamp,
     });
@@ -180,6 +183,41 @@ export const ChatPage = ({ activeFriends }) => {
   }, [friendsFollowing, user._id, user.photo]);
 
   useEffect(() => {
+    const loadMessages = async () => {
+      if (!selectedConversationId) return;
+
+      try {
+        const response = await api.get(`/message/${selectedConversationId}`);
+        const dbMessages = response.data.map((msg) => ({
+          id: msg._id,
+          senderId: msg.senderId._id,
+          senderName: msg.senderId.name,
+          content: msg.content,
+          timestamp: msg.timestamp,
+          type: msg.type || "text",
+          read: msg.read,
+        }));
+
+        setMessages(dbMessages);
+        setPrivateChatsData((prev) => ({
+          ...prev,
+          [selectedConversationId]: dbMessages,
+        }));
+
+        // Mark messages as read
+        await api.patch("/message/read", {
+          conversationId: selectedConversationId,
+          userId: user._id,
+        });
+      } catch (error) {
+        console.error("Error loading messages:", error);
+      }
+    };
+
+    loadMessages();
+  }, [selectedConversationId, user._id]);
+
+  useEffect(() => {
     const getFollowers = async () => {
       const query = ["name", "photo", "biography"];
       const response = await api.get(
@@ -249,10 +287,11 @@ export const ChatPage = ({ activeFriends }) => {
                   sx={{ overflowY: "auto", flexDirection: "column" }}
                 >
                   {messages && messages.length > 0 ? (
-                    messages.map((msg) => {
+                    messages.map((msg, index) => {
                       const isMyMessage = msg.senderId === user._id;
                       return (
                         <Message
+                          key={`msg - ${index}`}
                           msg={msg}
                           isMyMessage={isMyMessage}
                           selectedContact={selectedContact}

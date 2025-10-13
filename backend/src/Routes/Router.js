@@ -4,6 +4,7 @@ const UserController = require('../Controller/UserController')
 const AddressController = require('../Controller/AddressController')
 const OutdoorGymController = require('../Controller/OutdoorGymController')
 const WorkoutController = require('../Controller/WorkoutController')
+const MessageController = require('../Controller/MessageController')
 
 const routes = Router()
 
@@ -32,5 +33,11 @@ routes.get('/workout/not-subscribed', WorkoutController.getAllWorkoutNotSubscrib
 routes.get('/workout', WorkoutController.getAll)
 routes.get('/workout/subscribed', WorkoutController.getAllWorkoutSubscribed)
 routes.delete('/workout/delete', WorkoutController.deleteAll)
+
+//Message
+routes.post('/message', MessageController.create)
+routes.get('/message/:conversationId', MessageController.getConversationMessages)
+routes.patch('/message/read', MessageController.markAsRead)
+routes.get('/message/unread/:userId', MessageController.getUnreadCount)
 
 module.exports = routes
