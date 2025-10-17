@@ -13,8 +13,6 @@ import AddIcon from "@mui/icons-material/Add";
 //API
 import api from "../../services";
 //COMPONENTS
-import CardComponent from "../../components/ui/CardComponent";
-import TransitionsModal from "../../components/ui/CreateForm";
 import ParticipantsListModal from "../../components/ui/ParticipantsListModal";
 import { SearchInput } from "../../components/ui/SearchInput";
 //TANKSTACK  QUERY
@@ -24,6 +22,8 @@ import { UserContext } from "../../contexts/UserContext";
 ///HOOKS
 import { useFetchAddress } from "../../hooks/useFetchAddress";
 import { Select } from "../../components/ui/inputs/Select";
+import { CardComponent } from "../../components/ui/CardComponent";
+import { FormWorkout } from "../../components/ui/FormWorkout";
 
 const fetchWorkoutNotSubscribed = async ({ auth }) => {
   const { data } = await api.get("/workout/not-subscribed", {
@@ -105,7 +105,6 @@ const Menu = ({ isParticipe, title }) => {
   const { mutateAsync: subscribeToWorkoutFn, isPending } = useMutation({
     mutationFn: subscribeToWorkout,
     onSuccess: (newData) => {
-      console.log(newData);
       queryClient.setQueriesData(["workouts"], (oldData) => {
         return oldData
           ? oldData.filter((workout) => workout._id !== newData.workout._id)
@@ -157,16 +156,16 @@ const Menu = ({ isParticipe, title }) => {
 
   return (
     <Box
-      flex={1}
-      padding={5}
-      display="flex"
-      flexDirection="column"
       sx={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        p: 5,
         backgroundColor: "background.default",
         overflowY: "clip",
       }}
     >
-      <TransitionsModal openModal={open} onClose={() => setOpen(false)} />
+      <FormWorkout openModal={open} onClose={() => setOpen(false)} />
       <ParticipantsListModal
         openModal={openList}
         onClose={() => setOpenList(false)}

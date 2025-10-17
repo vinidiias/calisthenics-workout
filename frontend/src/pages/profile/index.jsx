@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 
 import api from "../../services";
 import UploadButton from "../../components/form/UploadButton";
-import CardComponent from "../../components/ui/CardComponent";
 import CssBaseline from "@mui/material/CssBaseline";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
@@ -25,7 +24,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useThemeColor } from "../../hooks/useThemeColor";
 import { FriendsFollowing } from "../../components/pages/profile/FriendsFollowing";
-import { WorkoutPost } from "../../components/pages/profile/WorkoutPost";
+import { WorkoutCard } from "../../components/pages/profile/WorkoutCard";
 
 const createImage = async (photo) => {
   const formData = new FormData();
@@ -299,7 +298,7 @@ export default function Profile() {
                   const date = new Date(hist.date);
                   return (
                     <Grid2 key={hist.id}>
-                      <WorkoutPost
+                      <WorkoutCard
                         photo={data.photo}
                         hist={hist}
                         name={data.name}

@@ -86,9 +86,8 @@ io.on('connect', (socket) => {
     socket.on('authenticate', (userId) => {
       socket.userId = userId;
       socket.join(userId);
-      activeUser.set(userId, socket.id);
-      console.log('userId: ' + userId + ' entrou');
 
+      activeUser.set(userId, socket.id);
       io.emit('active-users', Array.from(activeUser.keys()))
     })
 
@@ -122,8 +121,6 @@ io.on('connect', (socket) => {
           content: msg.content,
           timestamp: msg.timestamp || new Date()
         });
-
-        console.log('Message saved:', message._id)
 
         // Broadcast the message to all users in the conversation
         io.emit("receive-message", {

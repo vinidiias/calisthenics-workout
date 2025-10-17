@@ -52,13 +52,13 @@ const createWorkout = async ({ workout, auth }) => {
   return data
 }
 
-export default function TransitionsModal({ openModal, onClose }) {
+export const FormWorkout = ({ openModal, onClose }) => {
   const { user } = React.useContext(UserContext)
   const { isDark } = useThemeColor()
 
   const queryClient = useQueryClient()
 
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["outdoor_gyms"],
     queryFn: fetchOutdoorGym,
   });

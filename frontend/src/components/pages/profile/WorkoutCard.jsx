@@ -1,7 +1,7 @@
 import { Avatar, Box, Paper, Typography } from "@mui/material";
-import CardComponent from "../../ui/CardComponent";
+import { CardComponent } from "../../ui/CardComponent";
 
-export const WorkoutPost = ({ hist, photo, name, date }) => {
+export const WorkoutCard = ({ hist, photo, name, date }) => {
     return (
       <Paper key={hist._id} sx={{ flexGrow: 1 }}>
         <Box className="flex items-center gap-3 p-4">

@@ -30,6 +30,10 @@ export const FriendListChat = ({
         friendsFollowing.map((friend, index) => {
           const conversationId = friendToConversationMap[friend._id];
           const conv = conversation.find((c) => c.id === conversationId);
+          const isActive =
+            activeFriends &&
+            Array.isArray(activeFriends) &&
+            activeFriends.includes(friend._id);
 
           return (
             <ListItem
@@ -55,20 +59,16 @@ export const FriendListChat = ({
                     {conv?.lastMessagePreview ?? ""}
                   </Typography>
                 </Box>
-                {conv?.unreadCount && conv?.unreadCount > 0 && (
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "end" }}>
-                        {activeFriends &&
-                          Array.isArray(activeFriends) &&
-                          activeFriends.includes(friend._id) && (
-                            <Lens color="success" sx={{ fontSize: 10 }} />
-                          )}
-                        {conv.unreadCount}
-                      </Box>
-                    }
-                  />
-                )}
+                <Box sx={{ display: "flex", gap: 1, marginLeft: "auto" }}>
+                  {conv?.unreadCount && conv?.unreadCount > 0 && (
+                    <ListItemText primary={conv.unreadCount} />
+                  )}
+                  {isActive && (
+                    <ListItemText
+                      primary={<Lens color="success" sx={{ fontSize: 10 }} />}
+                    />
+                  )}
+                </Box>
               </ListItemButton>
             </ListItem>
           );

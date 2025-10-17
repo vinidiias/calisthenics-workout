@@ -233,8 +233,6 @@ export const ChatPage = ({ activeFriends }) => {
     getFollowers();
   }, [user._id]);
 
-  console.log('renderizou')
-
   return (
     <Container maxWidth={false} disableGutters sx={{ flex: 1 }}>
       <Grid2 container size={12} height="100%">

@@ -18,7 +18,7 @@ import { UserContext } from "../../contexts/UserContext";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentIcon from '@mui/icons-material/Comment';
 
-const CardComponent = ({
+export const CardComponent = ({
   index,
   img,
   alt,
@@ -194,5 +194,3 @@ const CardComponent = ({
     </Card>
   );
 };
-
-export default CardComponent;
