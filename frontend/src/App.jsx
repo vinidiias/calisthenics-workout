@@ -7,7 +7,7 @@ import Profile from "./pages/profile";
 import { UserContext, UserProvider } from "./contexts/UserContext";
 import { ThemeProvider } from "@emotion/react";
 import { Settings } from "./pages/settings";
-import { SidebarComponent } from "./components/ui/SidebarComponent";
+import { SidebarComponent } from "./components/SidebarComponent";
 import { useThemeColor } from "./hooks/useThemeColor";
 import { ChatPage } from "./pages/chat";
 import { useContext, useEffect, useMemo, useState } from "react";

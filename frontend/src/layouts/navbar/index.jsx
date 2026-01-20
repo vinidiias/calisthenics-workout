@@ -1,9 +1,9 @@
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import SwitchThemeButton from '../../components/ui/SwitchTheme'
+import SwitchThemeButton from '../../components/SwitchTheme'
 import { useContext, useState } from 'react'
 import { useCurrentIndex } from '../../hooks/useCurrentIndex';
 import { UserContext } from '../../contexts/UserContext';
-import { IconLogo } from '../../components/logo/logo_org';
+import { IconLogo } from '../../components/logo_org';
 import {
   IconButton,
   AppBar,

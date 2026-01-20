@@ -14,7 +14,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../contexts/UserContext";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentIcon from '@mui/icons-material/Comment';
 

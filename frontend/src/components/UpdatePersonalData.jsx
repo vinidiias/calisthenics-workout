@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import api from "../../services";
-import { UserContext } from "../../contexts/UserContext";
+import api from "../services";
+import { UserContext } from "../contexts/UserContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createImage } from "../../services/imageApi";
+import { createImage } from "../services/imageApi";
 
 const updateUser = async ({ updatedData, id }) => {
   const { data } = await api.patch(`/user/${id}`, updatedData, {

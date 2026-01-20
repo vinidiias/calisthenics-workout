@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import { useThemeColor } from "../../hooks/useThemeColor";
+import { useThemeColor } from "../hooks/useThemeColor";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,

@@ -12,8 +12,8 @@ import AddIcon from "@mui/icons-material/Add";
 //API
 import api from "../../services";
 //COMPONENTS
-import ParticipantsListModal from "../../components/ui/ParticipantsListModal";
-import { SearchInput } from "../../components/ui/SearchInput";
+import ParticipantsListModal from "../../components/ParticipantsListModal";
+import { SearchInput } from "../../components/ui/inputs/SearchInput";
 //TANKSTACK  QUERY
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 //CONTEXT
@@ -21,7 +21,7 @@ import { UserContext } from "../../contexts/UserContext";
 ///HOOKS
 import { useFetchAddress } from "../../hooks/useFetchAddress";
 import { Select } from "../../components/ui/inputs/Select";
-import { CardComponent } from "../../components/ui/CardComponent";
+import { CardComponent } from "../../components/CardComponent";
 import { FormWorkout } from "../../components/pages/workouts/FormWorkout";
 
 const fetchWorkoutNotSubscribed = async ({ auth }) => {

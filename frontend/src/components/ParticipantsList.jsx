@@ -16,7 +16,7 @@ import {
   TableRow,
   Box,
 } from "@mui/material";
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 
 export const ParticipantsList = ({ dataTable, handleFollow }) => {

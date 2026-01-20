@@ -17,7 +17,7 @@ import api from "../../services";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useMutation } from "@tanstack/react-query";
-import { AuthContainer } from "../../components/auth";
+import { AuthContainer } from "../../components/pages/auth";
 
 const createAuth = async ({ userData }) => {
   const { data } = await api.post("/user/auth", userData);

@@ -12,7 +12,7 @@ import React, { useContext, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import api from "../../services";
 import EditIcon from "@mui/icons-material/Edit";
-import { UpdatePersonalData } from "../../components/ui/UpdatePersonalData";
+import { UpdatePersonalData } from "../../components/UpdatePersonalData";
 
 const getUser = async ({ id }) => {
   const { data } = await api.get(`/user/${id}`);

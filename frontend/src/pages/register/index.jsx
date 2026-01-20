@@ -12,7 +12,7 @@ import api from "../../services";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useMutation } from "@tanstack/react-query";
-import { AuthContainer } from "../../components/auth";
+import { AuthContainer } from "../../components/pages/auth";
 
 const createImage = async (dataUser) => {
   const formData = new FormData();

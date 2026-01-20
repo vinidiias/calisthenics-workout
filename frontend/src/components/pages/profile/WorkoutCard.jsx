@@ -1,5 +1,5 @@
 import { Avatar, Box, Typography } from "@mui/material";
-import { CardComponent } from "../../ui/CardComponent";
+import { CardComponent } from "../../CardComponent";
 
 export const WorkoutCard = ({ hist, photo, name, date }) => {
   return (

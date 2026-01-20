@@ -7,8 +7,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
-import UploadButton from "../../form/UploadButton";
+import UploadButton from "../../UploadButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useThemeColor } from "../../../hooks/useThemeColor";
 import { useForm } from "react-hook-form";
@@ -34,6 +35,7 @@ const updateUser = async ({ id, auth, ...dataUser }) => {
 
 export const HeaderProfile = ({ backgroundPhoto, isMe, user }) => {
   const [openEdit, setOpenEdit] = useState(false);
+  const { id } = useParams();
 
   const { isDark } = useThemeColor();
   const { register, watch } = useForm();
@@ -45,7 +47,7 @@ export const HeaderProfile = ({ backgroundPhoto, isMe, user }) => {
     mutationFn: createImage,
     onSuccess: (data) => {
       updateBackPhotoFn({
-        id: params.id,
+        id: id,
         auth: user._id,
         backgroundPhoto: data.data,
       });
@@ -55,8 +57,7 @@ export const HeaderProfile = ({ backgroundPhoto, isMe, user }) => {
   const { mutateAsync: updateBackPhotoFn } = useMutation({
     mutationFn: updateUser,
     onSuccess: (newData) => {
-      queryClient.setQueriesData(["user", params.id], (oldData) => {
-        console.log(newData);
+      queryClient.setQueriesData(["user", id], (oldData) => {
         return oldData
           ? { ...oldData, backgroundPhoto: newData.data.backgroundPhoto }
           : newData.data;

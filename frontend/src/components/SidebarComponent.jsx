@@ -4,12 +4,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { useThemeColor } from "../../hooks/useThemeColor";
+import { useThemeColor } from "../hooks/useThemeColor";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LanguageIcon from "@mui/icons-material/Language";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../contexts/UserContext";
 import { useContext } from "react";
 import { WbSunny } from "@mui/icons-material";
 
