@@ -17,26 +17,8 @@ mongoose
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
   })
-  .then(() => {
-    console.log('Socket server connected to database');
-  })
-  .catch((err) => {
-    console.error('Database connection error:', err);
-    console.error('DB_URI:', dbUri ? 'configured' : 'missing');
-  });
+  .catch((err) => {});
 
-// Handle MongoDB connection events
-mongoose.connection.on('error', (err) => {
-  console.error('MongoDB connection error:', err);
-});
-
-mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected');
-});
-
-mongoose.connection.on('reconnected', () => {
-  console.log('MongoDB reconnected');
-});
 
 // Initialize Socket.IO with Vercel-compatible configuration
 const io = new Server(httpServer, {
@@ -143,4 +125,4 @@ io.on('connect', (socket) => {
     })
 })
 
-httpServer.listen(PORT, () => console.log(`Socket server running on port ${PORT}`));
+httpServer.listen(PORT, () => {});

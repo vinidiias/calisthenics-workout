@@ -1,69 +1,78 @@
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema({
-    photo: {
-        type: String,
-        required: true
+  photo: {
+    type: String,
+    required: true,
+  },
+  backgroundPhoto: {
+    type: String,
+    required: false,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  address: {
+    street: {
+      type: String,
+      default: "",
     },
-    backgroundPhoto: {
-        type: String,
-        required: false,
+    number: {
+      type: String,
+      default: "",
     },
-    name: {
-        type: String,
-        required: true,
+    neighborhood: {
+      type: String,
+      default: "",
     },
-    phone: {
-        type: String,
-        required: true,
+    zipCode: {
+      type: String,
+      default: "",
     },
-    email: {
-        type: String,
-        required: true,
+    city: {
+      type: String,
+      default: "",
     },
-    address: {
-      street: {
-        type: String,
-        default: ''
-      },
-      number: {
-        type: String,
-        default: ''
-      },
-      neighborhood: {
-        type: String,
-        default: ''
-      },
-      zipCode: {
-        type: String,
-        default: ''
-      },
-      city: {
-        type: String,
-        default: ''
-      },
-      state: {
-        type: String,
-        default: ''
-      }
+    state: {
+      type: String,
+      default: "",
     },
-    biography: {
-        type: String,
-        default: ''
+  },
+  biography: {
+    type: String,
+    default: "",
+  },
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    followers: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'User'
-    }],
-    following: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'User'
-    }],
-    history: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'Workout'
-    }],
-    password: {
-        type: String,
-        required: true
-    }
-})
+  ],
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  history: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Workout",
+    },
+  ],
+  password: {
+    type: String,
+    required: true,
+  },
+});
 
 module.exports = mongoose.model('User', Schema)
