@@ -3,12 +3,8 @@ import {
   Button,
   Container,
   Divider,
-  Grid,
   Grid2,
-  Input,
-  OutlinedInput,
   Paper,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
@@ -17,8 +13,6 @@ import { UserContext } from "../../contexts/UserContext";
 import api from "../../services";
 import EditIcon from "@mui/icons-material/Edit";
 import { UpdatePersonalData } from "../../components/ui/UpdatePersonalData";
-import Footer from "../../layouts/footer";
-import { useThemeColor } from "../../hooks/useThemeColor";
 
 const getUser = async ({ id }) => {
   const { data } = await api.get(`/user/${id}`);
@@ -27,12 +21,11 @@ const getUser = async ({ id }) => {
 
 export const Settings = () => {
   const { user } = useContext(UserContext);
-  const { isDark } = useThemeColor()
   const [open, setOpen] = useState(false);
   const [fields, setFields] = useState([])
   const [filteredData, setFilteredData] = useState({})
 
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["user"],
     queryFn: () => getUser({ id: user._id }),
   });
@@ -52,12 +45,7 @@ export const Settings = () => {
     { label: "Name", value: data?.name, type: "text", name: "name" },
     { label: "Phone", value: data?.phone, type: "tel", name: "phone" },
     { label: "Email", value: data?.email, type: "email", name: "email" },
-    {
-      label: "Biography",
-      value: data?.biography,
-      type: "text",
-      name: "biography",
-    },
+    { label: "Biography", value: data?.biography, type: "text", name: "biography" },
   ];
 
   const address = [
@@ -70,7 +58,6 @@ export const Settings = () => {
   ];
 
   const filterData = (data, infos, address) => {
-    // Criando objetos para armazenar as chaves filtradas
     const filteredInfos = {};
     const filteredAddress = {};
   
@@ -89,13 +76,11 @@ export const Settings = () => {
       }
     });
   
-    // Retorna os objetos filtrados
     return { filteredInfos, filteredAddress };
   };
 
   const handleOpen = ({ fieldsProps, dataGroupName }) => {
     const { filteredInfos, filteredAddress } = filterData(data, infos, address);
-    console.log(filteredInfos, filteredAddress)
     setOpen(true)
     setFields(fieldsProps)
     setFilteredData(
@@ -104,20 +89,14 @@ export const Settings = () => {
   }
 
   return (
-    <Container
-      disableGutters
-      maxWidth="100%"
-      className={`p-4 ${
-        isDark ? "bg-[#202124]" : ""
-      } flex justify-center w-auto`}
-    >
+    <Container maxWidth={false} sx={{ p: 2 }}>
       <UpdatePersonalData
         open={open}
         handleClose={() => setOpen(false)}
         data={filteredData ?? null}
         fields={fields}
       />
-      <div className="flex flex-col gap-7 w-300 max-lg:w-full max-2xl:w-200 max-[1470px]:w-250 ">
+      <div className="flex flex-col gap-7 w-full  ">
         <Typography fontSize="1.2em" color="text.primary">
           Settings
         </Typography>
@@ -138,12 +117,13 @@ export const Settings = () => {
           </div>
         </Paper>
         <Paper elevation={2}>
-          <div className="p-8">
-            <div className="flex justify-between mb-3">
-              <Typography fontSize="1.2em" fontWeight="regular">
-                Personal Information
-              </Typography>
+          <Box padding={2}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}
+            >
+              <Typography fontSize="1rem">Personal Information</Typography>
               <Button
+                loading={isLoading}
                 variant="contained"
                 type="button"
                 size="small"
@@ -151,46 +131,46 @@ export const Settings = () => {
                 onClick={() =>
                   handleOpen({ fieldsProps: infos, dataGroupName: "infos" })
                 }
-                sx={{
-                  backgroundColor: "button.primary",
-                  color: "white",
-                  textTransform: "none",
-                  fontSize: ".9em",
-                }}
               >
                 Edit
               </Button>
-            </div>
+            </Box>
             <Divider sx={{ marginBottom: 2.5 }} />
-            <Grid2 container rowSpacing={2.5}>
+            <Grid2 container spacing={2}>
               {infos &&
-                infos.map((info) => (
-                  <React.Fragment key={info.label}>
-                    <Grid2 container size={12}>
-                      <Grid2 size={6}>
-                        <Typography width="40%" fontWeight="medium">
-                          {info.label}
-                        </Typography>
+                infos
+                  .filter((infos) => infos.type !== "file")
+                  .map((info, index) => (
+                    <React.Fragment key={info.label}>
+                      <Grid2
+                        size={{ xs: 12, sm: 6 }}
+                        container
+                        key={info.label}
+                        alignItems={"center"}
+                      >
+                        <Box>
+                          <Typography variant="body1">{info.label}</Typography>
+                          <Typography variant="body2">{info.value}</Typography>
+                        </Box>
                       </Grid2>
-                      <Grid2 size={6}>
-                        <Typography fontWeight="regular">
-                          {info.value}
-                        </Typography>
-                      </Grid2>
-                    </Grid2>
-                    <Divider sx={{ width: '100%' }} />
-                  </React.Fragment>
-                ))}
+                      {(index + 1) % 2 == 0 && index !== infos.length - 1 && (
+                        <Grid2 size={12}>
+                          <Divider sx={{ width: "100%" }} />
+                        </Grid2>
+                      )}
+                    </React.Fragment>
+                  ))}
             </Grid2>
-          </div>
+          </Box>
         </Paper>
         <Paper elevation={2}>
-          <div className="p-8">
-            <div className="flex justify-between mb-3">
-              <Typography fontSize="1.2em" fontWeight="regular">
-                Address
-              </Typography>
+          <Box padding={2}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}
+            >
+              <Typography fontSize="1rem">Address</Typography>
               <Button
+                loading={isLoading}
                 variant="contained"
                 type="button"
                 size="small"
@@ -198,39 +178,31 @@ export const Settings = () => {
                 onClick={() =>
                   handleOpen({ fieldsProps: address, dataGroupName: "address" })
                 }
-                sx={{
-                  backgroundColor: "button.primary",
-                  color: "white",
-                  textTransform: "none",
-                  fontSize: ".9em",
-                }}
               >
                 Edit
               </Button>
-            </div>
+            </Box>
             <Divider sx={{ marginBottom: 2.5 }} />
-            <Grid2 container rowSpacing={2.5}>
+            <Grid2 container size={12} spacing={2}>
               {address &&
-                address.map((info) => (
+                address.map((info, index) => (
                   <React.Fragment key={info.label}>
-                    <Grid2 container size={12} key={info.label}>
-                      <Grid2 size={6}>
-                        <Typography fontWeight="medium">
-                          {info.label}
-                        </Typography>
-                      </Grid2>
-                      <Grid2 size={6}>
-                        <Typography fontWeight="regular">
-                          {info.value}
-                        </Typography>
-                      </Grid2>
+                    <Grid2 size={{ xs: 12, sm: 6 }} key={info.label}>
+                      <Box>
+                        <Typography variant="body1">{info.label}</Typography>
+                        <Typography variant="body2">{info.value}</Typography>
+                      </Box>
                     </Grid2>
-                    <Divider sx={{ width: "100%" }} />
+                    {(index + 1) % 2 == 0 && index !== address.length - 1 && (
+                      <Grid2 size={12}>
+                        <Divider sx={{ width: "100%" }} />
+                      </Grid2>
+                    )}
                   </React.Fragment>
                 ))}
               <Divider />
             </Grid2>
-          </div>
+          </Box>
         </Paper>
       </div>
     </Container>

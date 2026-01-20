@@ -1,26 +1,8 @@
-import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import { CircularProgress } from '@mui/material';
-import { BasicTable } from '../table/BasicTable'
-import { SearchInput } from './SearchInput';
-import { useState } from 'react';
+import { CircularProgress, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { ParticipantsList } from '../table/ParticipantsList';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 'auto',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
-export default function ParticipantsListModal({ openModal, onClose, participants, handleFollowFn }) {
-  const [search, setSearch] = useState('')
+export default function ParticipantsListModal({ openModal, onClose, title, participants, handleFollowFn }) {
 
   const follow = async({ userFrom, userTo }) => {
     try {
@@ -31,31 +13,17 @@ export default function ParticipantsListModal({ openModal, onClose, participants
   }
 
   return (
-    <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
-      open={openModal}
-      onClose={onClose}
-      closeAfterTransition
-      slots={{ backdrop: Backdrop }}
-      slotProps={{
-        backdrop: {
-          timeout: 500,
-        },
-      }}
-    >
-      <Fade in={openModal}>
-        <Box sx={style}>
-          {!participants ? (
-            <CircularProgress />
-          ) : (
-            <div className="flex flex-col items-start gap-5 w-full">
-              <SearchInput search={search} setSearch={setSearch}  />
-              <BasicTable dataTable={participants} handleFollow={follow} search={search} setSearch={setSearch} />
-            </div>
-          )}
-        </Box>
-      </Fade>
-    </Modal>
+    <Dialog open={openModal} onClose={onClose}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent dividers>
+        {!participants ? (
+          <CircularProgress />
+        ) : (
+          <Box>
+            <ParticipantsList dataTable={participants} handleFollow={follow} />
+          </Box>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

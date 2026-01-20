@@ -74,7 +74,7 @@ export const CardComponent = ({
                 variant="subtitle1"
                 color="text.secondary"
               >
-                <DateRangeIcon />{" "}
+                <DateRangeIcon />
                 <span>
                   {dateFormatted.toLocaleDateString()} às{" "}
                   {dateFormatted.toLocaleTimeString()}
@@ -103,38 +103,38 @@ export const CardComponent = ({
             >
               {description}
             </Typography>
-            <Button onClick={openList} sx={{ minWidth: 0, padding: 0 }}>
-              <AvatarGroup
-                max={4}
-                spacing="medium"
-                sx={{
-                  ".MuiAvatarGroup-avatar": {
-                    width: 30,
-                    height: 30,
-                    cursor: "pointer",
-                  },
-                }}
-              >
-                {participants?.map((avatar, index) => (
-                  <Avatar key={index} alt="profile photo" src={avatar?.photo} />
-                ))}
-              </AvatarGroup>
-            </Button>
+            <AvatarGroup
+              max={4}
+              spacing="medium"
+              sx={{
+                justifyContent: "start",
+                ".MuiAvatarGroup-avatar": {
+                  width: 30,
+                  height: 30,
+                  cursor: "pointer",
+                },
+              }}
+              onClick={openList}
+            >
+              {participants?.map((avatar, index) => (
+                <Avatar key={index} alt="profile photo" src={avatar?.photo} />
+              ))}
+            </AvatarGroup>
             <Divider sx={{ my: 2 }} />
-            <div className="flex items-center justify-around">
-              <Button
-                sx={{ textTransform: "none", color: "text.secondary" }}
-                startIcon={<FavoriteIcon />}
-              >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                gap: 2,
+              }}
+            >
+              <Button fullWidth startIcon={<FavoriteIcon />}>
                 Like
               </Button>
-              <Button
-                sx={{ textTransform: "none", color: "text.secondary" }}
-                startIcon={<CommentIcon />}
-              >
+              <Button fullWidth startIcon={<CommentIcon />}>
                 Comment
               </Button>
-            </div>
+            </Box>
           </CardContent>
         </CardContent>
       )}
@@ -152,18 +152,11 @@ export const CardComponent = ({
               marginRight={participants && participants.length !== 0 ? 5 : 0}
             >
               <Button
+                variant="contained"
                 onClick={handleSubscription}
                 loadingPosition="end"
                 endIcon={<AddIcon />}
-                variant="contained"
                 color="white"
-                sx={{
-                  textTransform: "none",
-                  fontSize: "1em",
-                  fontWeight: "regular",
-                  backgroundColor: "button.primary",
-                  color: "white",
-                }}
                 loading={loading}
               >
                 {textBtn}
@@ -171,8 +164,9 @@ export const CardComponent = ({
             </Box>
           )}
           {isClick && participants && participants.length !== 0 && (
-            <Button onClick={openList}>
+            <Button variant="text">
               <AvatarGroup
+                onClick={openList}
                 max={4}
                 spacing="medium"
                 sx={{

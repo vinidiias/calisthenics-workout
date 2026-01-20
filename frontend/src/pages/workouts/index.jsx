@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControl,
   Grid2,
   Typography,
 } from "@mui/material";
@@ -23,7 +22,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { useFetchAddress } from "../../hooks/useFetchAddress";
 import { Select } from "../../components/ui/inputs/Select";
 import { CardComponent } from "../../components/ui/CardComponent";
-import { FormWorkout } from "../../components/ui/FormWorkout";
+import { FormWorkout } from "../../components/pages/workouts/FormWorkout";
 
 const fetchWorkoutNotSubscribed = async ({ auth }) => {
   const { data } = await api.get("/workout/not-subscribed", {
@@ -68,7 +67,7 @@ const Menu = ({ isParticipe, title }) => {
   const { user, setUser } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [openList, setOpenList] = useState(false);
-  const [participants, setParticipants] = useState([]);
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
 
   const {
     data: dataAddress,
@@ -137,8 +136,8 @@ const Menu = ({ isParticipe, title }) => {
     },
   });
 
-  const openListModal = (participants) => {
-    setParticipants(participants);
+  const openListModal = (workout) => {
+    setSelectedWorkout(workout);
     setOpenList(true);
   };
 
@@ -169,48 +168,33 @@ const Menu = ({ isParticipe, title }) => {
       <ParticipantsListModal
         openModal={openList}
         onClose={() => setOpenList(false)}
-        participants={participants}
+        title={selectedWorkout?.title ?? ""}
+        participants={selectedWorkout?.participants ?? []}
         handleFollowFn={followToUserFn}
       />
       <Box display="flex" justifyContent="center" gap={4} marginBottom={4}>
-        <Typography variant="h4" color="text.primary" fontWeight="regular">
+        <Typography variant="h6" color="text.primary" fontWeight="regular">
           {title}
         </Typography>
       </Box>
-      <Box className="flex justify-between items-center gap-10 mb-10 max-sm:flex-col max-sm:gap-5">
+      <Box className="flex justify-between items-center gap-5 mb-10 max-sm:flex-col">
         <SearchInput />
-        <Box display="flex" alignItems="center" gap={5}>
-          <Box display="flex" alignItems="center">
-            <Typography
-              fontSize="1em"
-              color="text.secondary"
-              className="text-gray-600"
-            >
-              Locality
-            </Typography>
-            <FormControl sx={{ m: 1, minWidth: 100 }}>
-              <Select
-                disabled={isLoadingAddress || errorAddress}
-                size="small"
-                displayEmpty
-                inputProps={{ "aria-label": "Without label" }}
-                defaultValue=""
-                onChange={(e) => setAddressFilter(e.target.value)}
-                options={optionsAddress ?? []}
-                placeholder="All"
-              />
-            </FormControl>
-          </Box>
-          {isParticipe && (
-            <Button
-              onClick={() => setOpen(true)}
-              variant="contained"
-              sx={{ backgroundColor: "button.primary", color: "white" }}
-            >
-              <AddIcon />
-            </Button>
-          )}
-        </Box>
+        <Select
+          label="Locality"
+          disabled={isLoadingAddress || errorAddress}
+          size="small"
+          defaultValue="all"
+          onChange={(e) => setAddressFilter(e.target.value)}
+          options={optionsAddress ?? []}
+        />
+        {isParticipe && (
+          <Button
+            onClick={() => setOpen(true)}
+            variant="contained"
+          >
+            <AddIcon />
+          </Button>
+        )}
       </Box>
       <Grid2
         container
@@ -240,7 +224,7 @@ const Menu = ({ isParticipe, title }) => {
                     ? "Edit"
                     : "Unsubscribe"
                 }
-                openList={() => openListModal(workout.participants)}
+                openList={() => openListModal(workout)}
                 loading={isPending || isPendingToUnsubscribe}
                 isClick={true}
               />

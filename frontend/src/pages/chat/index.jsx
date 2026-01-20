@@ -259,7 +259,6 @@ export const ChatPage = ({ activeFriends }) => {
           <Grid2
             container
             size={{ xs: 12, md: 7, lg: 8 }}
-            flex={1}
             direction="column"
             color={theme.palette.text.primary}
             sx={{ backgroundColor: theme.palette.background.paper }}
@@ -282,6 +281,7 @@ export const ChatPage = ({ activeFriends }) => {
                   flex={1}
                   size={12}
                   marginTop={2}
+                  spacing={2}
                   sx={{ overflowY: "auto", flexDirection: "column" }}
                 >
                   {messages && messages.length > 0 ? (
@@ -312,9 +312,9 @@ export const ChatPage = ({ activeFriends }) => {
                   )}
                 </Grid2>
                 <Grid2 size={12} container justifyContent={"center"}>
-                  <Grid2 size={{ xs: 12, md: 7 }}>
+                  <Grid2 size={12}>
                     <form onSubmit={handleSendMessage}>
-                      <Box sx={{ display: "flex", alignItems: "center"}}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
                         <TextField
                           name="message"
                           fullWidth

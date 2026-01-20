@@ -51,6 +51,7 @@ const Search = styled("div")(({ theme }) => ({
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
+          size="large"
           onChange={(e) => setSearch(e.target.value)}
           value={search}
           placeholder="Search…"

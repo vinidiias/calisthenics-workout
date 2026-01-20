@@ -1,55 +1,87 @@
-import { Avatar, Box, Button, Grid2, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Grid2,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const FriendsFollowing = ({ friends }) => {
-    return (
-      <Box className="flex flex-col gap-2 p-7">
+  const navigate = useNavigate();
+
+  return (
+    <Paper>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 1 }}>
         <Typography variant="h6" color="textSecondary" fontWeight="regular">
           Friends
         </Typography>
-        <Stack direction="row" flexWrap="wrap" justifyContent={{ xs: "space-around", md: "inherit" }}>
+        <Grid2
+          container
+          spacing={2}
+          justifyContent={friends?.length > 2 ? "space-around" : "space-evenly"}
+        >
           {friends ? (
             <>
               {friends?.followers?.slice(0, 9).map((follower) => (
-                <Button sx={{ textTransform: "none", alignItems: "start" }}>
-                  <Box
+                <Grid2 key={follower._id} size="auto">
+                  <Button
+                    onClick={() => navigate(`/profile/${follower._id}`)}
+                    key={follower.name}
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      width: { xs: 100, md: 100 },
+                      alignItems: "start",
+                      backgroundColor: "background.default",
+                      color: "primary.light",
                     }}
                   >
-                    <Avatar
-                      variant="rounded"
-                      alt={`${follower.name}-photo`}
-                      src={follower.photo}
+                    <Box
                       sx={{
-                        width: { xs: 90, md: 100 },
-                        height: { xs: 90, md: 100 },
-                        objectFit: "contain",
-                      }}
-                    />
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "text.primary",
-                        wordBreak: "break-word",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        width: { xs: 100, md: 120 },
+                        maxHeight: { xs: 140, md: 160 },
                       }}
                     >
-                      {follower.name}
-                    </Typography>
-                  </Box>
-                </Button>
+                      <Avatar
+                        variant="rounded"
+                        alt={`${follower.name}-photo`}
+                        src={follower.photo}
+                        sx={{
+                          width: "100%",
+                          height: "auto",
+                          aspectRatio: "1/1",
+                          maxWidth: { xs: 90, sm: 100, md: 120 },
+                          objectFit: "contain",
+                        }}
+                      />
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          width: "100%",
+                          mt: 1,
+                        }}
+                      >
+                        {follower.name}
+                      </Typography>
+                    </Box>
+                  </Button>
+                </Grid2>
               ))}
             </>
           ) : (
-            <Grid2>
+            <Grid2 size={12}>
               <Typography textAlign="center" variant="body1">
                 Sem amigos
               </Typography>
             </Grid2>
           )}
-        </Stack>
+        </Grid2>
       </Box>
-    );
-}
+    </Paper>
+  );
+};

@@ -8,14 +8,14 @@ export const Message = ({ msg, isMyMessage, selectedContact, photo }) => {
       key={msg.id}
       container
       spacing={1}
-      sx={{
-        justifyContent: isMyMessage ? "flex-end" : "flex-start",
-        marginBottom: 1,
-      }}
+      justifyContent={isMyMessage ? "flex-end" : "flex-start"}
     >
       {!isMyMessage && (
         <Grid2>
-          <Avatar src={selectedContact.photo} />
+          <Avatar
+            sx={{ width: { xs: 30, sm: 40 }, height: { xs: 30, sm: 40 } }}
+            src={selectedContact.photo}
+          />
         </Grid2>
       )}
       <Grid2>
@@ -26,17 +26,30 @@ export const Message = ({ msg, isMyMessage, selectedContact, photo }) => {
             padding: 1,
             paddingY: 0.5,
             backgroundColor: isMyMessage
-              ? theme.palette.primary.main
+              ? theme.palette.primary.light
               : theme.palette.background.default,
-            color: isMyMessage
-              ? theme.palette.primary.contrastText
-              : theme.palette.text.primary,
           }}
         >
-          <Typography>{msg.content}</Typography>
           <Typography
-            variant="caption"
-            sx={{ fontSize: "0.65rem", opacity: 0.7 }}
+            sx={{
+              fontSize: {
+                xs: "0.7rem",
+                sm: "1rem",
+                color: isMyMessage
+                  ? theme.palette.text.contrastText
+                  : theme.palette.text.primary,
+              },
+            }}
+          >
+            {msg.content}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: "0.55rem", sm: "0.7rem" },
+              color: isMyMessage
+                ? theme.palette.text.contrastText
+                : theme.palette.text.primary,
+            }}
           >
             {new Date(msg.timestamp).toLocaleTimeString("pt-BR", {
               hour: "2-digit",
@@ -47,7 +60,10 @@ export const Message = ({ msg, isMyMessage, selectedContact, photo }) => {
       </Grid2>
       {isMyMessage && (
         <Grid2>
-          <Avatar src={photo} />
+          <Avatar
+            sx={{ width: { xs: 30, sm: 40 }, height: { xs: 30, sm: 40 } }}
+            src={photo}
+          />
         </Grid2>
       )}
     </Grid2>

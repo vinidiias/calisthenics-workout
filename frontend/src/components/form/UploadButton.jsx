@@ -1,12 +1,8 @@
 import { Button } from "@mui/material";
-import { useState } from "react";
-import { useForm, useFormContext } from "react-hook-form";
 
-function UploadButton({ name, handleClick }) {
-  const { register } = useFormContext();
-
+function UploadButton({ name, handleClick, register }) {
   return (
-    <Button variant="contained" size="small" component="label" onClick={handleClick} sx={{ textTransform: 'none', backgroundColor: 'button.primary', color: 'white'}}>
+    <Button variant="contained" size="small" component="label" onClick={handleClick}>
       <label htmlFor={name} className="custom-file-button">
         Choose Photo
       </label>

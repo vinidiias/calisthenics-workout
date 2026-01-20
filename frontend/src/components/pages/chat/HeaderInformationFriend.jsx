@@ -15,10 +15,10 @@ export const HeaderInformationFriend = ({ selectedContact, isActive, handleClose
       )}
       <Stack alignItems="center" justifyContent="center">
         <Avatar src={selectedContact.photo} />
-        <Typography variant="h6">{selectedContact.name}</Typography>
+        <Typography variant={{ xs: "body1" }}>{selectedContact.name}</Typography>
         <Stack direction="row" alignItems={"center"} gap={1}>
           {isActive && <Lens color="success" sx={{ fontSize: 10 }} />}
-          <Typography>{isActive ? "online" : "offline"}</Typography>
+          <Typography variant="body2">{isActive ? "online" : "offline"}</Typography>
         </Stack>
       </Stack>
     </Grid2>
