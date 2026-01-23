@@ -1,3 +1,7 @@
+import { UserContext } from "../contexts/UserContext";
+import { FormProvider, useForm } from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+// MATERIAL UI
 import {
   Box,
   Button,
@@ -8,11 +12,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+// API
 import api from "../services";
-import { UserContext } from "../contexts/UserContext";
+// TANSTACK QUERY
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+// SERVICES
 import { createImage } from "../services/imageApi";
 
 const updateUser = async ({ updatedData, id }) => {
@@ -66,7 +70,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
       onSuccess: (updatedData) => {
         updateUserFn({ updatedData: updatedData, id: user._id });
       },
-    }
+    },
   );
 
   return (
@@ -78,7 +82,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
             onSubmit={formMethods.handleSubmit((data) =>
               file
                 ? updateImageFn({ ...data, photo: file })
-                : updateUserFn({ updatedData: data, id: user._id })
+                : updateUserFn({ updatedData: data, id: user._id }),
             )}
           >
             <Grid2 container gap={2}>

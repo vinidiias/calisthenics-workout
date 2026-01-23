@@ -1,15 +1,18 @@
-import api from "../../services";
-import { Box, Container, Paper, Typography } from "@mui/material";
-import Grid from '@mui/material/Grid2';
-import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useContext } from "react";
+// MATERIAL UI
+import { Container, Paper, Typography, Grid2 as Grid } from "@mui/material";
+// COMPONENTS
 import { FriendsFollowing } from "../../components/pages/profile/FriendsFollowing";
 import { WorkoutCard } from "../../components/pages/profile/WorkoutCard";
 import { HeaderProfile } from "../../components/pages/profile/HeaderProfile";
+// API
+import api from "../../services";
+// CONTEXT
+import { UserContext } from "../../contexts/UserContext";
+// TANSTACK QUERY
+import { useQuery } from "@tanstack/react-query";
 
 const getUser = async ({ id }) => {
   const { data } = await api.get(`/user/${id}`);
@@ -44,7 +47,14 @@ export default function Profile() {
             user={data}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: "auto" }} sx={{ alignSelf: "flex-start", position: { xs: "inherit", md: "sticky" }, top: { xs: 0, md: 69 }}}>
+        <Grid
+          size={{ xs: 12, md: "auto" }}
+          sx={{
+            alignSelf: "flex-start",
+            position: { xs: "inherit", md: "sticky" },
+            top: { xs: 0, md: 69 },
+          }}
+        >
           <FriendsFollowing friends={data} />
         </Grid>
         <Grid container size={{ xs: 12, md: "grow" }}>

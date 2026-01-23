@@ -1,9 +1,6 @@
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import SwitchThemeButton from '../../components/SwitchTheme'
-import { useContext, useState } from 'react'
-import { useCurrentIndex } from '../../hooks/useCurrentIndex';
-import { UserContext } from '../../contexts/UserContext';
-import { IconLogo } from '../../components/logo_org';
+import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+// MATERIAL UI
 import {
   IconButton,
   AppBar,
@@ -16,18 +13,25 @@ import {
   Menu,
   MenuItem,
   Avatar,
-  Link,
   Button,
   useTheme,
   Stack,
 } from "@mui/material";
-import { MessageSharp } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom';
+// COMPONENTS
+import SwitchThemeButton from "../../components/SwitchTheme";
+import { IconLogo } from "../../components/logo_org";
+// HOOKS
+import { useCurrentIndex } from "../../hooks/useCurrentIndex";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+// CONTEXTS
+import { UserContext } from "../../contexts/UserContext";
+// ICONS
+import { MessageSharp } from "@mui/icons-material";
 
 const navigation = [
-  { name: 'Workouts', href: '/workouts' },
-  { name: 'My Workouts', href: '/workouts/my-workouts' },
-]
+  { name: "Workouts", href: "/workouts" },
+  { name: "My Workouts", href: "/workouts/my-workouts" },
+];
 
 export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,7 +39,7 @@ export const Navbar = () => {
 
   const { user, setUser } = useContext(UserContext);
   const theme = useTheme();
-  const current = useCurrentIndex()
+  const current = useCurrentIndex();
   const navigate = useNavigate();
   const profileMenuOpen = Boolean(anchorEl);
 
@@ -218,4 +222,4 @@ export const Navbar = () => {
       </Drawer>
     </AppBar>
   );
-}
+};

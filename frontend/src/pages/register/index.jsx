@@ -1,18 +1,19 @@
-import {
-  Button,
-  Container,
-  Grid2,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import LockIcon from "@mui/icons-material/Lock";
-import api from "../../services";
 import { useContext, useEffect } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+// MATERIAL UI
+import { Button, Container, Grid2, TextField, Typography } from "@mui/material";
+// COMPONENTS
 import { AuthContainer } from "../../components/pages/auth";
+// API
+import api from "../../services";
+// CONTEXT
+import { UserContext } from "../../contexts/UserContext";
+// TANSTACK QUERY
+import { useMutation } from "@tanstack/react-query";
+// ICONS
+import LockIcon from "@mui/icons-material/Lock";
+// HOOK FORM
+import { useForm } from "react-hook-form";
 
 const createImage = async (dataUser) => {
   const formData = new FormData();
@@ -36,14 +37,12 @@ const Register = () => {
 
   useEffect(() => setUser({}), [setUser]);
 
-  const { mutateAsync: createImageFn } = useMutation(
-    {
-      mutationFn: createImage,
-      onSuccess: (data) => {
-        createUserFn(data);
-      },
-    }
-  );
+  const { mutateAsync: createImageFn } = useMutation({
+    mutationFn: createImage,
+    onSuccess: (data) => {
+      createUserFn(data);
+    },
+  });
 
   const { mutateAsync: createUserFn, isPending: isPendingUser } = useMutation({
     mutationFn: createUser,

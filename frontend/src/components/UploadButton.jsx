@@ -1,14 +1,20 @@
+// MATERIAL UI
 import { Button } from "@mui/material";
 
 function UploadButton({ name, handleClick, register }) {
   return (
-    <Button variant="contained" size="small" component="label" onClick={handleClick}>
+    <Button
+      variant="contained"
+      size="small"
+      component="label"
+      onClick={handleClick}
+    >
       <label htmlFor={name} className="custom-file-button">
         Choose Photo
       </label>
       <input
         type="file"
-        id={name} 
+        id={name}
         accept="image/*"
         className="hidden"
         {...register(`${name}`)}

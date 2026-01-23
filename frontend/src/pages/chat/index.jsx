@@ -1,3 +1,5 @@
+import { useContext, useMemo, useState, useEffect } from "react";
+// MATERIAL UI
 import {
   Box,
   Container,
@@ -8,15 +10,18 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useContext, useMemo, useState } from "react";
-import { useEffect } from "react";
-import api from "../../services";
-import { UserContext } from "../../contexts/UserContext";
-import { socket } from "../../services/socket/index";
+// COMPONENTS
 import { FriendListChat } from "../../components/pages/chat/FriendListChat";
 import { Message } from "../../components/pages/chat/Message";
 import { HeaderInformationFriend } from "../../components/pages/chat/HeaderInformationFriend";
-import SendIcon from '@mui/icons-material/Send';
+// API
+import api from "../../services";
+// CONTEXT
+import { UserContext } from "../../contexts/UserContext";
+// SOCKET
+import { socket } from "../../services/socket/index";
+// ICONS
+import SendIcon from "@mui/icons-material/Send";
 
 export const ChatPage = ({ activeFriends }) => {
   const [friendsFollowing, setFriendsFollowing] = useState([]);
@@ -45,7 +50,7 @@ export const ChatPage = ({ activeFriends }) => {
     setMessages(privateChatsData[conversationId]);
 
     setConversations((prev) =>
-      prev.map((c) => (c.id === conversationId ? { ...c, unReadCount: 0 } : c))
+      prev.map((c) => (c.id === conversationId ? { ...c, unReadCount: 0 } : c)),
     );
   };
 
@@ -78,8 +83,8 @@ export const ChatPage = ({ activeFriends }) => {
       prev.map((conv) =>
         conv.id === selectedConversationId
           ? { ...conv, lastMessagePreview: content }
-          : conv
-      )
+          : conv,
+      ),
     );
 
     socket.emit("chat-message", {
@@ -133,8 +138,8 @@ export const ChatPage = ({ activeFriends }) => {
           prev.map((conv) =>
             conv.id === conversationId
               ? { ...conv, unreadCount: (conv.unreadCount || 0) + 1 }
-              : conv
-          )
+              : conv,
+          ),
         );
       }
 
@@ -142,8 +147,8 @@ export const ChatPage = ({ activeFriends }) => {
         prev.map((conv) =>
           conv.id === conversationId
             ? { ...conv, lastMessagePreview: content }
-            : conv
-        )
+            : conv,
+        ),
       );
     };
     socket.on("receive-message", onReceiveMessage);
@@ -221,7 +226,7 @@ export const ChatPage = ({ activeFriends }) => {
     const getFollowers = async () => {
       const query = ["name", "photo", "biography"];
       const response = await api.get(
-        `/user/${user._id}/followers/?filter=${query.join(",")}`
+        `/user/${user._id}/followers/?filter=${query.join(",")}`,
       );
 
       if (!response) return new Error(response);

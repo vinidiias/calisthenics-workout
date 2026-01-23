@@ -7,22 +7,22 @@ import {
   Grid2,
   Typography,
 } from "@mui/material";
-//ICONS UI
-import AddIcon from "@mui/icons-material/Add";
-//API
-import api from "../../services";
 //COMPONENTS
 import ParticipantsListModal from "../../components/ParticipantsListModal";
 import { SearchInput } from "../../components/ui/inputs/SearchInput";
-//TANKSTACK  QUERY
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Select } from "../../components/ui/inputs/Select";
+import { CardComponent } from "../../components/CardComponent";
+import { FormWorkout } from "../../components/pages/workouts/FormWorkout";
+//API
+import api from "../../services";
 //CONTEXT
 import { UserContext } from "../../contexts/UserContext";
 ///HOOKS
 import { useFetchAddress } from "../../hooks/useFetchAddress";
-import { Select } from "../../components/ui/inputs/Select";
-import { CardComponent } from "../../components/CardComponent";
-import { FormWorkout } from "../../components/pages/workouts/FormWorkout";
+//ICONS
+import AddIcon from "@mui/icons-material/Add";
+//TANKSTACK  QUERY
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const fetchWorkoutNotSubscribed = async ({ auth }) => {
   const { data } = await api.get("/workout/not-subscribed", {
@@ -43,7 +43,7 @@ const subscribeToWorkout = async ({ auth, workoutId }) => {
   const { data } = await api.post(
     `/workout/subscribe`,
     { id: workoutId },
-    { headers: { auth } }
+    { headers: { auth } },
   );
 
   return data;
@@ -78,14 +78,14 @@ const Menu = ({ isParticipe, title }) => {
   const optionsAddress = useMemo(() => {
     const options = [];
 
-    if(dataAddress) {
-      dataAddress.forEach(ad => {
+    if (dataAddress) {
+      dataAddress.forEach((ad) => {
         options.push({ label: ad.neighborhood, value: ad._id });
       });
     }
 
     return options;
-  }, [dataAddress])
+  }, [dataAddress]);
 
   const [addressFilter, setAddressFilter] = useState(null);
 
@@ -147,7 +147,9 @@ const Menu = ({ isParticipe, title }) => {
         setDataFiltered(data);
       } else {
         setDataFiltered(
-          data.filter((workout) => workout.outdoorGym.address === addressFilter)
+          data.filter(
+            (workout) => workout.outdoorGym.address === addressFilter,
+          ),
         );
       }
     }
@@ -188,10 +190,7 @@ const Menu = ({ isParticipe, title }) => {
           options={optionsAddress ?? []}
         />
         {isParticipe && (
-          <Button
-            onClick={() => setOpen(true)}
-            variant="contained"
-          >
+          <Button onClick={() => setOpen(true)} variant="contained">
             <AddIcon />
           </Button>
         )}
@@ -221,8 +220,8 @@ const Menu = ({ isParticipe, title }) => {
                   isParticipe
                     ? "Subscribe"
                     : workout.creator._id === user._id
-                    ? "Edit"
-                    : "Unsubscribe"
+                      ? "Edit"
+                      : "Unsubscribe"
                 }
                 openList={() => openListModal(workout)}
                 loading={isPending || isPendingToUnsubscribe}

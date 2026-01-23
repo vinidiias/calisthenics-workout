@@ -1,8 +1,10 @@
+import { Link } from 'react-router-dom';
+// MATERIAL UI
+import { useTheme } from '@mui/material';
+// ICONS
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import { Link } from 'react-router-dom';
-import { useTheme } from '@mui/material';
 
 const Footer = () => {
     const theme = useTheme();

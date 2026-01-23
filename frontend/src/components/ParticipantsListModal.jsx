@@ -1,5 +1,10 @@
-import Box from '@mui/material/Box';
-import { CircularProgress, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import {
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Box,
+} from "@mui/material";
 import { ParticipantsList } from './ParticipantsList';
 
 export default function ParticipantsListModal({ openModal, onClose, title, participants, handleFollowFn }) {

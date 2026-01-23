@@ -1,18 +1,26 @@
-import { Box, createTheme, CssBaseline, Toolbar } from "@mui/material";
-import Login from "./pages/login";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+// MATERIAL UI
+import { Box, createTheme, CssBaseline } from "@mui/material";
+// LAYOUT
+import { Layout } from "./layouts";
+// COMPONENTS PAGES
+import Login from "./pages/login";
 import Menu from "./pages/workouts";
 import Register from "./pages/register";
 import Profile from "./pages/profile";
-import { UserContext, UserProvider } from "./contexts/UserContext";
-import { ThemeProvider } from "@emotion/react";
 import { Settings } from "./pages/settings";
-import { SidebarComponent } from "./components/SidebarComponent";
-import { useThemeColor } from "./hooks/useThemeColor";
 import { ChatPage } from "./pages/chat";
-import { useContext, useEffect, useMemo, useState } from "react";
+// COMPONENTS
+import { SidebarComponent } from "./components/SidebarComponent";
+// THEME PROVIDER
+import { ThemeProvider } from "@emotion/react";
+// CONTEXT
+import { UserContext, UserProvider } from "./contexts/UserContext";
+// HOOKS
+import { useThemeColor } from "./hooks/useThemeColor";
+// SOCKET
 import { socket } from "./services/socket";
-import { Layout } from "./layouts";
 
 const withProtectedRole = (ComponentToProtect, redirectPath = "/") => {
   return function NewComponent(props) {

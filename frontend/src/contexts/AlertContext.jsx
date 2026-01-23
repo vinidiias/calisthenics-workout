@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+// COMPONENTS
 import { CustomAlert } from "../components/ui/CustomAlert";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -53,4 +54,4 @@ export function AlertProvider({ children }) {
       />
     </AlertContext.Provider>
   );
-};
+}

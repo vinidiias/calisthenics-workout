@@ -1,3 +1,8 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+// MATERIAL UI
 import {
   Box,
   Button,
@@ -6,15 +11,17 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
+// COMPONENTS
 import UploadButton from "../../UploadButton";
-import CloseIcon from "@mui/icons-material/Close";
+// HOOKS
 import { useThemeColor } from "../../../hooks/useThemeColor";
-import { useForm } from "react-hook-form";
+// TANSTACK QUERY
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+// API
 import api from "../../../services";
+// ICONS
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 
 const createImage = async (photo) => {
   const formData = new FormData();
