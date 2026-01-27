@@ -25,7 +25,7 @@ export const Layout = ({ children }) => {
         </>
       )}
       <Box sx={{ display: "flex", flexGrow: 1, width: "100%" }}>{children}</Box>
-      <Footer />
+      {/* <Footer /> */}
     </Box>
   );
 };

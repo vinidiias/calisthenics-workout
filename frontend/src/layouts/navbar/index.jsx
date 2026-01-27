@@ -65,24 +65,34 @@ export const Navbar = () => {
         };
       }}
     >
-      <Toolbar className="mx-auto max-w-[2000px] w-full px-2 sm:px-6 lg:px-8">
-        <Box className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+      <Toolbar sx={{ mx: "auto", maxWidth: 2000, width: "100%", px: { xs: 1, sm: 3, lg: 4 } }}>
+        <Box sx={{ position: "absolute", top: 0, bottom: 0, left: 0, display: { xs: "flex", sm: "none" }, alignItems: "center" }}>
           {user.isLogged && (
             <IconButton
               onClick={toggleMobileMenu}
-              className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset"
+              sx={{
+                position: "relative",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 1,
+                p: 1,
+                color: "grey.500",
+                "&:hover": { bgcolor: "grey.800", color: "white" },
+                "&:focus": { outline: "none", boxShadow: "inset 0 0 0 2px white" },
+              }}
             >
               {mobileMenuOpen ? (
-                <XMarkIcon aria-hidden="true" className="size-6" />
+                <XMarkIcon aria-hidden="true" style={{ width: 24, height: 24 }} />
               ) : (
-                <Bars3Icon aria-hidden="true" className="size-6" />
+                <Bars3Icon aria-hidden="true" style={{ width: 24, height: 24 }} />
               )}
             </IconButton>
           )}
         </Box>
-        <Box className="flex flex-1 items-center justify-center sm:justify-start gap-5">
-          <Box className="hidden sm:flex shrink-0 items-center">
-            <a href="/workouts" className="w-13">
+        <Box sx={{ display: "flex", flex: 1, alignItems: "center", justifyContent: { xs: "center", sm: "flex-start" }, gap: 2.5 }}>
+          <Box sx={{ display: { xs: "none", sm: "flex" }, flexShrink: 0, alignItems: "center" }}>
+            <a href="/workouts">
               <IconLogo />
             </a>
           </Box>
@@ -114,7 +124,7 @@ export const Navbar = () => {
             </Stack>
           )}
         </Box>
-        <Box className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static">
+        <Box sx={{ position: { xs: "absolute", sm: "static" }, top: 0, bottom: 0, right: 0, display: "flex", alignItems: "center", pr: 1 }}>
           <SwitchThemeButton />
           {user.isLogged && (
             <IconButton onClick={() => navigate("/chat-friends")}>
@@ -126,7 +136,14 @@ export const Navbar = () => {
             <Box>
               <IconButton
                 onClick={handleProfileMenuClick}
-                className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
+                sx={{
+                  position: "relative",
+                  display: "flex",
+                  borderRadius: "50%",
+                  bgcolor: "grey.800",
+                  fontSize: "0.875rem",
+                  "&:focus": { outline: "none", boxShadow: "0 0 0 2px #1f2937, 0 0 0 4px white" },
+                }}
               >
                 <Avatar
                   alt=""
@@ -194,7 +211,7 @@ export const Navbar = () => {
         }}
       >
         <Box sx={{ width: 250, mt: "50px" }} role="presentation">
-          <List className="space-y-1 px-2 pt-2 pb-3">
+          <List sx={{ "& > *:not(:first-of-type)": { mt: 0.5 }, px: 1, pt: 1, pb: 1.5 }}>
             {navigation.map((item, index) => (
               <ListItem key={item.name} disablePadding>
                 <ListItemButton

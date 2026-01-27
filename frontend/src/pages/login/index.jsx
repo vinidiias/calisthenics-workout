@@ -122,7 +122,7 @@ const Login = () => {
                   size="large"
                   loading={isPending}
                 >
-                  <GoogleIcon fontSize="small" className="mr-2" />
+                  <GoogleIcon fontSize="small" sx={{ mr: 1 }} />
                   Sign in with Google
                 </Button>
               </Stack>

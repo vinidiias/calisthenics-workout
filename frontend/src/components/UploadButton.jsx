@@ -9,14 +9,14 @@ function UploadButton({ name, handleClick, register }) {
       component="label"
       onClick={handleClick}
     >
-      <label htmlFor={name} className="custom-file-button">
+      <label htmlFor={name}>
         Choose Photo
       </label>
       <input
         type="file"
         id={name}
         accept="image/*"
-        className="hidden"
+        style={{ display: "none" }}
         {...register(`${name}`)}
       />
     </Button>

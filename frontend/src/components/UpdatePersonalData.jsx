@@ -101,11 +101,11 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                           {...formMethods.register(field.name)}
                         />
                       ) : (
-                        <div className="flex items-center gap-3">
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                           {file && (
                             <img
                               src={preview}
-                              className="h-15 w-15 object-cover rounded-full"
+                              style={{ height: "3.75rem", width: "3.75rem", objectFit: "cover", borderRadius: "50%" }}
                             />
                           )}
                           <Button
@@ -118,7 +118,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                           >
                             Delete
                           </Button>
-                        </div>
+                        </Box>
                       )}
                     </Box>
                   </Grid2>

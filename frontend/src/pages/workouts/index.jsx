@@ -36,6 +36,7 @@ const fetchWorkoutSubscribed = async ({ auth }) => {
   const { data } = await api.get("/workout/subscribed", {
     headers: { auth: auth },
   });
+
   return data;
 };
 
@@ -179,7 +180,16 @@ const Menu = ({ isParticipe, title }) => {
           {title}
         </Typography>
       </Box>
-      <Box className="flex justify-between items-center gap-5 mb-10 max-sm:flex-col">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 2.5,
+          mb: 5,
+          flexDirection: { xs: "column", sm: "row" },
+        }}
+      >
         <SearchInput />
         <Select
           label="Locality"
@@ -230,9 +240,11 @@ const Menu = ({ isParticipe, title }) => {
             </Grid2>
           ))
         ) : error ? (
-          <Typography color="text.primary">Error to fetch workouts.</Typography>
+          <Typography color="text.primary">{error?.response?.data}</Typography>
+        ) : dataFiltered.length === 0 ? (
+          <Typography color="text.primary">No Workouts founds</Typography>
         ) : (
-          <Typography color="text.primary">No Workouts</Typography>
+          <Typography color="text.primary">Error to fetch workouts.</Typography>
         )}
       </Grid2>
     </Box>

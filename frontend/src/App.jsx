@@ -73,9 +73,9 @@ const withProtectedRole = (ComponentToProtect, redirectPath = "/") => {
 function SettingsPage () {
   return (
     <Box display="flex" flex={1}>
-      <div className="max-[961px]:hidden">
+      <Box sx={{ display: { xs: "none", md: "block" } }}>
         <SidebarComponent />
-      </div>
+      </Box>
       <Settings />
     </Box>
   );

@@ -41,7 +41,7 @@ export const Settings = () => {
       label: "Photo",
       value: (
         <img
-          className="h-15 w-15 br-10 object-cover rounded-full"
+          style={{ height: "3.75rem", width: "3.75rem", objectFit: "cover", borderRadius: "50%" }}
           src={data?.photo}
         />
       ),
@@ -140,25 +140,25 @@ export const Settings = () => {
         data={filteredData ?? null}
         fields={fields}
       />
-      <div className="flex flex-col gap-7 w-full  ">
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 3.5, width: "100%" }}>
         <Typography fontSize="1.2em" color="text.primary">
           Settings
         </Typography>
         <Paper sx={{ padding: 4, paddingX: 5 }} elevation={2}>
-          <div className="flex gap-10">
+          <Box sx={{ display: "flex", gap: 5 }}>
             <img
               src={data?.photo}
               alt=""
-              className=" h-25 w-25 object-cover rounded-full"
+              style={{ height: "6.25rem", width: "6.25rem", objectFit: "cover", borderRadius: "50%" }}
             />
-            <div className="flex flex-col gap-1">
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
               <Typography fontWeight="medium">{data?.name}</Typography>
               <Typography>{data?.email || "Foz do Iguaçu, Brazil"}</Typography>
               <Typography>
                 {data?.address.city || "Foz do Iguaçu, Brazil"}
               </Typography>
-            </div>
-          </div>
+            </Box>
+          </Box>
         </Paper>
         <Paper elevation={2}>
           <Box padding={2}>
@@ -248,7 +248,7 @@ export const Settings = () => {
             </Grid2>
           </Box>
         </Paper>
-      </div>
+      </Box>
     </Container>
   );
 };
