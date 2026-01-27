@@ -1,3 +1,7 @@
+import { UserContext } from "../contexts/UserContext";
+import { FormProvider, useForm } from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+// MATERIAL UI
 import {
   Box,
   Button,
@@ -8,11 +12,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+// API
 import api from "../services";
-import { UserContext } from "../contexts/UserContext";
+// TANSTACK QUERY
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+// SERVICES
 import { createImage } from "../services/imageApi";
 
 const updateUser = async ({ updatedData, id }) => {
@@ -66,7 +70,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
       onSuccess: (updatedData) => {
         updateUserFn({ updatedData: updatedData, id: user._id });
       },
-    }
+    },
   );
 
   return (
@@ -78,7 +82,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
             onSubmit={formMethods.handleSubmit((data) =>
               file
                 ? updateImageFn({ ...data, photo: file })
-                : updateUserFn({ updatedData: data, id: user._id })
+                : updateUserFn({ updatedData: data, id: user._id }),
             )}
           >
             <Grid2 container gap={2}>
@@ -97,11 +101,11 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                           {...formMethods.register(field.name)}
                         />
                       ) : (
-                        <div className="flex items-center gap-3">
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                           {file && (
                             <img
                               src={preview}
-                              className="h-15 w-15 object-cover rounded-full"
+                              style={{ height: "3.75rem", width: "3.75rem", objectFit: "cover", borderRadius: "50%" }}
                             />
                           )}
                           <Button
@@ -114,7 +118,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                           >
                             Delete
                           </Button>
-                        </div>
+                        </Box>
                       )}
                     </Box>
                   </Grid2>

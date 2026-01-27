@@ -1,3 +1,4 @@
+// MATERIAL UI
 import { Alert, AlertTitle, Snackbar } from "@mui/material"
 
 export const CustomAlert = ({ severity, message, open, autoHide, onClose }) => {

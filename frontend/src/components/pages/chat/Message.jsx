@@ -1,3 +1,4 @@
+// MATERIAL UI
 import { Avatar, Grid2, Paper, Typography, useTheme } from "@mui/material";
 
 export const Message = ({ msg, isMyMessage, selectedContact, photo }) => {

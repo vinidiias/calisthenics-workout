@@ -1,48 +1,56 @@
+import { Link } from 'react-router-dom';
+// MATERIAL UI
+import { Box, useTheme } from '@mui/material';
+// ICONS
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import { Link } from 'react-router-dom';
-import { useTheme } from '@mui/material';
 
 const Footer = () => {
     const theme = useTheme();
 
     return (
-      <footer
-        style={{
+      <Box
+        component="footer"
+        sx={{
           backgroundColor: theme.palette.background.default,
           color: theme.palette.text.primary,
+          py: 1,
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: "center",
+          justifyContent: "center",
+          gap: { xs: 0.5, sm: 2.5 },
         }}
-        className="py-2 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-5"
       >
         <p>&copy; 2025. All right reserved.</p>
-        <ul className="flex items-center gap-2">
-          <li className="cursor-pointer  hover:scale-110  transition-all  duration-500">
+        <Box component="ul" sx={{ display: "flex", alignItems: "center", gap: 1, listStyle: "none", p: 0, m: 0 }}>
+          <Box component="li" sx={{ cursor: "pointer", transition: "all 500ms", "&:hover": { transform: "scale(1.1)" } }}>
             <Link
               to="https://www.facebook.com/vinicius.dias.9216778?locale=pt_BR"
               target="_blank"
             >
               <FacebookIcon />
             </Link>
-          </li>
-          <li className="cursor-pointer  hover:scale-110  transition-all  duration-500">
+          </Box>
+          <Box component="li" sx={{ cursor: "pointer", transition: "all 500ms", "&:hover": { transform: "scale(1.1)" } }}>
             <Link
               to="https://www.linkedin.com/in/vinicius-diass/"
               target="_blank"
             >
               <LinkedInIcon />
             </Link>
-          </li>
-          <li className="cursor-pointer  hover:scale-110  transition-all  duration-500">
+          </Box>
+          <Box component="li" sx={{ cursor: "pointer", transition: "all 500ms", "&:hover": { transform: "scale(1.1)" } }}>
             <Link
               to="https://www.instagram.com/viniciusdiias_/"
               target="_blank"
             >
               <InstagramIcon />
             </Link>
-          </li>
-        </ul>
-      </footer>
+          </Box>
+        </Box>
+      </Box>
     );
 }
 

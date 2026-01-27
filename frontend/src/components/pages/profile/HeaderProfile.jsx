@@ -1,3 +1,8 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+// MATERIAL UI
 import {
   Box,
   Button,
@@ -6,15 +11,17 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
+// COMPONENTS
 import UploadButton from "../../UploadButton";
-import CloseIcon from "@mui/icons-material/Close";
+// HOOKS
 import { useThemeColor } from "../../../hooks/useThemeColor";
-import { useForm } from "react-hook-form";
+// TANSTACK QUERY
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+// API
 import api from "../../../services";
+// ICONS
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 
 const createImage = async (photo) => {
   const formData = new FormData();
@@ -80,22 +87,22 @@ export const HeaderProfile = ({ backgroundPhoto, isMe, user }) => {
             <img
               src={backgroundPhoto}
               alt="Background"
-              className="object-cover w-full h-full"
+              style={{ objectFit: "cover", width: "100%", height: "100%" }}
             />
           ) : (
-            <div className="w-full h-[300px] bg-gray-300"></div>
+            <Box sx={{ width: "100%", height: 300, bgcolor: "grey.300" }} />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+          <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.9), transparent)" }} />
         </Box>
         {isMe && !openEdit && (
           <EditIcon
             htmlColor="#FFF"
-            className="cursor-pointer absolute top-3 right-3 z-30"
+            sx={{ cursor: "pointer", position: "absolute", top: 12, right: 12, zIndex: 30 }}
             onClick={() => setOpenEdit(true)}
           />
         )}
         {isMe && openEdit && (
-          <div className="absolute flex gap-3 w-full justify-end p-3 z-30000">
+          <Box sx={{ position: "absolute", display: "flex", gap: 1.5, width: "100%", justifyContent: "flex-end", p: 1.5, zIndex: 30 }}>
             <Button variant="contained" color="error" size="small">
               Delete Photo
             </Button>
@@ -107,7 +114,7 @@ export const HeaderProfile = ({ backgroundPhoto, isMe, user }) => {
             >
               <CloseIcon />
             </Button>
-          </div>
+          </Box>
         )}
       </Box>
       <CssBaseline />
@@ -122,8 +129,14 @@ export const HeaderProfile = ({ backgroundPhoto, isMe, user }) => {
         <img
           src={user?.photo}
           alt=""
-          className=" h-45 w-45 br-10 mt-30 object-cover rounded-[100px] outline-white outline-5"
-          style={{ outlineColor: isDark ? "rgb(45 46 49)" : "#fff" }}
+          style={{
+            outlineColor: isDark ? "rgb(45 46 49)" : "#fff",
+            width: "180px",
+            height: "180px",
+            objectFit: "cover",
+            borderRadius: "100px",
+            outline: "rgb(45, 46, 49) solid 5px",
+          }}
         />
         <Box display="flex" flexDirection="column" width="100%">
           <Box

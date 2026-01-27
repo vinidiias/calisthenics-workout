@@ -1,17 +1,23 @@
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+// MATERIAL UI
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+// HOOKS
 import { useThemeColor } from "../hooks/useThemeColor";
+// ICONS
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LanguageIcon from "@mui/icons-material/Language";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/UserContext";
-import { useContext } from "react";
 import { WbSunny } from "@mui/icons-material";
+// CONTEXT
+import { UserContext } from "../contexts/UserContext";
 
 export const SidebarComponent = () => {
   const drawerWidth = 240;

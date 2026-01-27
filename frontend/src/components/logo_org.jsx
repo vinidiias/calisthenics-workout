@@ -1,9 +1,12 @@
+
+// HOOKS
+import { useThemeColor } from '../hooks/useThemeColor';
+// LOGOS
 import logoCW from '../assets/logoCW.png'
 import logoCWWhite from "../assets/logoCW-White.png";
-import { useThemeColor } from '../hooks/useThemeColor';
 
 export const IconLogo = () => {
     const { isDark } = useThemeColor()
 
-    return <img src={isDark ? logoCWWhite : logoCW} className="object-fill" />;
+    return <img src={isDark ? logoCWWhite : logoCW} style={{ objectFit: "fill", width: "56px", height: "56px" }} />;
 }

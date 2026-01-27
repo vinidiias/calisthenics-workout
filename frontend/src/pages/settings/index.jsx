@@ -1,3 +1,5 @@
+import React, { useContext, useState } from "react";
+//MATERIAL UI
 import {
   Box,
   Button,
@@ -7,12 +9,16 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import React, { useContext, useState } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import api from "../../services";
-import EditIcon from "@mui/icons-material/Edit";
+// COMPONENTS
 import { UpdatePersonalData } from "../../components/UpdatePersonalData";
+// API
+import api from "../../services";
+// CONTEXT
+import { UserContext } from "../../contexts/UserContext";
+// ICONS
+import EditIcon from "@mui/icons-material/Edit";
+// TANSTACK QUERY
+import { useQuery } from "@tanstack/react-query";
 
 const getUser = async ({ id }) => {
   const { data } = await api.get(`/user/${id}`);
@@ -22,8 +28,8 @@ const getUser = async ({ id }) => {
 export const Settings = () => {
   const { user } = useContext(UserContext);
   const [open, setOpen] = useState(false);
-  const [fields, setFields] = useState([])
-  const [filteredData, setFilteredData] = useState({})
+  const [fields, setFields] = useState([]);
+  const [filteredData, setFilteredData] = useState({});
 
   const { data, isLoading } = useQuery({
     queryKey: ["user"],
@@ -35,7 +41,7 @@ export const Settings = () => {
       label: "Photo",
       value: (
         <img
-          className="h-15 w-15 br-10 object-cover rounded-full"
+          style={{ height: "3.75rem", width: "3.75rem", objectFit: "cover", borderRadius: "50%" }}
           src={data?.photo}
         />
       ),
@@ -45,48 +51,86 @@ export const Settings = () => {
     { label: "Name", value: data?.name, type: "text", name: "name" },
     { label: "Phone", value: data?.phone, type: "tel", name: "phone" },
     { label: "Email", value: data?.email, type: "email", name: "email" },
-    { label: "Biography", value: data?.biography, type: "text", name: "biography" },
+    {
+      label: "Biography",
+      value: data?.biography,
+      type: "text",
+      name: "biography",
+    },
   ];
 
   const address = [
-    { label: "Street", value: data?.address?.street, type: 'text', name: 'address.street' },
-    { label: "Number", value: data?.address?.number, type: 'text', name: 'address.number' },
-    { label: "Neighborhood", value: data?.address?.neighborhood, type: 'text', name: 'address.neighborhood' },
-    { label: "ZIP Code", value: data?.address?.zipCode, type: 'text', name: 'address.zipCode' },
-    { label: "City", value: data?.address?.city, type: 'text', name: 'address.city' },
-    { label: "State", value: data?.address?.state, type: 'text', name: 'address.state' },
+    {
+      label: "Street",
+      value: data?.address?.street,
+      type: "text",
+      name: "address.street",
+    },
+    {
+      label: "Number",
+      value: data?.address?.number,
+      type: "text",
+      name: "address.number",
+    },
+    {
+      label: "Neighborhood",
+      value: data?.address?.neighborhood,
+      type: "text",
+      name: "address.neighborhood",
+    },
+    {
+      label: "ZIP Code",
+      value: data?.address?.zipCode,
+      type: "text",
+      name: "address.zipCode",
+    },
+    {
+      label: "City",
+      value: data?.address?.city,
+      type: "text",
+      name: "address.city",
+    },
+    {
+      label: "State",
+      value: data?.address?.state,
+      type: "text",
+      name: "address.state",
+    },
   ];
 
   const filterData = (data, infos, address) => {
     const filteredInfos = {};
     const filteredAddress = {};
-  
+
     // Filtrando os dados de 'infos'
-    infos?.forEach(info => {
+    infos?.forEach((info) => {
       if (Object.prototype.hasOwnProperty.call(data, info?.name)) {
         filteredInfos[info.name] = data[info.name];
       }
     });
-  
+
     // Filtrando os dados de 'address'
-    address.forEach(addr => {
-      const key = addr.name.split('.')[1]; // Extraímos a chave após o ponto
-      if (data.address && Object.prototype.hasOwnProperty.call(data.address, key)) {
+    address.forEach((addr) => {
+      const key = addr.name.split(".")[1]; // Extraímos a chave após o ponto
+      if (
+        data.address &&
+        Object.prototype.hasOwnProperty.call(data.address, key)
+      ) {
         filteredAddress[key] = data.address[key];
       }
     });
-  
+
     return { filteredInfos, filteredAddress };
   };
 
   const handleOpen = ({ fieldsProps, dataGroupName }) => {
     const { filteredInfos, filteredAddress } = filterData(data, infos, address);
-    setOpen(true)
-    setFields(fieldsProps)
+    setOpen(true);
+    setFields(fieldsProps);
     setFilteredData(
-      dataGroupName === "infos" ? filteredInfos : { address: filteredAddress }
+      dataGroupName === "infos" ? filteredInfos : { address: filteredAddress },
     );
-  }
+  };
 
   return (
     <Container maxWidth={false} sx={{ p: 2 }}>
@@ -96,25 +140,25 @@ export const Settings = () => {
         data={filteredData ?? null}
         fields={fields}
       />
-      <div className="flex flex-col gap-7 w-full  ">
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 3.5, width: "100%" }}>
         <Typography fontSize="1.2em" color="text.primary">
           Settings
         </Typography>
         <Paper sx={{ padding: 4, paddingX: 5 }} elevation={2}>
-          <div className="flex gap-10">
+          <Box sx={{ display: "flex", gap: 5 }}>
             <img
               src={data?.photo}
               alt=""
-              className=" h-25 w-25 object-cover rounded-full"
+              style={{ height: "6.25rem", width: "6.25rem", objectFit: "cover", borderRadius: "50%" }}
             />
-            <div className="flex flex-col gap-1">
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
               <Typography fontWeight="medium">{data?.name}</Typography>
               <Typography>{data?.email || "Foz do Iguaçu, Brazil"}</Typography>
               <Typography>
                 {data?.address.city || "Foz do Iguaçu, Brazil"}
               </Typography>
-            </div>
-          </div>
+            </Box>
+          </Box>
         </Paper>
         <Paper elevation={2}>
           <Box padding={2}>
@@ -204,7 +248,7 @@ export const Settings = () => {
             </Grid2>
           </Box>
         </Paper>
-      </div>
+      </Box>
     </Container>
   );
 };

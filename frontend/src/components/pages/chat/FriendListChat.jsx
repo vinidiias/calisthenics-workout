@@ -1,4 +1,4 @@
-import { Lens } from "@mui/icons-material";
+// MATERIAL UI
 import {
   Avatar,
   Box,
@@ -10,6 +10,8 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+// ICONS
+import { Lens } from "@mui/icons-material";
 
 export const FriendListChat = ({
   friendsFollowing,

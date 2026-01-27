@@ -1,11 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { useContext, useMemo } from "react";
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+// MATERIAL UI
 import {
   Button,
   Typography,
@@ -16,8 +11,16 @@ import {
   TableRow,
   Box,
 } from "@mui/material";
+// TANSTACK TABLE
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+// CONTEXT
 import { UserContext } from "../contexts/UserContext";
-import { useNavigate } from "react-router-dom";
 
 export const ParticipantsList = ({ dataTable, handleFollow }) => {
   const { user } = useContext(UserContext);

@@ -1,12 +1,6 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Grid2,
-  Paper,
-  Typography,
-} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+// MATERIAL UI
+import { Avatar, Box, Button, Grid2, Paper, Typography } from "@mui/material";
 
 export const FriendsFollowing = ({ friends }) => {
   const navigate = useNavigate();

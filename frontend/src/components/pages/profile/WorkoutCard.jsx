@@ -1,4 +1,6 @@
+// MATERIAL UI
 import { Avatar, Box, Typography } from "@mui/material";
+// COMPONENTS
 import { CardComponent } from "../../CardComponent";
 
 export const WorkoutCard = ({ hist, photo, name, date }) => {

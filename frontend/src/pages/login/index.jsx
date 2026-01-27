@@ -1,3 +1,7 @@
+import { useContext, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+// MATERIAL UI
 import {
   Button,
   Checkbox,
@@ -9,15 +13,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google";
-import { useForm } from "react-hook-form";
-import LockIcon from "@mui/icons-material/Lock";
-import { useNavigate } from "react-router-dom";
-import api from "../../services";
-import { useContext, useEffect } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import { useMutation } from "@tanstack/react-query";
+// COMPONENTS
 import { AuthContainer } from "../../components/pages/auth";
+// API
+import api from "../../services";
+// CONTEXT
+import { UserContext } from "../../contexts/UserContext";
+// ICONS
+import GoogleIcon from "@mui/icons-material/Google";
+import LockIcon from "@mui/icons-material/Lock";
+// TANSTACK QUERY
+import { useMutation } from "@tanstack/react-query";
 
 const createAuth = async ({ userData }) => {
   const { data } = await api.post("/user/auth", userData);
@@ -54,9 +60,7 @@ const Login = () => {
     <Container maxWidth={false}>
       <AuthContainer>
         <LockIcon color="action" />
-        <Typography variant="h5">
-          Sign In
-        </Typography>
+        <Typography variant="h5">Sign In</Typography>
         <form onSubmit={handleSubmit(handleAuthFn)}>
           <Grid2 container size={12} gap={1}>
             {fields.map((field, index) => (
@@ -118,7 +122,7 @@ const Login = () => {
                   size="large"
                   loading={isPending}
                 >
-                  <GoogleIcon fontSize="small" className="mr-2" />
+                  <GoogleIcon fontSize="small" sx={{ mr: 1 }} />
                   Sign in with Google
                 </Button>
               </Stack>

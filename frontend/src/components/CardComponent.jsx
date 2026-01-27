@@ -1,3 +1,4 @@
+// MATERIAL UI
 import {
   Avatar,
   AvatarGroup,
@@ -11,12 +12,14 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DateRangeIcon from '@mui/icons-material/DateRange';
+// CONTEXTS
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import CommentIcon from '@mui/icons-material/Comment';
+// ICONS
+import AddIcon from "@mui/icons-material/Add";
+import DateRangeIcon from "@mui/icons-material/DateRange";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import CommentIcon from "@mui/icons-material/Comment";
 
 export const CardComponent = ({
   index,
@@ -30,18 +33,18 @@ export const CardComponent = ({
   mutateAsync,
   openList,
   isClick,
-  loading
+  loading,
 }) => {
-  const { user } = useContext(UserContext)
-  const dateFormatted = new Date(date)
+  const { user } = useContext(UserContext);
+  const dateFormatted = new Date(date);
 
-  const handleSubscription = async() => {
+  const handleSubscription = async () => {
     try {
-      await mutateAsync({ auth: user._id, workoutId: index })
-    } catch(err) { 
-      console.error(err)
+      await mutateAsync({ auth: user._id, workoutId: index });
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
   return (
     <Card
