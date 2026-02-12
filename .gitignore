@@ -29,6 +29,10 @@ yarn-error.log*
 
 # Ignorar o arquivo .env na pasta backend
 backend/.env
+# Ignorar o arquivo .env na pasta backend
+frontend/.env.development
+# Ignorar o arquivo .env na pasta backend
+frontend/.env.production
 
 # Ignorar o arquivo swagger.json na pasta backend
 backend/swagger.json

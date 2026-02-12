@@ -1,10 +1,5 @@
 import axios from 'axios'
 
-    //'http://localhost:5000'
-    //'https://calisthenics-workout.vercel.app'
-
-const api = axios.create({
-    baseURL: 'http://localhost:3001'
-})
+const api = axios.create({ baseURL: import.meta.env.VITE_URL_BASE_API });
 
 export default api
