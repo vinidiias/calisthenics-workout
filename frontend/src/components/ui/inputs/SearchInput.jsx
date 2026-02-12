@@ -1,5 +1,5 @@
 // MATERIAL UI
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 // ICONS
 import SearchIcon from "@mui/icons-material/Search";
@@ -7,7 +7,6 @@ import SearchIcon from "@mui/icons-material/Search";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
   marginLeft: 0,
   width: "100%",
   [theme.breakpoints.up("sm")]: {
@@ -29,7 +28,6 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
   width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
@@ -49,8 +47,7 @@ export const SearchInput = ({ search, setSearch }) => {
   return (
     <Search
       sx={{
-        backgroundColor: "input.primary",
-        color: "input.secondary",
+        backgroundColor: "transparent",
         borderWidth: "1px",
         borderStyle: "solid",
         borderColor: "input.border",
@@ -60,6 +57,7 @@ export const SearchInput = ({ search, setSearch }) => {
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
+        sx={{ color: "rgb(152, 164, 179)" }}
         size="large"
         onChange={(e) => setSearch(e.target.value)}
         value={search}

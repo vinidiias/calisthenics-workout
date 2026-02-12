@@ -24,17 +24,20 @@ import GoogleIcon from "@mui/icons-material/Google";
 import LockIcon from "@mui/icons-material/Lock";
 // TANSTACK QUERY
 import { useMutation } from "@tanstack/react-query";
+import { useResponseNotifier } from "../../hooks/useResponseNotifier";
 
 const createAuth = async ({ userData }) => {
-  const { data } = await api.post("/user/auth", userData);
+  const { data } = await api.post("/auth/login", userData);
 
-  return data;
+  return data.data;
 };
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
-  const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
+  const { handleErrorResponse } = useResponseNotifier();
+  
+  const navigate = useNavigate();
 
   useEffect(() => setUser({}), [setUser]);
 
@@ -43,6 +46,9 @@ const Login = () => {
     onSuccess: (resp) => {
       setUser({ ...resp, isLogged: true });
       navigate("/workouts");
+    },
+    onError: (resp) => {
+      handleErrorResponse(resp?.response?.data);
     },
   });
 

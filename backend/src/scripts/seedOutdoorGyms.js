@@ -4,9 +4,7 @@ const OutdoorGym = require('../Models/OutdoorGym');
 const Address = require('../Models/Address');
 
 const seedGyms = async () => {
-    console.log(process.env.DB_URI)
   await mongoose.connect(process.env.DB_URI);
-  console.log('Conectado ao MongoDB');
 
   const gyms = [
     {
@@ -20,9 +18,7 @@ const seedGyms = async () => {
       address: '67ace74920259bd471bebab8'
     }
   ];
-  console.log('chegou aq')
   await OutdoorGym.insertMany(gyms);
-  console.log('Outdoor Gyms inseridos com sucesso!');
   await mongoose.disconnect();
 };
 

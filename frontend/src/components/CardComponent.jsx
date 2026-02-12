@@ -12,74 +12,72 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-// CONTEXTS
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
 // ICONS
 import AddIcon from "@mui/icons-material/Add";
-import DateRangeIcon from "@mui/icons-material/DateRange";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CommentIcon from "@mui/icons-material/Comment";
 
 export const CardComponent = ({
   index,
+  user_id,
   img,
   alt,
   title,
   description,
+  commentsCount,
+  likes,
   textBtn,
   participants,
   date,
-  mutateAsync,
+  handleSubscription,
+  onLike,
   openList,
-  isClick,
+  onClick,
+  isHistory=false,
   loading,
 }) => {
-  const { user } = useContext(UserContext);
   const dateFormatted = new Date(date);
-
-  const handleSubscription = async () => {
-    try {
-      await mutateAsync({ auth: user._id, workoutId: index });
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   return (
     <Card
       sx={{
-        maxWidth: isClick ? 345 : "100%",
-        backgroundColor: isClick ? "" : "transparent",
+        width: "100%",
+        maxWidth: isHistory ? 345 : "100%",
+        backgroundColor: isHistory ? "" : "transparent",
       }}
-      elevation={isClick ? 2 : 0}
+      elevation={isHistory ? 2 : 0}
     >
-      {isClick ? (
-        <CardActionArea>
+      {isHistory ? (
+        <CardActionArea onClick={onClick}>
           <CardMedia component="img" height={140} image={img} alt={alt} />
           <CardContent>
             <Typography
               gutterBottom
-              variant="h5"
-              component="div"
+              variant="subtitle1"
+              fontSize="1.5em"
               color="text.primary"
             >
               {title}
             </Typography>
-            <Typography marginBottom={1} variant="body1" color="text.secondary">
+            <Typography
+              marginBottom={1}
+              fontSize=".9em"
+              variant="subtitle2"
+              color="text.secondary"
+            >
               {description}
             </Typography>
             {date && (
               <Typography
                 display="flex"
                 alignSelf="center"
-                gap={0.5}
-                variant="subtitle1"
+                fontSize=".9em"
+                variant="subtitle2"
                 color="text.secondary"
               >
-                <DateRangeIcon />
                 <span>
-                  {dateFormatted.toLocaleDateString()} às{" "}
+                  {dateFormatted.toLocaleDateString()} -{" "}
                   {dateFormatted.toLocaleTimeString()}
                 </span>
               </Typography>
@@ -88,7 +86,7 @@ export const CardComponent = ({
         </CardActionArea>
       ) : (
         <CardContent>
-          <CardMedia component="img" height={140} image={img} alt={alt} />
+          <CardMedia component="img" image={img} alt={alt} />
           <CardContent>
             <Typography
               gutterBottom
@@ -127,67 +125,73 @@ export const CardComponent = ({
             <Box
               sx={{
                 display: "flex",
-                flexDirection: { xs: "column", md: "row" },
+                flexDirection: { xs: "column", sm: "row" },
                 gap: 2,
               }}
             >
-              <Button fullWidth startIcon={<FavoriteIcon />}>
-                Like
+              <Button
+                fullWidth
+                startIcon={
+                  likes?.includes(user_id) ? (
+                    <FavoriteIcon />
+                  ) : (
+                    <FavoriteBorderIcon />
+                  )
+                }
+                onClick={() => onLike({ user_id, workout_id: index })}
+              >
+                Like {likes?.length ?? 0}
               </Button>
               <Button fullWidth startIcon={<CommentIcon />}>
-                Comment
+                Comment {commentsCount ?? 0}
               </Button>
             </Box>
           </CardContent>
         </CardContent>
       )}
-      {isClick && (
-        <CardActions
-          sx={{
-            justifyContent:
-              !textBtn || (participants && participants.length === 0)
-                ? "center"
-                : "",
-          }}
-        >
-          {textBtn && (
-            <Box
-              marginRight={participants && participants.length !== 0 ? 5 : 0}
+      <CardActions
+        // sx={{
+        //   justifyContent:
+        //     !textBtn || (participants && participants.length === 0)
+        //       ? "center"
+        //       : "",
+        // }}
+      >
+        {handleSubscription && (
+          <Box marginRight={participants && participants.length !== 0 ? 5 : 0}>
+            <Button
+              variant="contained"
+              onClick={handleSubscription}
+              loadingPosition="end"
+              endIcon={<AddIcon />}
+              color="white"
+              loading={loading}
             >
-              <Button
-                variant="contained"
-                onClick={handleSubscription}
-                loadingPosition="end"
-                endIcon={<AddIcon />}
-                color="white"
-                loading={loading}
-              >
-                {textBtn}
-              </Button>
-            </Box>
-          )}
-          {isClick && participants && participants.length !== 0 && (
-            <Button variant="text">
-              <AvatarGroup
-                onClick={openList}
-                max={4}
-                spacing="medium"
-                sx={{
-                  ".MuiAvatarGroup-avatar": {
-                    width: 30,
-                    height: 30,
-                    cursor: "pointer",
-                  },
-                }}
-              >
-                {participants.map((avatar, index) => (
-                  <Avatar key={index} alt="profile photo" src={avatar?.photo} />
-                ))}
-              </AvatarGroup>
+              {textBtn ?? "Subscribe"}
             </Button>
-          )}
-        </CardActions>
-      )}
+          </Box>
+        )}
+        {isHistory && participants && participants.length !== 0 && (
+          <Button variant="text">
+            <AvatarGroup
+              onClick={openList}
+              max={4}
+              spacing="medium"
+              sx={{
+                ".MuiAvatarGroup-avatar": {
+                  width: 30,
+                  height: 30,
+                  cursor: "pointer",
+                },
+              }}
+            >
+              {participants.map((avatar, index) => (
+                <Avatar key={index} alt="profile photo" src={avatar?.photo} />
+              ))}
+            </AvatarGroup>
+          </Button>
+        )}
+      </CardActions>
     </Card>
   );
 };

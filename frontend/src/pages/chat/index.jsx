@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState, useEffect } from "react";
+import { useContext, useMemo, useState, useEffect, useRef } from "react";
 // MATERIAL UI
 import {
   Box,
@@ -14,25 +14,31 @@ import {
 import { FriendListChat } from "../../components/pages/chat/FriendListChat";
 import { Message } from "../../components/pages/chat/Message";
 import { HeaderInformationFriend } from "../../components/pages/chat/HeaderInformationFriend";
-// API
-import api from "../../services";
 // CONTEXT
 import { UserContext } from "../../contexts/UserContext";
 // SOCKET
 import { socket } from "../../services/socket/index";
 // ICONS
 import SendIcon from "@mui/icons-material/Send";
+import { fetchMessages, patchMarkMessageAsRead } from "../../services/messageApi";
+import { fetchFollowersByUser } from "../../services/userApi";
+import { useResponseNotifier } from "../../hooks/useResponseNotifier";
 
 export const ChatPage = ({ activeFriends }) => {
   const [friendsFollowing, setFriendsFollowing] = useState([]);
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [conversation, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [isLoadedMessage, setIsLoadedMessage] = useState(false);
   const [privateChatsData, setPrivateChatsData] = useState({});
   const [friendToConversationMap, setFriendToConversationMap] = useState({});
   const [messageInput, setMessageInput] = useState("");
 
+  const { handleErrorResponse } = useResponseNotifier();
+
   const { user } = useContext(UserContext);
+
+  const endChatRef = useRef(null);
 
   const theme = useTheme();
 
@@ -163,7 +169,7 @@ export const ChatPage = ({ activeFriends }) => {
     const initialConversations = [];
     const initialFriendMap = {};
 
-    friendsFollowing.forEach((friend) => {
+    friendsFollowing?.forEach((friend) => {
       const participantId = [user._id, friend._id].sort();
       const conversationId = `private-${participantId[0]}-${participantId[1]}`;
 
@@ -192,7 +198,7 @@ export const ChatPage = ({ activeFriends }) => {
       if (!selectedConversationId) return;
 
       try {
-        const response = await api.get(`/message/${selectedConversationId}`);
+        const response = await fetchMessages(selectedConversationId);
         const dbMessages = response.data.map((msg) => ({
           id: msg._id,
           senderId: msg.senderId._id,
@@ -208,12 +214,9 @@ export const ChatPage = ({ activeFriends }) => {
           ...prev,
           [selectedConversationId]: dbMessages,
         }));
-
+        setIsLoadedMessage(true);
         // Mark messages as read
-        await api.patch("/message/read", {
-          conversationId: selectedConversationId,
-          userId: user._id,
-        });
+        patchMarkMessageAsRead(selectedConversationId, user._id);
       } catch (error) {
         console.error("Error loading messages:", error);
       }
@@ -224,19 +227,25 @@ export const ChatPage = ({ activeFriends }) => {
 
   useEffect(() => {
     const getFollowers = async () => {
-      const query = ["name", "photo", "biography"];
-      const response = await api.get(
-        `/user/${user._id}/followers/?filter=${query.join(",")}`,
-      );
+      const data = await fetchFollowersByUser(user._id);
+      
+      if (!data) {
+        handleErrorResponse(data);
+        return;
+      };
 
-      if (!response) return new Error(response);
-
-      const data = await response.data;
       setFriendsFollowing(data);
     };
 
     getFollowers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user._id]);
+
+  useEffect(() => {
+    if (endChatRef.current && isLoadedMessage) {
+      endChatRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [selectedConversationId, endChatRef, isLoadedMessage]);
 
   return (
     <Container maxWidth={false} disableGutters sx={{ flex: 1 }}>
@@ -266,7 +275,9 @@ export const ChatPage = ({ activeFriends }) => {
             size={{ xs: 12, md: 7, lg: 8 }}
             direction="column"
             color={theme.palette.text.primary}
-            sx={{ backgroundColor: theme.palette.background.paper }}
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+            }}
             py={2}
             px={5}
           >
@@ -283,11 +294,17 @@ export const ChatPage = ({ activeFriends }) => {
                 />
                 <Grid2
                   container
-                  flex={1}
                   size={12}
-                  marginTop={2}
                   spacing={2}
-                  sx={{ overflowY: "auto", flexDirection: "column" }}
+                  sx={{
+                    maxHeight: { xs: 446, md: 470 },
+                    overflowY: "auto",
+                    flex: 1,
+                    mt: 2,
+                    flexDirection: "column",
+                    flexWrap: "nowrap",
+                    p: 1,
+                  }}
                 >
                   {messages && messages.length > 0 ? (
                     messages.map((msg, index) => {
@@ -315,6 +332,7 @@ export const ChatPage = ({ activeFriends }) => {
                       </Typography>
                     </Grid2>
                   )}
+                  <div ref={endChatRef}></div>
                 </Grid2>
                 <Grid2 size={12} container justifyContent={"center"}>
                   <Grid2 size={12}>

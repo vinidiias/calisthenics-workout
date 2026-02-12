@@ -26,9 +26,6 @@ export const Message = ({ msg, isMyMessage, selectedContact, photo }) => {
             maxWidth: "400px",
             padding: 1,
             paddingY: 0.5,
-            backgroundColor: isMyMessage
-              ? theme.palette.primary.light
-              : theme.palette.background.default,
           }}
         >
           <Typography
@@ -36,9 +33,7 @@ export const Message = ({ msg, isMyMessage, selectedContact, photo }) => {
               fontSize: {
                 xs: "0.7rem",
                 sm: "1rem",
-                color: isMyMessage
-                  ? theme.palette.text.contrastText
-                  : theme.palette.text.primary,
+                color: theme.palette.text.secondary,
               },
             }}
           >
@@ -47,9 +42,7 @@ export const Message = ({ msg, isMyMessage, selectedContact, photo }) => {
           <Typography
             sx={{
               fontSize: { xs: "0.55rem", sm: "0.7rem" },
-              color: isMyMessage
-                ? theme.palette.text.contrastText
-                : theme.palette.text.primary,
+              color: theme.palette.text.secondary,
             }}
           >
             {new Date(msg.timestamp).toLocaleTimeString("pt-BR", {

@@ -34,10 +34,7 @@ const router = require("./Routes/Router");
 
 mongoose
   .connect(dbUri)
-  .then((res) => {
-    console.log("Connected to database");
-  })
-  .catch((err) => console.error(err));
+  .catch((err) => {});
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -69,6 +66,4 @@ app.post("/file", upload.single("photo"), (req, res) => {
 
 app.use(router);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
-});
+app.listen(PORT, () => { console.log('backend running on port ' + PORT)});

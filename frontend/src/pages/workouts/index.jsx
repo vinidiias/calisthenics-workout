@@ -8,73 +8,47 @@ import {
   Typography,
 } from "@mui/material";
 //COMPONENTS
-import ParticipantsListModal from "../../components/ParticipantsListModal";
 import { SearchInput } from "../../components/ui/inputs/SearchInput";
-import { Select } from "../../components/ui/inputs/Select";
-import { CardComponent } from "../../components/CardComponent";
+import { InputSelect } from "../../components/ui/inputs/Select";
 import { FormWorkout } from "../../components/pages/workouts/FormWorkout";
-//API
-import api from "../../services";
+import { postFollowToUser } from "../../services/userApi";
+import { patchLikeWorkout } from "../../services/workoutApi";
 //CONTEXT
 import { UserContext } from "../../contexts/UserContext";
 ///HOOKS
-import { useFetchAddress } from "../../hooks/useFetchAddress";
+import { useFetchData } from "../../hooks/useFetchData";
 //ICONS
 import AddIcon from "@mui/icons-material/Add";
 //TANKSTACK  QUERY
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-const fetchWorkoutNotSubscribed = async ({ auth }) => {
-  const { data } = await api.get("/workout/not-subscribed", {
-    headers: { auth: auth },
-  });
-
-  return data;
-};
-
-const fetchWorkoutSubscribed = async ({ auth }) => {
-  const { data } = await api.get("/workout/subscribed", {
-    headers: { auth: auth },
-  });
-
-  return data;
-};
-
-const subscribeToWorkout = async ({ auth, workoutId }) => {
-  const { data } = await api.post(
-    `/workout/subscribe`,
-    { id: workoutId },
-    { headers: { auth } },
-  );
-
-  return data;
-};
-
-const unsubscribeToWorkout = async ({ auth, workoutId }) => {
-  const { data } = await api.delete(`/workout/unsubscribe/${workoutId}`, {
-    headers: { auth },
-  });
-
-  return data;
-};
-
-const followToUser = async ({ userFrom, userTo }) => {
-  const { data } = await api.post(`/user/${userTo}`, { userFrom });
-
-  return data;
-};
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DialogWorkoutCard } from "../../components/pages/workouts/DialogWorkoutCardInformation";
+import { WorkoutCard } from "../../components/pages/workouts/WorkoutCard";
+import { PeopleListDialog } from "../../components/PeopleListDialog";
 
 const Menu = ({ isParticipe, title }) => {
   const { user, setUser } = useContext(UserContext);
   const [open, setOpen] = useState(false);
+  const [openCard, setOpenCard] = useState(false);
   const [openList, setOpenList] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
+  const [editingWorkout, setEditingWorkout] = useState(null);
+  const [addressFilter, setAddressFilter] = useState(null);
+  const [dataFiltered, setDataFiltered] = useState([]);
+
+  const queryClient = useQueryClient();
 
   const {
     data: dataAddress,
     isLoading: isLoadingAddress,
     error: errorAddress,
-  } = useFetchAddress("address", "/address");
+  } = useFetchData("address", "/outdoor-gym-addresses");
+
+  const { data, error, isLoading } = useFetchData(
+    ["workouts", { subscribed: !isParticipe }], // key
+    isParticipe ? "/workouts?subscribed=false" : "/workouts?subscribed=true", // url
+    {}, // options
+    user._id, // auth
+  );
 
   const optionsAddress = useMemo(() => {
     const options = [];
@@ -88,63 +62,45 @@ const Menu = ({ isParticipe, title }) => {
     return options;
   }, [dataAddress]);
 
-  const [addressFilter, setAddressFilter] = useState(null);
-
-  const queryClient = useQueryClient();
-
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["workouts"],
-    queryFn: () =>
-      isParticipe
-        ? fetchWorkoutNotSubscribed({ auth: user._id })
-        : fetchWorkoutSubscribed({ auth: user._id }),
-  });
-
-  const [dataFiltered, setDataFiltered] = useState(data || []);
-
-  const { mutateAsync: subscribeToWorkoutFn, isPending } = useMutation({
-    mutationFn: subscribeToWorkout,
-    onSuccess: (newData) => {
-      queryClient.setQueriesData(["workouts"], (oldData) => {
-        return oldData
-          ? oldData.filter((workout) => workout._id !== newData.workout._id)
-          : oldData;
-      });
-    },
-  });
-
-  const {
-    mutateAsync: unsubscribeToWorkoutFn,
-    isPending: isPendingToUnsubscribe,
-  } = useMutation({
-    mutationFn: unsubscribeToWorkout,
-    onSuccess: (newData) => {
-      queryClient.setQueriesData(["workouts"], (oldData) => {
-        return oldData
-          ? oldData.filter((workout) => workout._id !== newData.workout._id)
-          : oldData;
-      });
-    },
-  });
-
-  const { mutateAsync: followToUserFn } = useMutation({
-    mutationFn: followToUser,
-    onSuccess: (data) => {
-      setUser((prevState) => ({
-        ...prevState,
-        following: [...prevState.following, data.data.userTo._id],
+  const { mutateAsync: handleFollowToUserFn } = useMutation({
+    mutationFn: postFollowToUser,
+    onSuccess: (resp) => {
+      setUser((prev) => ({
+        ...prev,
+        following: resp.userFrom.following,
       }));
     },
   });
 
-  const openListModal = (workout) => {
+  const { mutateAsync: handleLikeWorkout } = useMutation({
+    mutationFn: patchLikeWorkout,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+    },
+  });
+
+  const handleOpenListModal = (workout) => {
     setSelectedWorkout(workout);
     setOpenList(true);
   };
 
+  const handleOpenCard = (workout) => {
+    setSelectedWorkout(workout);
+    setOpenCard(true);
+  };
+
+  const handleEditWorkout = (workout) => {
+    setEditingWorkout(workout);
+    setOpen(true);
+  };
+
   useEffect(() => {
     if (data) {
-      if (addressFilter === null || addressFilter === "") {
+      if (
+        addressFilter === null ||
+        addressFilter === "" ||
+        addressFilter === "all"
+      ) {
         setDataFiltered(data);
       } else {
         setDataFiltered(
@@ -153,8 +109,15 @@ const Menu = ({ isParticipe, title }) => {
           ),
         );
       }
+      setSelectedWorkout((prev) => {
+        if (prev === null) return null;
+
+        const workout = data.find((w) => w._id === prev?._id);
+
+        return workout ?? null;
+      });
     }
-  }, [addressFilter, setDataFiltered, data]);
+  }, [addressFilter, data]);
 
   return (
     <Box
@@ -163,90 +126,104 @@ const Menu = ({ isParticipe, title }) => {
         flexDirection: "column",
         flex: 1,
         p: 5,
-        backgroundColor: "background.default",
-        overflowY: "clip",
       }}
     >
-      <FormWorkout openModal={open} onClose={() => setOpen(false)} />
-      <ParticipantsListModal
+      <FormWorkout
+        openModal={open}
+        onClose={() => {
+          setOpen(false);
+          setEditingWorkout(null);
+        }}
+        workout={editingWorkout}
+      />
+      <PeopleListDialog
         openModal={openList}
         onClose={() => setOpenList(false)}
         title={selectedWorkout?.title ?? ""}
         participants={selectedWorkout?.participants ?? []}
-        handleFollowFn={followToUserFn}
+        handleFollowFn={handleFollowToUserFn}
       />
       <Box display="flex" justifyContent="center" gap={4} marginBottom={4}>
-        <Typography variant="h6" color="text.primary" fontWeight="regular">
+        <Typography
+          variant="h6"
+          color="text.primary"
+          fontSize={"2em"}
+          fontWeight="medium"
+          letterSpacing={"1px"}
+        >
           {title}
         </Typography>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 2.5,
-          mb: 5,
-          flexDirection: { xs: "column", sm: "row" },
-        }}
-      >
-        <SearchInput />
-        <Select
-          label="Locality"
-          disabled={isLoadingAddress || errorAddress}
-          size="small"
-          defaultValue="all"
-          onChange={(e) => setAddressFilter(e.target.value)}
-          options={optionsAddress ?? []}
-        />
+      <Grid2 container size={12} alignItems={"center"} mb={4} spacing={1}>
+        <Grid2 size={{ xs: 12, sm: 6, md: 8 }}>
+          <SearchInput />
+        </Grid2>
+        <Grid2 size={{ xs: 12, sm: 4, md: 3 }}>
+          <InputSelect
+            label="Locality"
+            disabled={isLoadingAddress || errorAddress}
+            size="small"
+            defaultValue={-1}
+            onChange={(e) => setAddressFilter(e.target.value)}
+            options={optionsAddress ?? []}
+          />
+        </Grid2>
         {isParticipe && (
-          <Button onClick={() => setOpen(true)} variant="contained">
-            <AddIcon />
-          </Button>
+          <Grid2 size={{ xs: 12, sm: 2, md: 1 }}>
+            <Button fullWidth onClick={() => setOpen(true)} variant="contained">
+              <AddIcon />
+            </Button>
+          </Grid2>
         )}
-      </Box>
-      <Grid2
-        container
-        spacing={10}
-        margin={`${!data || isLoading || data.length === 0 ? "auto" : "0"}`}
-      >
+      </Grid2>
+      <Grid2 container spacing={2} flex={1}>
         {isLoading ? (
-          <CircularProgress />
+          <Grid2 margin="auto">
+            <CircularProgress />
+          </Grid2>
         ) : dataFiltered.length > 0 ? (
           dataFiltered.map((workout, index) => (
-            <Grid2 key={index}>
-              <CardComponent
-                index={workout._id}
-                mutateAsync={
-                  isParticipe ? subscribeToWorkoutFn : unsubscribeToWorkoutFn
-                }
-                img={workout.outdoorGym.photo}
-                alt="img"
-                title={workout.title}
-                description={workout.description}
-                participants={workout.participants}
-                date={workout?.date}
-                textBtn={
-                  isParticipe
-                    ? "Subscribe"
-                    : workout.creator._id === user._id
-                      ? "Edit"
-                      : "Unsubscribe"
-                }
-                openList={() => openListModal(workout)}
-                loading={isPending || isPendingToUnsubscribe}
-                isClick={true}
+            <Grid2
+              key={index}
+              justifyItems={{ xs: "center", sm: "start" }}
+              wrap="wrap"
+              size={{ xs: 12, sm: 6, lg: 4, xl: 3 }}
+            >
+              <WorkoutCard
+                user_id={user._id}
+                isParticipe={isParticipe}
+                workout={workout}
+                openList={() => handleOpenListModal(workout)}
+                onClick={() => handleOpenCard(workout)}
+                onEdit={() => handleEditWorkout(workout)}
               />
             </Grid2>
           ))
-        ) : error ? (
-          <Typography color="text.primary">{error?.response?.data}</Typography>
-        ) : dataFiltered.length === 0 ? (
-          <Typography color="text.primary">No Workouts founds</Typography>
         ) : (
-          <Typography color="text.primary">Error to fetch workouts.</Typography>
+          <Grid2
+            container
+            size={12}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Typography color="text.secondary">
+              {error
+                ? error?.response?.data
+                : dataFiltered.length === 0
+                  ? "No Workouts founds"
+                  : "Error to fetch workouts."}
+            </Typography>
+          </Grid2>
         )}
       </Grid2>
+
+      <DialogWorkoutCard
+        open={openCard}
+        onClose={() => setOpenCard(false)}
+        user_id={user._id}
+        workout={selectedWorkout}
+        onLike={handleLikeWorkout}
+      />
     </Box>
   );
 };

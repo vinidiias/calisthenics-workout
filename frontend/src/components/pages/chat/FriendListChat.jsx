@@ -28,7 +28,7 @@ export const FriendListChat = ({
       disablePadding
       sx={{ backgroundColor: theme.palette.background.paper }}
     >
-      {friendsFollowing.length > 0 &&
+      {friendsFollowing?.length > 0 &&
         friendsFollowing.map((friend, index) => {
           const conversationId = friendToConversationMap[friend._id];
           const conv = conversation.find((c) => c.id === conversationId);
