@@ -1,5 +1,6 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 // MATERIAL UI
 import {
   Button,
@@ -21,10 +22,49 @@ import {
 } from "@tanstack/react-table";
 // CONTEXT
 import { UserContext } from "../contexts/UserContext";
+// API
+import { deleteFollowToUser, postFollowToUser } from "../services/userApi";
+// HOOKS
+import { useResponseNotifier } from "../hooks/useResponseNotifier";
 
-export const ParticipantsList = ({ dataTable, handleFollow }) => {
-  const { user } = useContext(UserContext);
+export const PeopleList = ({ people }) => {
+  const [pending, setPending] = useState(() => {
+    return (
+      people?.map((p) => {
+        return p !== null ? { [p?._id]: false } : {};
+      }) ?? []
+    );
+  });
+  
+  const { user, setUser } = useContext(UserContext);
+  const { handleErrorResponse } = useResponseNotifier();
+
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const { mutateAsync: handleFollow } = useMutation({
+    mutationFn: postFollowToUser,
+    onSuccess: (resp) => {
+      setUser((prev) => ({
+        ...prev,
+        following: resp.userFrom.following,
+      }));
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onError: (resp) => handleErrorResponse(resp.response.data),
+  });
+
+  const { mutateAsync: handleUnfollow } = useMutation({
+    mutationFn: deleteFollowToUser,
+    onSuccess: (resp) => {
+      setUser((prev) => ({
+        ...prev,
+        following: resp.userFrom?.following,
+      }));
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onError: (resp) => handleErrorResponse(resp.response.data),
+  });
 
   const columns = useMemo(
     () => [
@@ -64,20 +104,31 @@ export const ParticipantsList = ({ dataTable, handleFollow }) => {
       {
         header: "Action",
         cell: ({ row }) => {
+          const isFollowing = user.following.includes(row.original._id);
           return (
             <>
-              {user._id === row.original._id ? null : (
+              {user._id !== row.original._id && (
                 <Button
+                  loading={pending[row.original._id]}
                   variant="contained"
                   size="small"
-                  onClick={() =>
-                    handleFollow({
-                      userFrom: user._id,
-                      userTo: row.original._id,
-                    })
-                  }
+                  onClick={() => {
+                    setPending((prev) => ({
+                      ...prev,
+                      [row.original._id]: true,
+                    }));
+
+                    if (isFollowing) handleUnfollow({ userFrom: user._id, userTo: row.original._id });
+                    else handleFollow({ userFrom: user._id, userTo: row.original._id });
+                    
+
+                    setPending((prev) => ({
+                      ...prev,
+                      [row.original._id]: false,
+                    }));
+                  }}
                 >
-                  {user.following.includes(row.original._id)
+                  {isFollowing
                     ? "Stop Following"
                     : "Follow"}
                 </Button>
@@ -87,10 +138,11 @@ export const ParticipantsList = ({ dataTable, handleFollow }) => {
         },
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [user, handleFollow, navigate],
   );
 
-  const data = useMemo(() => dataTable, [dataTable]);
+  const data = useMemo(() => people, [people]);
 
   const table = useReactTable({
     data,
@@ -130,7 +182,7 @@ export const ParticipantsList = ({ dataTable, handleFollow }) => {
         </TableContainer>
       ) : (
         <Typography sx={{ textAlign: "center", width: "100%", py: 2 }}>
-          User Not Found!
+          Empty.
         </Typography>
       )}
     </>

@@ -1,4 +1,4 @@
-import { UserContext } from "../contexts/UserContext";
+import { UserContext } from "../../../contexts/UserContext";
 import { FormProvider, useForm } from "react-hook-form";
 import { useContext, useEffect, useState } from "react";
 // MATERIAL UI
@@ -13,24 +13,24 @@ import {
   Typography,
 } from "@mui/material";
 // API
-import api from "../services";
+import api from "../../../services";
 // TANSTACK QUERY
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // SERVICES
-import { createImage } from "../services/imageApi";
+import { createImage } from "../../../services/imageApi";
 
 const updateUser = async ({ updatedData, id }) => {
-  const { data } = await api.patch(`/user/${id}`, updatedData, {
+  const { data } = await api.patch(`/users/${id}`, updatedData, {
     headers: { auth: id },
   });
 
-  return data;
+  return data.data;
 };
 
-export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
+export const DialogFormSettings = ({ open, handleClose, data, fields }) => {
+  const [preview, setPreview] = useState(null);
   const { user, setUser } = useContext(UserContext);
   const formMethods = useForm();
-  const [preview, setPreview] = useState(null);
   const file = formMethods.watch("newPhoto");
 
   const queryClient = useQueryClient();
@@ -53,9 +53,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
   const { mutateAsync: updateUserFn, isPending: isPedingUser } = useMutation({
     mutationFn: updateUser,
     onSuccess: (updatedData) => {
-      queryClient.setQueriesData(["user"], (oldData) => {
-        return { ...oldData, ...updatedData };
-      });
+      queryClient.invalidateQueries({ queryKey: ["user"] })
       setUser((prevState) => ({
         ...prevState,
         ...updatedData,
@@ -98,14 +96,26 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                           fullWidth
                           size="small"
                           type={field.type}
+                          placeholder={field?.placeholder}
                           {...formMethods.register(field.name)}
                         />
                       ) : (
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.5,
+                          }}
+                        >
                           {file && (
                             <img
                               src={preview}
-                              style={{ height: "3.75rem", width: "3.75rem", objectFit: "cover", borderRadius: "50%" }}
+                              style={{
+                                height: "3.75rem",
+                                width: "3.75rem",
+                                objectFit: "cover",
+                                borderRadius: "50%",
+                              }}
                             />
                           )}
                           <Button
@@ -128,7 +138,7 @@ export const UpdatePersonalData = ({ open, handleClose, data, fields }) => {
                   fullWidth
                   variant="contained"
                   type="submit"
-                  size="small"
+                  size="medium"
                   loading={isPedingUser || isPendingImage}
                 >
                   Save

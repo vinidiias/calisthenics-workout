@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 // COMPONENTS
-import { CustomAlert } from "../components/ui/CustomAlert";
+import { CustomAlert } from "../components/CustomAlert";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AlertContext = createContext();
@@ -11,7 +11,7 @@ export function AlertProvider({ children }) {
   const [severity, setSeverity] = useState("success");
   const [message, setMessage] = useState("");
 
-  function showAlet({ typeSeverity, message, isAutoHide }) {
+  function showAlert({ typeSeverity, message, isAutoHide }) {
     if (typeSeverity) {
       setSeverity(typeSeverity);
     }
@@ -43,7 +43,7 @@ export function AlertProvider({ children }) {
   }
 
   return (
-    <AlertContext.Provider value={{ showAlet, dismissAlert }}>
+    <AlertContext.Provider value={{ showAlert, dismissAlert }}>
       {children}
       <CustomAlert
         severity={severity}

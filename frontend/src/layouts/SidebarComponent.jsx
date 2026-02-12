@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 // MATERIAL UI
 import {
   Drawer,
@@ -15,7 +16,7 @@ import { useThemeColor } from "../hooks/useThemeColor";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LanguageIcon from "@mui/icons-material/Language";
-import { WbSunny } from "@mui/icons-material";
+import { Settings, WbSunny } from "@mui/icons-material";
 // CONTEXT
 import { UserContext } from "../contexts/UserContext";
 
@@ -25,6 +26,29 @@ export const SidebarComponent = () => {
   const { user } = useContext(UserContext);
 
   const navigate = useNavigate();
+
+  const items = useMemo(
+    () => [
+      {
+        text: "Profile",
+        icon: <AccountBoxIcon />,
+        handleClick: () => navigate(`/profile/${user._id}`),
+      },
+      {
+        text: "Settings",
+        icon: <Settings />,
+        handleClick: () => navigate("/settings"),
+      },
+      {
+        text: "Dark Mode",
+        icon: isDark ? <DarkModeIcon /> : <WbSunny />,
+        handleClick,
+      },
+      { text: "Language", icon: <LanguageIcon /> },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isDark],
+  );
 
   return (
     <Drawer
@@ -39,19 +63,7 @@ export const SidebarComponent = () => {
       }}
     >
       <List>
-        {[
-          {
-            text: "Profile",
-            icon: <AccountBoxIcon />,
-            handleClick: () => navigate(`/profile/${user._id}`),
-          },
-          {
-            text: "Dark Mode",
-            icon: isDark ? <DarkModeIcon /> : <WbSunny />,
-            handleClick,
-          },
-          { text: "Language", icon: <LanguageIcon /> },
-        ].map((itemList) => (
+        {items.map((itemList) => (
           <ListItem key={itemList.text}>
             <ListItemButton onClick={itemList.handleClick}>
               <ListItemIcon>{itemList.icon}</ListItemIcon>

@@ -16,13 +16,17 @@ import {
 // CONTEXTS
 import { UserContext } from "../../../contexts/UserContext";
 // HOOKS
-import { useThemeColor } from "../../../hooks/useThemeColor";
+import { useResponseNotifier } from "../../../hooks/useResponseNotifier";
 // APIS
 import api from "../../../services";
 // USE FORM
 import { useForm } from "react-hook-form";
 // TANSTACK QUERY
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createWorkout, patchWorkout } from "../../../services/workoutApi";
+import { InputSelectController } from "../../ui/inputs/Select";
+import { ControllerDatePickerInput } from "../../ui/inputs/DatePickerInput";
+import { ControllerInput } from "../../ui/inputs/Input";
 
 const fields = [
   { name: "title", label: "Title", type: "text" },
@@ -40,68 +44,121 @@ const fields = [
 ];
 
 const fetchOutdoorGym = async () => {
-  const { data } = await api.get("/outdoorGym");
-  return data;
+  const { data } = await api.get("/outdoor-gyms");
+  return data.data;
 };
 
-const createWorkout = async ({ workout, auth }) => {
-  const { data } = await api.post("/workout/create", workout, {
-    headers: { auth: auth },
+const formatDateForInput = (date) => {
+  if (!date) return "";
+  const d = new Date(date);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+export const FormWorkout = ({ openModal, onClose, workout }) => {
+  const [options, setOptions] = React.useState([]);
+  const { user } = React.useContext(UserContext);
+
+  const isEditing = !!workout;
+
+  const { handleErrorResponse } = useResponseNotifier();
+
+  const { handleSubmit, reset, control } = useForm({
+    defaultValues: { title: "", description: "", outdoorGym: -1, date: "" },
   });
 
-  return data;
-};
-
-export const FormWorkout = ({ openModal, onClose }) => {
-  const { user } = React.useContext(UserContext);
-  const { isDark } = useThemeColor();
-  // const [errors, setErrors] = React.useState({
-  //   title: null,
-  //   description: null,
-  //   outdoorGym: null,
-  //   date: null,
-  // });
-
-  const { register, handleSubmit, reset } = useForm();
-
   const queryClient = useQueryClient();
+
+  React.useEffect(() => {
+    if (workout) {
+      reset({
+        title: workout.title || "",
+        description: workout.description || "",
+        outdoorGym: workout.outdoorGym?._id || workout.outdoorGym || "",
+        date: formatDateForInput(workout.date),
+      });
+    }
+  }, [workout, reset]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["outdoor_gyms"],
     queryFn: fetchOutdoorGym,
   });
 
-  const { mutateAsync: createWorkoutFn, isPending } = useMutation({
+  const { mutateAsync: createWorkoutFn, isPending: isPendingCreate } = useMutation({
     mutationFn: createWorkout,
     onSuccess(newData) {
-      // Obtém os dados mais recentes do cache antes de atualizar
       queryClient.setQueryData(["workouts"], (oldData) => {
         return oldData ? [...oldData, newData] : [newData];
       });
-
       queryClient.invalidateQueries(["workouts"]);
+      handleReset();
       onClose();
     },
+    onError: (resp) => {
+      handleErrorResponse(resp.response.data);
+      handleReset();
+    }
   });
 
-  const handleCreateWorkout = async (data) => {
-    await createWorkoutFn({
-      workout: data,
-      auth: user._id,
-    });
+  const { mutateAsync: editWorkoutFn, isPending: isPendingEdit } = useMutation({
+    mutationFn: patchWorkout,
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      onClose();
+    },
+    onError: (resp) => {
+      handleErrorResponse(resp.response.data);
+    }
+  });
 
+  const onSubmit = async (data) => {
+    if (isEditing) {
+      await editWorkoutFn({
+        workoutId: workout._id,
+        workout: data,
+        auth: user._id,
+      });
+    } else {
+      await createWorkoutFn({
+        workout: data,
+        auth: user._id,
+      });
+    }
     reset();
   };
 
   const submit = (e) => {
     e.preventDefault();
-    handleSubmit(handleCreateWorkout)();
+    handleSubmit(onSubmit)();
   };
+
+  const handleReset = () => {
+    reset({ title: "", description: "", outdoorGym: -1, date: "" });
+  }
+
+  const handleClose = () => {
+    handleReset();
+    onClose();
+  }
+
+  React.useEffect(() => {
+    if (data) {
+      setOptions(
+        data.map((op) => {
+          return {
+            label: `${op?.name} | ${op?.address?.neighborhood}`,
+            value: op?._id,
+          };
+        }),
+      );
+    }
+  }, [data]);
 
   return (
     <>
-      <Dialog open={openModal} onClose={onClose} maxWidth="xs">
-        <DialogTitle>Create Workout</DialogTitle>
+      <Dialog open={openModal} onClose={handleClose} maxWidth="xs">
+        <DialogTitle>{isEditing ? "Edit Workout" : "Create Workout"}</DialogTitle>
         <DialogContent dividers>
           {isLoading ? (
             <CircularProgress />
@@ -113,87 +170,51 @@ export const FormWorkout = ({ openModal, onClose }) => {
                     case "text":
                       return (
                         <Grid2 key={index} size={12}>
-                          <TextField
-                            variant="outlined"
-                            size="medium"
+                          <ControllerInput
                             fullWidth
+                            hiddenLabel
+                            control={control}
                             label={field.label}
+                            size="medium"
                             name={field.name}
                             id={field.name}
                             type={field.type}
-                            {...register(field.name, { required: true })}
                           />
                         </Grid2>
                       );
                     case "file":
                       return (
                         <Grid2 key={index} size={12}>
-                          <TextField
+                          <ControllerInput
+                            control={control}
                             size="medium"
                             fullWidth
                             hiddenLabel
                             name={field.name}
                             id={field.name}
                             type={field.type}
-                            {...register(field.name, { required: true })}
                           />
                         </Grid2>
                       );
                     case "datetime-local":
                       return (
                         <Grid2 key={index} size={12}>
-                          <TextField
-                            size="medium"
-                            fullWidth
-                            hiddenLabel
+                          <ControllerDatePickerInput
+                            control={control}
                             name={field.name}
-                            id={field.name}
-                            type={field.type}
-                            sx={{
-                              "& input[type='datetime-local']::-webkit-calendar-picker-indicator":
-                                {
-                                  filter: isDark ? "invert(1)" : "invert(0)", // Inverte a cor do ícone (branco em fundo escuro)
-                                  cursor: "pointer",
-                                },
-                              "& input[type='datetime-local']": {
-                                cursor: "pointer",
-                              },
-                            }}
-                            {...register(field.name, { required: true })}
+                            label={field.label}
+                            rules={{ required: true }}
                           />
                         </Grid2>
                       );
                     case "select":
                       return (
                         <Grid2 key={index} size={12}>
-                          <FormControl fullWidth>
-                            {field.label && (
-                              <InputLabel id={`${field.name}-label`}>
-                                {field.label}
-                              </InputLabel>
-                            )}
-                            <Select
-                              size="medium"
-                              labelId={`${field.name}-label`}
-                              label={field.label}
-                              name={field.name}
-                              defaultValue={-1}
-                              {...register(field.name, { required: true })}
-                            >
-                              <MenuItem key="select" disabled value={-1}>
-                                Select...
-                              </MenuItem>
-                              {data &&
-                                data.map((option, indexOption) => (
-                                  <MenuItem
-                                    key={indexOption}
-                                    value={option._id}
-                                  >
-                                    {`${option.name} | ${option.address.neighborhood}`}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
+                          <InputSelectController
+                            control={control}
+                            name={field.name}
+                            options={options}
+                          />
                         </Grid2>
                       );
                     default:
@@ -203,12 +224,12 @@ export const FormWorkout = ({ openModal, onClose }) => {
                 <Grid2 size={12} container>
                   <Button
                     fullWidth
-                    loading={isPending}
+                    loading={isPendingCreate || isPendingEdit}
                     size="large"
                     type="submit"
                     variant="contained"
                   >
-                    Create Workout
+                    {isEditing ? "Save" : "Create Workout"}
                   </Button>
                 </Grid2>
               </Grid2>

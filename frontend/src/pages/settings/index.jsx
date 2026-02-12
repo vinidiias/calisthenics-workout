@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 // COMPONENTS
-import { UpdatePersonalData } from "../../components/UpdatePersonalData";
+import { DialogFormSettings } from "../../components/pages/settings/DialogFormSettings";
 // API
 import api from "../../services";
 // CONTEXT
@@ -21,8 +21,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useQuery } from "@tanstack/react-query";
 
 const getUser = async ({ id }) => {
-  const { data } = await api.get(`/user/${id}`);
-  return data;
+  const { data } = await api.get(`/users/${id}`);
+  return data.data;
 };
 
 export const Settings = () => {
@@ -41,21 +41,45 @@ export const Settings = () => {
       label: "Photo",
       value: (
         <img
-          style={{ height: "3.75rem", width: "3.75rem", objectFit: "cover", borderRadius: "50%" }}
+          style={{
+            height: "3.75rem",
+            width: "3.75rem",
+            objectFit: "cover",
+            borderRadius: "50%",
+          }}
           src={data?.photo}
         />
       ),
       type: "file",
       name: "newPhoto",
     },
-    { label: "Name", value: data?.name, type: "text", name: "name" },
-    { label: "Phone", value: data?.phone, type: "tel", name: "phone" },
-    { label: "Email", value: data?.email, type: "email", name: "email" },
+    {
+      label: "Name",
+      value: data?.name,
+      type: "text",
+      name: "name",
+      placeholder: "Enter your name",
+    },
+    {
+      label: "Phone",
+      value: data?.phone,
+      type: "tel",
+      name: "phone",
+      placeholder: "Enter your phone",
+    },
+    {
+      label: "Email",
+      value: data?.email,
+      type: "email",
+      name: "email",
+      placeholder: "email",
+    },
     {
       label: "Biography",
       value: data?.biography,
       type: "text",
       name: "biography",
+      placeholder: "Enter your biography",
     },
   ];
 
@@ -65,36 +89,42 @@ export const Settings = () => {
       value: data?.address?.street,
       type: "text",
       name: "address.street",
+      placeholder: "Enter your street",
     },
     {
       label: "Number",
       value: data?.address?.number,
       type: "text",
       name: "address.number",
+      placeholder: "Enter your number",
     },
     {
       label: "Neighborhood",
       value: data?.address?.neighborhood,
       type: "text",
       name: "address.neighborhood",
+      placeholder: "Enter your neighborhood",
     },
     {
       label: "ZIP Code",
       value: data?.address?.zipCode,
       type: "text",
       name: "address.zipCode",
+      placeholder: "Enter your zip code",
     },
     {
       label: "City",
       value: data?.address?.city,
       type: "text",
       name: "address.city",
+      placeholder: "Enter your city",
     },
     {
       label: "State",
       value: data?.address?.state,
       type: "text",
       name: "address.state",
+      placeholder: "Enter your state",
     },
   ];
 
@@ -133,15 +163,34 @@ export const Settings = () => {
   };
 
   return (
-    <Container maxWidth={false} sx={{ p: 2 }}>
-      <UpdatePersonalData
+    <Container
+      maxWidth={false}
+      sx={{
+        p: 2,
+        maxWidth: { xs: "100%", sm: "70%" },
+        backgroundColor: "transparent",
+      }}
+    >
+      <DialogFormSettings
         open={open}
         handleClose={() => setOpen(false)}
         data={filteredData ?? null}
         fields={fields}
       />
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 3.5, width: "100%" }}>
-        <Typography fontSize="1.2em" color="text.primary">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 3.5,
+          width: "100%",
+        }}
+      >
+        <Typography
+          fontSize="1.5em"
+          fontWeight={"medium"}
+          letterSpacing={"1px"}
+          color="text.primary"
+        >
           Settings
         </Typography>
         <Paper sx={{ padding: 4, paddingX: 5 }} elevation={2}>
@@ -149,7 +198,12 @@ export const Settings = () => {
             <img
               src={data?.photo}
               alt=""
-              style={{ height: "6.25rem", width: "6.25rem", objectFit: "cover", borderRadius: "50%" }}
+              style={{
+                height: "6.25rem",
+                width: "6.25rem",
+                objectFit: "cover",
+                borderRadius: "50%",
+              }}
             />
             <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
               <Typography fontWeight="medium">{data?.name}</Typography>
@@ -197,7 +251,7 @@ export const Settings = () => {
                           <Typography variant="body2">{info.value}</Typography>
                         </Box>
                       </Grid2>
-                      {(index + 1) % 2 == 0 && index !== infos.length - 1 && (
+                      {(index + 1) % 2 == 0 && index !== infos.length - 2 && (
                         <Grid2 size={12}>
                           <Divider sx={{ width: "100%" }} />
                         </Grid2>

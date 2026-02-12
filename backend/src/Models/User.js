@@ -63,12 +63,6 @@ const Schema = mongoose.Schema({
       ref: "User",
     },
   ],
-  history: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Workout",
-    },
-  ],
   password: {
     type: String,
     required: true,

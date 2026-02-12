@@ -25,9 +25,9 @@ const createImage = async (dataUser) => {
 };
 
 const createUser = async (dataUser) => {
-  const { data } = await api.post("/user", dataUser);
+  const { data } = await api.post("/users", dataUser);
 
-  return data;
+  return data.data;
 };
 
 const Register = () => {

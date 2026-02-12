@@ -2,23 +2,32 @@ import { useNavigate } from "react-router-dom";
 // MATERIAL UI
 import { Avatar, Box, Button, Grid2, Paper, Typography } from "@mui/material";
 
-export const FriendsFollowing = ({ friends }) => {
+export const FriendsCards= ({ friends }) => {
   const navigate = useNavigate();
 
   return (
     <Paper>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 1 }}>
-        <Typography variant="h6" color="textSecondary" fontWeight="regular">
+        <Typography
+          variant="h6"
+          fontSize="1em"
+          color="textSecondary"
+          fontWeight="normal"
+          letterSpacing="1px"
+        >
           Friends
         </Typography>
         <Grid2
           container
           spacing={2}
-          justifyContent={friends?.length > 2 ? "space-around" : "space-evenly"}
+          justifyContent={{
+            xs: "space-evenly",
+            md: friends && friends.length > 2 ? "space-around" : "start",
+          }}
         >
           {friends ? (
             <>
-              {friends?.followers?.slice(0, 9).map((follower) => (
+              {friends?.slice(0, 9).map((follower) => (
                 <Grid2 key={follower._id} size="auto">
                   <Button
                     onClick={() => navigate(`/profile/${follower._id}`)}
@@ -34,8 +43,10 @@ export const FriendsFollowing = ({ friends }) => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        width: { xs: 100, md: 120 },
-                        maxHeight: { xs: 140, md: 160 },
+                        width:
+                          friends.length === 1
+                            ? { xs: 120, md: 125 }
+                            : { xs: 100, md: 120 },
                       }}
                     >
                       <Avatar
@@ -46,7 +57,6 @@ export const FriendsFollowing = ({ friends }) => {
                           width: "100%",
                           height: "auto",
                           aspectRatio: "1/1",
-                          maxWidth: { xs: 90, sm: 100, md: 120 },
                           objectFit: "contain",
                         }}
                       />

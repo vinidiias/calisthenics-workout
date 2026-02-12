@@ -1,33 +1,75 @@
 // MATERIAL
-import { Box, FormControl, InputLabel, MenuItem, Select as SelectMUI } from "@mui/material"
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Select as SelectMUI,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Controller } from "react-hook-form";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
-export const Select = ({ name, disabled, options, value, onChange, placeholder, defaultValue, size, label, ...props }) => {
-    return (
-      <Box>
-        <FormControl sx={{ m: 1, width: 300, }}>
-          {label && <InputLabel>{label}</InputLabel>}
-          <SelectMUI
-            {...props}
-            disabled={disabled}
-            name={name}
-            value={value}
-            size={size}
-            defaultValue={defaultValue}
-            onChange={(e) => onChange(e.target.value)}
-            sx={{ maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP, width: 250, color: 'input.secondary' }}
-          >
-            <MenuItem value="all">{placeholder ?? "All"}</MenuItem>
-            {options &&
-              options.map((op) => (
-                <MenuItem key={op.value} value={op.value}>
-                  {op.label}
-                </MenuItem>
-              ))}
-          </SelectMUI>
-        </FormControl>
-      </Box>
-    );
+export const InputSelect = ({ readOnly, placeholder, input_props, options, ...rest }) => {
+  return (
+    <TextField
+      fullWidth
+      select
+      sx={{ textAlign: "start" }}
+      {...rest}
+      slotProps={{
+        htmlInput: {
+          readOnly: readOnly,
+          ...input_props,
+        },
+
+        inputLabel: {
+          shrink: true,
+        },
+      }}
+    >
+      <MenuItem disabled value={-1}>
+        <Typography variant="inherit" color="action.disabled">
+          {placeholder ?? "Selecionar..."}
+        </Typography>
+      </MenuItem>
+      {options.map((option) => (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          disabled={option.disabled}
+        >
+          {option.label}
+        </MenuItem>
+      ))}
+    </TextField>
+  );
 }
+
+export const InputSelectController = ({
+  control,
+  name,
+  errors,
+  ...rest
+}) => {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required: true }}
+      render={({ field: { value, onChange } }) => (
+        <InputSelect
+          value={value}
+          onChange={onChange}
+          error={!!errors}
+          helperText={!!errors && errors.message}
+          {...rest}
+        />
+      )}
+    />
+  );
+};

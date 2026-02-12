@@ -19,12 +19,6 @@ const WorkoutSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment"
-    }
-  ],
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   date: { type: Date, required: true },
   expiresAt: { type: Date },

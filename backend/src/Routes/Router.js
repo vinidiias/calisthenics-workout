@@ -1,43 +1,55 @@
-const { Router } = require('express');
+const { Router } = require("express");
 
-const UserController = require('../Controller/UserController');
-const AddressController = require('../Controller/AddressController');
-const OutdoorGymController = require('../Controller/OutdoorGymController');
-const WorkoutController = require('../Controller/WorkoutController');
-const MessageController = require('../Controller/MessageController');
+const UserController = require("../Controller/UserController");
+const AddressController = require("../Controller/AddressController");
+const OutdoorGymController = require("../Controller/OutdoorGymController");
+const WorkoutController = require("../Controller/WorkoutController");
+const WorkoutCommentController = require("../Controller/WorkoutCommentController");
+const MessageController = require("../Controller/MessageController");
 
 const routes = Router();
 
-// User
-routes.post('/user', UserController.create);
-routes.post('/user/auth', UserController.auth);
-routes.post('/user/:userTo', UserController.followUser);
-routes.patch('/user/:id', UserController.updateUser);
-routes.get('/user', UserController.getUsers);
-routes.get('/user/:id', UserController.getUser);
-routes.get('/user/:id/followers', UserController.getFollowersByUser);
+// Auth
+routes.post("/auth/login", UserController.auth); // Autentica um usuario
 
-// Address
-routes.post('/address/create', AddressController.create);
-routes.get('/address', AddressController.getAll);
+// Users
+routes.post("/users", UserController.create); // Cria um novo usuario
+routes.post("/users/:id/followers", UserController.followUser); // Segue um usuario
+routes.get("/users", UserController.getUsers); // Lista todos os usuarios
+routes.get("/users/:id", UserController.getUser); // Busca um usuario por ID
+routes.get("/users/:id/followers", UserController.getFollowersByUser); // Lista seguidores de um usuario
+routes.get("/users/:id/following", UserController.getFollowingByUser); // Lista seguidores de um usuario
+routes.patch("/users/:id", UserController.updateUser); // Atualiza dados de um usuario
+routes.delete("/users/:userId/followers/:id", UserController.unfollowUser);
 
-//OutdoorGym
-routes.post('/outdoorgym/create', OutdoorGymController.create);
-routes.get('/outdoorGym', OutdoorGymController.getAll);
+// Workouts
+routes.post("/workouts", WorkoutController.create); // Cria um novo treino
+routes.post("/workouts/:id/subscriptions", WorkoutController.subscribeToWorkout); // Inscreve o usuario em um treino
+routes.post("/workouts/:workoutId/comments", WorkoutCommentController.create); // Cria um comentario em um treino
+routes.get("/workouts", WorkoutController.getWorkouts); // Lista treinos (filtros: ?subscribed, ?creator, ?hasComments)
+routes.get("/workouts/:id/comments", WorkoutCommentController.fetchCommentsByWorkout); // Lista comentarios de um treino
+routes.delete("/workouts/:id", WorkoutController.deleteWorkout); // Remove um treino
+routes.delete("/workouts/:id/subscriptions", WorkoutController.unsubscribeToWorkout); // Cancela inscricao de um treino
+routes.delete("/workouts", WorkoutController.deleteAllWorkouts); // Remove todos os treinos
+routes.patch("/workouts/:id", WorkoutController.patchWorkout); // Atualiza dados de um treino
+routes.patch("/workouts/:id/likes", WorkoutController.patchLikeWorkout); // Alterna like em um treino
 
-//Workout
-routes.post('/workout/create', WorkoutController.create);
-routes.post('/workout/subscribe', WorkoutController.subscribeToWorkout);
-routes.get('/workout/not-subscribed', WorkoutController.getAllWorkoutNotSubscribed);
-routes.get('/workout', WorkoutController.getAll);
-routes.get('/workout/subscribed', WorkoutController.getAllWorkoutSubscribed);
-routes.delete('/workout/unsubscribe/:id', WorkoutController.unsubscribeToWorkout);
-routes.delete('/workout/delete', WorkoutController.deleteAll);
+// Workout Comments
+routes.delete("/comments/:id", WorkoutCommentController.deleteCommentByWorkout); // Remove um comentario
 
-//Message
-routes.post('/message', MessageController.create);
-routes.get('/message/:conversationId', MessageController.getConversationMessages);
-routes.get('/message/unread/:userId', MessageController.getUnreadCount);
-routes.patch('/message/read', MessageController.markAsRead);
+// Outdoor Gym Addresses
+routes.post("/outdoor-gym-addresses", AddressController.create); // Cria um novo endereco
+routes.get("/outdoor-gym-addresses", AddressController.getAll); // Lista todos os enderecos
+
+// Outdoor Gyms
+routes.post("/outdoor-gyms", OutdoorGymController.create); // Cria uma nova academia ao ar livre
+routes.get("/outdoor-gyms", OutdoorGymController.getAll); // Lista todas as academias ao ar livre
+routes.delete("/outdoor-gyms/:id", OutdoorGymController.deleteOutdoorGym); // Remove uma academia ao ar livre
+
+// Messages
+routes.post("/messages", MessageController.create); // Envia uma nova mensagem
+routes.get("/messages", MessageController.getConversationMessages); // Lista mensagens de uma conversa (filtro: ?conversationId=xxx)
+routes.get("/messages/unread-count", MessageController.getUnreadCount); // Retorna total de mensagens nao lidas
+routes.patch("/messages/read", MessageController.markAsRead); // Marca mensagens de uma conversa como lidas
 
 module.exports = routes

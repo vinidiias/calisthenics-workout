@@ -6,7 +6,7 @@ export const CustomAlert = ({ severity, message, open, autoHide, onClose }) => {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={open}
-        autoHideDuration={autoHide ? 4000 : undefined}
+        autoHideDuration={autoHide ? 2000 : undefined}
         onClose={onClose}
       >
         <Alert
@@ -14,7 +14,7 @@ export const CustomAlert = ({ severity, message, open, autoHide, onClose }) => {
           severity={severity}
           sx={{ width: "100%", maxWidth: { xs: 400, lg: 475 } }}
         >
-          <AlertTitle>{severity.toUpperCase()}</AlertTitle>
+          <AlertTitle>{severity?.toUpperCase()}</AlertTitle>
           {message}
         </Alert>
       </Snackbar>
