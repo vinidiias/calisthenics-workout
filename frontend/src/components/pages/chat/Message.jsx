@@ -45,7 +45,7 @@ export const Message = ({ msg, isMyMessage, selectedContact, photo }) => {
               color: theme.palette.text.secondary,
             }}
           >
-            {new Date(msg.timestamp).toLocaleTimeString("pt-BR", {
+            {new Date(msg.timestamp).toLocaleTimeString("en-US", {
               hour: "2-digit",
               minute: "2-digit",
             })}

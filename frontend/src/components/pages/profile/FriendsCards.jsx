@@ -80,7 +80,7 @@ export const FriendsCards= ({ friends }) => {
           ) : (
             <Grid2 size={12}>
               <Typography textAlign="center" variant="body1">
-                Sem amigos
+                No friends
               </Typography>
             </Grid2>
           )}

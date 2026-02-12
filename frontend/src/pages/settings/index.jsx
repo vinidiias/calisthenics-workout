@@ -207,9 +207,9 @@ export const Settings = () => {
             />
             <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
               <Typography fontWeight="medium">{data?.name}</Typography>
-              <Typography>{data?.email || "Foz do Iguaçu, Brazil"}</Typography>
+              <Typography>{data?.email}</Typography>
               <Typography>
-                {data?.address.city || "Foz do Iguaçu, Brazil"}
+                {data?.address?.city}
               </Typography>
             </Box>
           </Box>
