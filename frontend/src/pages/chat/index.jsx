@@ -315,6 +315,7 @@ export const ChatPage = ({ activeFriends }) => {
                           msg={msg}
                           isMyMessage={isMyMessage}
                           selectedContact={selectedContact}
+                          name={msg?.senderName}
                           photo={user.photo}
                         />
                       );
@@ -363,7 +364,7 @@ export const ChatPage = ({ activeFriends }) => {
                 alignItems={"center"}
               >
                 <Grid2>
-                  <Typography>Select a conversation</Typography>
+                  <Typography variant="body1">{friendsFollowing?.length > 0 ? "Select a conversation" : "No friends to select conversation"}</Typography>
                 </Grid2>
               </Grid2>
             )}

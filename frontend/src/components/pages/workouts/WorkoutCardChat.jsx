@@ -165,6 +165,7 @@ export const WorkoutCardChat = ({ participants, workout_id }) => {
                 key={msg.id || index}
                 msg={msg}
                 isMyMessage={isMyMessage}
+                name={msg?.senderName}
                 selectedContact={senderParticipant || { photo: "", name: msg.senderName }}
                 photo={user.photo}
               />

@@ -26,9 +26,14 @@ export const FriendListChat = ({
     <List
       dense
       disablePadding
-      sx={{ backgroundColor: theme.palette.background.paper }}
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        borderRight: 1,
+        borderRightColor: theme.palette.divider,
+        height: "100%",
+      }}
     >
-      {friendsFollowing?.length > 0 &&
+      {friendsFollowing?.length > 0 ? (
         friendsFollowing.map((friend, index) => {
           const conversationId = friendToConversationMap[friend._id];
           const conv = conversation.find((c) => c.id === conversationId);
@@ -74,7 +79,24 @@ export const FriendListChat = ({
               </ListItemButton>
             </ListItem>
           );
-        })}
+        })
+      ) : (
+        <Box
+          sx={{
+            displa: "flex",
+            alignContent: "center",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <Typography
+            variant="body1"
+            textAlign="center"
+          >
+            No friends
+          </Typography>
+        </Box>
+      )}
     </List>
   );
 };

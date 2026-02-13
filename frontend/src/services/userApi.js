@@ -1,5 +1,11 @@
 import api from '.';
 
+export const postUser = async (dataUser) => {
+  const { data } = await api.post("/users", dataUser);
+
+  return data.data;
+};
+
 export async function fetchFollowersByUser(user_id, query) {
   const { data } = await api.get(
     `/users/${user_id}/followers${query && query.length > 0 ? `?filter=${query.join(',')}` : ''}`,
