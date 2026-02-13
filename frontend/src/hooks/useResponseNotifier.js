@@ -11,5 +11,21 @@ export const useResponseNotifier = () => {
     });
   }
 
-  return { handleErrorResponse };
+  function handleApiResult(res) {
+    if(res?.data) {
+      showAlert({
+        typeSeverity: "success",
+        message: "Action successfully completed.",
+        isAutoHide: true,
+      });
+
+      return;
+    }
+
+    if(res?.errorMessage) {
+      handleErrorResponse(res);
+    }
+  }
+
+  return { handleApiResult, handleErrorResponse };
 };

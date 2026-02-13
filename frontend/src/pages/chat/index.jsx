@@ -120,7 +120,7 @@ export const ChatPage = ({ activeFriends }) => {
       if (senderId === user._id) return;
 
       const senderContact = friendsFollowing.find((f) => f._id === senderId);
-      const senderName = senderContact ? senderContact.name : "Desconhecido";
+      const senderName = senderContact ? senderContact.name : "Unknown";
 
       const receivedMessage = {
         id: Math.random().toString(36).substring(7),
@@ -164,7 +164,7 @@ export const ChatPage = ({ activeFriends }) => {
     };
   }, [selectedConversationId, user._id, friendsFollowing]);
 
-  // inicializa conversa 1-1
+  // initialize 1-1 conversation
   useEffect(() => {
     const initialConversations = [];
     const initialFriendMap = {};
@@ -176,16 +176,16 @@ export const ChatPage = ({ activeFriends }) => {
       initialConversations.push({
         id: conversationId,
         participants: [
-          { _id: user._id, name: "Você", isOnline: true, photo: user.photo },
+          { _id: user._id, name: "You", isOnline: true, photo: user.photo },
           friend,
         ],
         type: "private",
         name: friend.name,
-        lastMessagePreview: "Nenhuma Mensagem",
+        lastMessagePreview: "No Messages",
         unReadCount: 0,
       });
       initialFriendMap[friend._id] = conversationId;
-      // Inicializa o array de mensagens para essa conversa
+      // Initialize the messages array for this conversation
       setPrivateChatsData((prev) => ({ ...prev, [conversationId]: [] }));
     });
 
@@ -315,6 +315,7 @@ export const ChatPage = ({ activeFriends }) => {
                           msg={msg}
                           isMyMessage={isMyMessage}
                           selectedContact={selectedContact}
+                          name={msg?.senderName}
                           photo={user.photo}
                         />
                       );
@@ -328,7 +329,7 @@ export const ChatPage = ({ activeFriends }) => {
                       flex={1}
                     >
                       <Typography textAlign="center">
-                        Inicie uma conversa
+                        Start a conversation
                       </Typography>
                     </Grid2>
                   )}
@@ -344,7 +345,7 @@ export const ChatPage = ({ activeFriends }) => {
                           size="small"
                           value={messageInput}
                           onChange={(e) => setMessageInput(e.target.value)}
-                          placeholder="Digite uma mensagem..."
+                          placeholder="Type a message..."
                         />
                         <IconButton onClick={handleSendMessage}>
                           <SendIcon color="primary" />
@@ -363,7 +364,7 @@ export const ChatPage = ({ activeFriends }) => {
                 alignItems={"center"}
               >
                 <Grid2>
-                  <Typography>Selecione uma conversa</Typography>
+                  <Typography variant="body1">{friendsFollowing?.length > 0 ? "Select a conversation" : "No friends to select conversation"}</Typography>
                 </Grid2>
               </Grid2>
             )}

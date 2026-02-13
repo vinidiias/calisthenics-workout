@@ -13,22 +13,22 @@ export const FriendsCards= ({ friends }) => {
           fontSize="1em"
           color="textSecondary"
           fontWeight="normal"
-          letterSpacing="1px"
         >
           Friends
         </Typography>
         <Grid2
           container
           spacing={2}
+          wrap="wrap"
           justifyContent={{
             xs: "space-evenly",
-            md: friends && friends.length > 2 ? "space-around" : "start",
+            md: "start",
           }}
         >
-          {friends ? (
+          {friends && friends.length > 0 ? (
             <>
               {friends?.slice(0, 9).map((follower) => (
-                <Grid2 key={follower._id} size="auto">
+                <Grid2 key={follower._id} size={"auto"}>
                   <Button
                     onClick={() => navigate(`/profile/${follower._id}`)}
                     key={follower.name}
@@ -43,10 +43,7 @@ export const FriendsCards= ({ friends }) => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        width:
-                          friends.length === 1
-                            ? { xs: 120, md: 125 }
-                            : { xs: 100, md: 120 },
+                        width: { xs: 100, md: 90 },
                       }}
                     >
                       <Avatar
@@ -55,9 +52,8 @@ export const FriendsCards= ({ friends }) => {
                         src={follower.photo}
                         sx={{
                           width: "100%",
-                          height: "auto",
+                          height: "100%",
                           aspectRatio: "1/1",
-                          objectFit: "contain",
                         }}
                       />
                       <Typography
@@ -80,7 +76,7 @@ export const FriendsCards= ({ friends }) => {
           ) : (
             <Grid2 size={12}>
               <Typography textAlign="center" variant="body1">
-                Sem amigos
+                No friends
               </Typography>
             </Grid2>
           )}

@@ -74,7 +74,7 @@ export const WorkoutCardChat = ({ participants, workout_id }) => {
       if (senderId === user._id) return;
 
       const senderContact = participants?.find((p) => p?._id === senderId);
-      const senderName = senderContact ? senderContact?.name : "Desconhecido";
+      const senderName = senderContact ? senderContact?.name : "Unknown";
 
       const receivedMessage = {
         id: Math.random().toString(36).substring(7),
@@ -165,6 +165,7 @@ export const WorkoutCardChat = ({ participants, workout_id }) => {
                 key={msg.id || index}
                 msg={msg}
                 isMyMessage={isMyMessage}
+                name={msg?.senderName}
                 selectedContact={senderParticipant || { photo: "", name: msg.senderName }}
                 photo={user.photo}
               />
@@ -173,7 +174,7 @@ export const WorkoutCardChat = ({ participants, workout_id }) => {
         ) : (
           <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Typography variant="body2" color="text.secondary">
-              Nenhuma mensagem
+              No messages
             </Typography>
           </Box>
         )}

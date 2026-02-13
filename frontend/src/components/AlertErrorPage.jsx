@@ -15,9 +15,9 @@ export const AlertErrorPage = ({ message }) => {
     >
       <Box display="flex" flexDirection="column">
         <Typography color="error">
-          Ocorreu um erro ao carregar os dados
+          An error occurred while loading the data
         </Typography>
-        <Typography color="error">[MOTIVO]: {message}</Typography>
+        <Typography color="error">[REASON]: {message}</Typography>
       </Box>
     </Container>
   );

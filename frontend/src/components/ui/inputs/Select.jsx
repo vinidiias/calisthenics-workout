@@ -34,7 +34,7 @@ export const InputSelect = ({ readOnly, placeholder, input_props, options, ...re
     >
       <MenuItem disabled value={-1}>
         <Typography variant="inherit" color="action.disabled">
-          {placeholder ?? "Selecionar..."}
+          {placeholder ?? "Select..."}
         </Typography>
       </MenuItem>
       {options.map((option) => (

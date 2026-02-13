@@ -28,7 +28,7 @@ export const HeaderInformationFriend = ({
           sx={{ textTransform: "none" }}
           onClick={handleClose}
         >
-          Voltar
+          Back
         </Button>
       )}
       <Stack alignItems="center" justifyContent="center">

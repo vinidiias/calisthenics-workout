@@ -29,6 +29,7 @@ export const themeMui = (isDark) =>
       background: {
         default: isDark ? "#202124" : "#f2f2f2",
         paper: isDark ? "#202124" : "#f8f8f8",
+        chat: isDark ? "#333335a6" : "#e4e4e4",
       },
       text: {
         primary: isDark ? "#fff" : "#121212",

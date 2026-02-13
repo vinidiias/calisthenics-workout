@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Button, Container, Grid2, TextField, Typography } from "@mui/material";
 // COMPONENTS
 import { AuthContainer } from "../../components/pages/auth";
-// API
-import api from "../../services";
 // CONTEXT
 import { UserContext } from "../../contexts/UserContext";
 // TANSTACK QUERY
@@ -14,42 +12,41 @@ import { useMutation } from "@tanstack/react-query";
 import LockIcon from "@mui/icons-material/Lock";
 // HOOK FORM
 import { useForm } from "react-hook-form";
-
-const createImage = async (dataUser) => {
-  const formData = new FormData();
-  formData.append("photo", dataUser.photo[0]);
-
-  const { data } = await api.post("/file", formData);
-
-  return { ...dataUser, photo: data };
-};
-
-const createUser = async (dataUser) => {
-  const { data } = await api.post("/users", dataUser);
-
-  return data.data;
-};
+import { useResponseNotifier } from "../../hooks/useResponseNotifier";
+import { postUser } from "../../services/userApi";
+import { createImage } from "../../services/imageApi";
 
 const Register = () => {
   const { setUser } = useContext(UserContext);
+  const { handleApiResult } = useResponseNotifier();
   const { register, handleSubmit } = useForm();
+
   const navigate = useNavigate();
 
   useEffect(() => setUser({}), [setUser]);
 
-  const { mutateAsync: createImageFn } = useMutation({
+  const { mutateAsync: createImageFn, isPending: isPendingImage } = useMutation({
     mutationFn: createImage,
     onSuccess: (data) => {
       createUserFn(data);
+      handleApiResult({ data, errorMessage: null });
     },
+    onError: () => {
+      handleApiResult({
+        data: null,
+        errorMessage: "Error to send image. Try again.",
+      });
+    }
   });
 
   const { mutateAsync: createUserFn, isPending: isPendingUser } = useMutation({
-    mutationFn: createUser,
+    mutationFn: postUser,
     onSuccess: (data) => {
       setUser(data);
+      handleApiResult({ data, errorMessage: null });
       navigate("/");
     },
+    onError: (resp) => handleApiResult(resp?.response?.data),
   });
 
   const submit = async (data) => {
@@ -107,7 +104,7 @@ const Register = () => {
                   variant="contained"
                   size="large"
                   type="submit"
-                  loading={isPendingUser}
+                  loading={isPendingUser || isPendingImage}
                 >
                   Sign Up
                 </Button>
@@ -128,7 +125,7 @@ const Register = () => {
                   size="large"
                   onClick={() => navigate("/")}
                   type="button"
-                  loading={isPendingUser}
+                  loading={isPendingUser || isPendingImage}
                 >
                   Sign In
                 </Button>

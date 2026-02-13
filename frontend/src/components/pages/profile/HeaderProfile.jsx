@@ -293,10 +293,16 @@ export const HeaderProfile = ({ backgroundPhoto, userData, isLoading, onViewFoll
                       Following
                     </Typography>
                     <Typography fontSize="1.6em" fontWeight="medium">
-                      {userData?.following.length}
+                      {userData?.following?.length ?? 0}
                     </Typography>
                   </Button>
-                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "center",
+                    }}
+                  >
                     <Typography
                       color="textSecondary"
                       fontWeight="regular"
@@ -305,7 +311,7 @@ export const HeaderProfile = ({ backgroundPhoto, userData, isLoading, onViewFoll
                       Workouts
                     </Typography>
                     <Typography fontSize="1.6em" fontWeight="medium">
-                      {userData?.history.length}
+                      {userData?.history?.length ?? 0}
                     </Typography>
                   </Box>
                 </Stack>

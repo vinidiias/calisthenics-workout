@@ -147,7 +147,7 @@ export default function Profile() {
             <Grid container size={12}>
               <Paper sx={{ flex: 1, alignContent: "center" }}>
                 <Typography textAlign="center" sx={{ alignSelf: "center" }}>
-                  {errorWorkout ? errorWorkout.message : "Sem atividades"}
+                  {errorWorkout ? errorWorkout.message : "No activities"}
                 </Typography>
               </Paper>
             </Grid>

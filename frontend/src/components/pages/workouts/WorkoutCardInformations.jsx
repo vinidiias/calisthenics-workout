@@ -114,6 +114,8 @@ export const WorkoutCardInformations = ({
     setValue(0);
   }, [initialTab]);
 
+  console.log(workout)
+
   return (
     <Card>
       <Box sx={{ width: "100%", bgcolor: "primary.dark" }}>
@@ -181,7 +183,7 @@ export const WorkoutCardInformations = ({
                 >
                   {workout?.description}
                 </Typography>
-                {!isHistory && (
+                {!isHistory  && (
                   <Box mt={2}>
                     <Button
                       variant="contained"
